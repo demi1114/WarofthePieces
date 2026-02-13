@@ -19,24 +19,39 @@ public class BoardManager : MonoBehaviour
     private Vector2Int selectedPosition;
     private bool movedThisTurn = false;
 
+    private int CountPieces(int owner)//盤上の駒数カウント関数
+    {
+        int count = 0;
+
+        for (int y = 0; y < boardSize; y++)
+        {
+            for (int x = 0; x < boardSize; x++)
+            {
+                if (pieceGrid[x, y] != null &&
+                    pieceGrid[x, y].owner == owner)
+                {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
     private void Awake()
     {
         Instance = this;
     }
-
     private void Start()
     {
         pieceGrid = new Piece[boardSize, boardSize];
         GenerateBoard();
+        SpawnEnemyTestPiece();//仮置きの敵配置
     }
-
     private void Update()
     {
         HandleClick();
     }
-
-    // 盤面生成
-    private void GenerateBoard()
+    private void GenerateBoard() // 盤面生成
     {
         cells = new BoardCell[boardSize, boardSize];
 
@@ -59,21 +74,18 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-
-    // マス色設定（自陣・敵陣）
-    private void SetupCellColor(GameObject obj, int y)
+    private void SetupCellColor(GameObject obj, int y) // マス色設定（自陣・敵陣）
     {
         Renderer renderer = obj.GetComponent<Renderer>();
 
         if (renderer == null) return;
 
-        // 自陣（下1列）
-        if (y == 0)
+        if (y == 0)// 自陣（下1列）
         {
             renderer.material.color = Color.blue;
         }
-        // 敵陣（上1列）
-        else if (y == boardSize - 1)
+        
+        else if (y == boardSize - 1)// 敵陣（上1列）
         {
             renderer.material.color = Color.red;
         }
@@ -82,9 +94,7 @@ public class BoardManager : MonoBehaviour
             renderer.material.color = Color.white;
         }
     }
-
-    // クリック処理（Raycast）
-    private void HandleClick()
+    private void HandleClick() // クリック処理（Raycast）
     {
         if (Mouse.current == null) return;
 
@@ -97,18 +107,15 @@ public class BoardManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                // ① Pieceをクリックした場合
-                Piece piece = hit.collider.GetComponent<Piece>();
+                Piece piece = hit.collider.GetComponent<Piece>();// ① Pieceをクリックした場合
                 if (piece != null)
                 {
-                    // その駒の座標を探す
-                    Vector2Int pos = FindPiecePosition(piece);
+                    Vector2Int pos = FindPiecePosition(piece);// その駒の座標を探す
                     OnCellClicked(cells[pos.x, pos.y]);
                     return;
                 }
 
-                // ② Cellをクリックした場合
-                BoardCell cell = hit.collider.GetComponent<BoardCell>();
+                BoardCell cell = hit.collider.GetComponent<BoardCell>();// ② Cellをクリックした場合
                 if (cell != null)
                 {
                     OnCellClicked(cell);
@@ -118,13 +125,12 @@ public class BoardManager : MonoBehaviour
     }
 
 
-    // マスクリック時
-    public void OnCellClicked(BoardCell cell)
+ 
+    public void OnCellClicked(BoardCell cell) // マスクリック時
     {
         Piece clickedPiece = pieceGrid[cell.x, cell.y];
 
-        // ① 自分の駒をクリック → 選択
-        if (clickedPiece != null && clickedPiece.owner == 0)
+        if (clickedPiece != null && clickedPiece.owner == 0)// ① 自分の駒をクリック → 選択
         {
             if (!movedThisTurn)
             {
@@ -133,30 +139,24 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
-        // ② 駒選択中 → 移動処理
-        if (selectedPiece != null && !movedThisTurn)
+        if (selectedPiece != null && !movedThisTurn) // ② 駒選択中 → 移動処理
         {
             TryMovePiece(cell.x, cell.y);
             return;
         }
 
-        // ③ 空マスクリック → 選択キャンセル
-        if (selectedPiece != null)
+        if (selectedPiece != null) // ③ 空マスクリック → 選択キャンセル
         {
             CancelSelection();
             return;
         }
 
-        // ④ 駒の配置
-        if (clickedPiece == null)
+        if (clickedPiece == null) // ④ 駒の配置
         {
             TryPlacePiece(cell);
         }
     }
-
-
-    // 座標取得
-    public BoardCell GetCell(int x, int y)
+    public BoardCell GetCell(int x, int y) // 座標取得
     {
         if (x < 0 || x >= boardSize || y < 0 || y >= boardSize)
             return null;
@@ -218,8 +218,7 @@ public class BoardManager : MonoBehaviour
 
         Debug.Log($"駒配置！残り: {playerHandPieces}");
     }
-
-    private void SelectPiece(Piece piece, int x, int y)
+    private void SelectPiece(Piece piece, int x, int y) //駒の選択
     {
         if (selectedPiece == piece)
         {
@@ -232,36 +231,37 @@ public class BoardManager : MonoBehaviour
 
         Debug.Log($"駒選択: {x},{y}");
     }
-
     private void CancelSelection()//駒選択の解除
     {
         Debug.Log("選択キャンセル");
 
         selectedPiece = null;
     }
-
-    private void TryMovePiece(int targetX, int targetY)
+    private void TryMovePiece(int targetX, int targetY) //駒の移動先選択
     {
-        // 移動先が空であること
-        if (pieceGrid[targetX, targetY] != null)
-        {
-            Debug.Log("移動先に駒があります");
-            return;
-        }
-
         // 前に1マスだけ許可（仮）
         if (targetX == selectedPosition.x &&
             targetY == selectedPosition.y + 1)
         {
-            MovePiece(targetX, targetY);
+            Piece targetPiece = pieceGrid[targetX, targetY];
+
+            if (targetPiece != null && targetPiece.owner != 0)
+            {
+                // 敵がいる → 戦闘
+                Battle(targetX, targetY, targetPiece);
+            }
+            else if (targetPiece == null)
+            {
+                // 空マス → 通常移動
+                MovePiece(targetX, targetY);
+            }
         }
         else
         {
             Debug.Log("そこには移動できません");
         }
     }
-
-    private void MovePiece(int targetX, int targetY)
+    private void MovePiece(int targetX, int targetY) //駒の移動
     {
         // データ更新
         pieceGrid[targetX, targetY] = selectedPiece;
@@ -277,6 +277,61 @@ public class BoardManager : MonoBehaviour
 
         selectedPiece = null;
     }
+    private void Battle(int targetX, int targetY, Piece enemyPiece) //戦闘
+    {
+        int playerCount = CountPieces(0);
+        int enemyCount = CountPieces(1);
 
+        Debug.Log($"戦闘開始 Player:{playerCount} Enemy:{enemyCount}");
+
+        bool playerWins = false;
+
+        if (playerCount > enemyCount)
+        {
+            playerWins = true;
+        }
+        else if (playerCount < enemyCount)
+        {
+            playerWins = false;
+        }
+        else
+        {
+            // 同数 → 攻撃側勝利
+            playerWins = true;
+        }
+
+        if (playerWins)
+        {
+            Destroy(enemyPiece.gameObject);
+            pieceGrid[targetX, targetY] = null;
+
+            MovePiece(targetX, targetY);
+
+            Debug.Log("プレイヤー勝利");
+        }
+        else
+        {
+            Destroy(selectedPiece.gameObject);
+            pieceGrid[selectedPosition.x, selectedPosition.y] = null;
+
+            Debug.Log("プレイヤー敗北");
+
+            selectedPiece = null;
+            movedThisTurn = true;
+        }
+    }
+    private void SpawnEnemyTestPiece()
+    {
+        int x = 4;
+        int y = 1;
+
+        Vector3 pos = cells[x, y].transform.position + Vector3.up * 0.5f;
+        GameObject obj = Instantiate(piecePrefab, pos, Quaternion.identity);
+
+        Piece piece = obj.GetComponent<Piece>();
+        piece.owner = 1;
+
+        pieceGrid[x, y] = piece;
+    }
 
 }
