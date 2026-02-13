@@ -1,45 +1,48 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class BoardManager : MonoBehaviour
 {
     public static BoardManager Instance;
 
-    public const int SIZE = 9;
+    [Header("Board Settings")]
+    public int boardSize = 9;
+    public float cellSize = 1.0f;
+    public GameObject cellPrefab;
 
-    [Header("Cell Settings")]
-    [SerializeField] private GameObject cellPrefab;
-    [SerializeField] private float cellSize = 1.1f;
+    private BoardCell[,] cells;
 
-    // 見た目管理
-    private BoardCell[,] cells = new BoardCell[SIZE, SIZE];
+    public GameObject piecePrefab;
 
-    // 駒管理（ゲームロジック用）
-    private Piece[,] board = new Piece[SIZE, SIZE];
-
-    #region Unity
+    private Piece[,] pieceGrid;
+    private int playerHandPieces = 8;
 
     private void Awake()
     {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
+        Instance = this;
     }
 
     private void Start()
     {
+        pieceGrid = new Piece[boardSize, boardSize];
         GenerateBoard();
     }
 
-    #endregion
+    private void Update()
+    {
+        HandleClick();
+    }
 
-    #region Board Generation
-
+    // ===============================
+    // 盤面生成
+    // ===============================
     private void GenerateBoard()
     {
-        for (int y = 0; y < SIZE; y++)
+        cells = new BoardCell[boardSize, boardSize];
+
+        for (int y = 0; y < boardSize; y++)
         {
-            for (int x = 0; x < SIZE; x++)
+            for (int x = 0; x < boardSize; x++)
             {
                 Vector3 spawnPos = new Vector3(x * cellSize, 0, y * cellSize);
 
@@ -57,77 +60,113 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    private void SetupCellColor(GameObject cellObj, int y)
+    // ===============================
+    // マス色設定（自陣・敵陣）
+    // ===============================
+    private void SetupCellColor(GameObject obj, int y)
     {
-        Renderer renderer = cellObj.GetComponent<Renderer>();
+        Renderer renderer = obj.GetComponent<Renderer>();
+
         if (renderer == null) return;
 
+        // 自陣（下1列）
         if (y == 0)
-            renderer.material.color = Color.blue;      // 自陣
-        else if (y == SIZE - 1)
-            renderer.material.color = Color.red;       // 敵陣
+        {
+            renderer.material.color = Color.blue;
+        }
+        // 敵陣（上1列）
+        else if (y == boardSize - 1)
+        {
+            renderer.material.color = Color.red;
+        }
         else
-            renderer.material.color = Color.white;     // 通常
+        {
+            renderer.material.color = Color.white;
+        }
     }
 
-    #endregion
-
-    #region Territory Check
-
-    public bool IsBottomTerritory(Vector2Int pos)
+    // ===============================
+    // クリック処理（Raycast）
+    // ===============================
+    private void HandleClick()
     {
-        return pos.y == 0;
+        if (Mouse.current == null) return;
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+
+            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                BoardCell cell = hit.collider.GetComponent<BoardCell>();
+
+                if (cell != null)
+                {
+                    OnCellClicked(cell);
+                }
+            }
+        }
     }
 
-    public bool IsTopTerritory(Vector2Int pos)
+    // ===============================
+    // マスクリック時
+    // ===============================
+    public void OnCellClicked(BoardCell cell)
     {
-        return pos.y == SIZE - 1;
+        TryPlacePiece(cell);
     }
 
-    #endregion
-
-    #region Board Data Access
-
-    public bool IsInsideBoard(Vector2Int pos)
+    // ===============================
+    // 座標取得
+    // ===============================
+    public BoardCell GetCell(int x, int y)
     {
-        return pos.x >= 0 && pos.x < SIZE &&
-               pos.y >= 0 && pos.y < SIZE;
+        if (x < 0 || x >= boardSize || y < 0 || y >= boardSize)
+            return null;
+
+        return cells[x, y];
     }
 
-    public bool IsEmpty(Vector2Int pos)
+    private void TryPlacePiece(BoardCell cell)
     {
-        if (!IsInsideBoard(pos)) return false;
-        return board[pos.x, pos.y] == null;
+        // 自陣判定（下1列）
+        if (cell.y != 0)
+        {
+            Debug.Log("自陣ではありません");
+            return;
+        }
+
+        // 空きマス判定
+        if (pieceGrid[cell.x, cell.y] != null)
+        {
+            Debug.Log("すでに駒があります");
+            return;
+        }
+
+        // 手持ち確認
+        if (playerHandPieces <= 0)
+        {
+            Debug.Log("手持ち駒がありません");
+            return;
+        }
+
+        // 駒生成
+        Vector3 spawnPos = cell.transform.position + Vector3.up * 0.5f;
+
+        GameObject obj = Instantiate(piecePrefab, spawnPos, Quaternion.identity);
+
+        Piece piece = obj.GetComponent<Piece>();
+        piece.owner = 0;
+        piece.type = PieceType.Soldier;
+
+        pieceGrid[cell.x, cell.y] = piece;
+
+        playerHandPieces--;
+
+        Debug.Log($"駒配置！残り: {playerHandPieces}");
     }
 
-    public Piece GetPiece(Vector2Int pos)
-    {
-        if (!IsInsideBoard(pos)) return null;
-        return board[pos.x, pos.y];
-    }
-
-    public void SetPiece(Vector2Int pos, Piece piece)
-    {
-        if (!IsInsideBoard(pos)) return;
-
-        board[pos.x, pos.y] = piece;
-    }
-
-    public void RemovePiece(Vector2Int pos)
-    {
-        if (!IsInsideBoard(pos)) return;
-
-        board[pos.x, pos.y] = null;
-    }
-
-    #endregion
-
-    #region Utility
-
-    public Vector3 GetWorldPosition(Vector2Int gridPos)
-    {
-        return new Vector3(gridPos.x * cellSize, 0, gridPos.y * cellSize);
-    }
-
-    #endregion
 }
