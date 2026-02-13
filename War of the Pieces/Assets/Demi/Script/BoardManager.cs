@@ -19,7 +19,7 @@ public class BoardManager : MonoBehaviour
     private Vector2Int selectedPosition;
     private bool movedThisTurn = false;
 
-    private int CountPieces(int owner)//盤上の駒数カウント関数
+    private int CountPieces(int owner) //盤上の駒数カウント関数
     {
         int count = 0;
 
@@ -37,6 +37,31 @@ public class BoardManager : MonoBehaviour
 
         return count;
     }
+    private void CheckVictory() //勝利チェック関数
+    {
+        // ① 敵駒が盤上にいない
+        if (CountPieces(1) == 0)
+        {
+            Debug.Log("プレイヤー勝利！（敵全滅）");
+            return;
+        }
+
+        // ② 自分の駒が敵陣に到達
+        for (int x = 0; x < boardSize; x++)
+        {
+            if (pieceGrid[x, boardSize - 1] != null &&
+                pieceGrid[x, boardSize - 1].owner == 0)
+            {
+                Debug.Log("プレイヤー勝利！（敵陣到達）");
+                return;
+            }
+        }
+    }
+    public void ResetMoveFlag() //ターン終了フラグ
+    {
+        movedThisTurn = false;
+    }
+
     private void Awake()
     {
         Instance = this;
@@ -123,11 +148,13 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-
-
- 
     public void OnCellClicked(BoardCell cell) // マスクリック時
     {
+        if (!TurnManager.Instance.isPlayerTurn)
+        {
+            return;
+        }
+
         Piece clickedPiece = pieceGrid[cell.x, cell.y];
 
         if (clickedPiece != null && clickedPiece.owner == 0)// ① 自分の駒をクリック → 選択
@@ -276,6 +303,7 @@ public class BoardManager : MonoBehaviour
         Debug.Log("移動完了（このターンはもう移動できません）");
 
         selectedPiece = null;
+        CheckVictory();
     }
     private void Battle(int targetX, int targetY, Piece enemyPiece) //戦闘
     {
@@ -319,6 +347,8 @@ public class BoardManager : MonoBehaviour
             selectedPiece = null;
             movedThisTurn = true;
         }
+
+        CheckVictory();
     }
     private void SpawnEnemyTestPiece()
     {
