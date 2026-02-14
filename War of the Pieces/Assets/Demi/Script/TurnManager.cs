@@ -33,6 +33,11 @@ public class TurnManager : MonoBehaviour
     {
         timer = turnTime;
 
+        if (isPlayerTurn)
+        {
+            DeckManager.Instance.DrawCard();
+        }
+
         Debug.Log(isPlayerTurn ? "プレイヤーターン開始" : "敵ターン開始");
 
         BoardManager.Instance.ResetMoveFlag();
