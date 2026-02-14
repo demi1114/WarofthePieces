@@ -78,14 +78,18 @@ public class DeckManager : MonoBehaviour
 
         CardData card = hand[handIndex];
 
-        card.Use();
-
-        hand.RemoveAt(handIndex);
-
-        Debug.Log($"ŽèŽDŽc‚è: {hand.Count}");
-        FindObjectOfType<HandUI>().RefreshHand();
-
+        CardUseManager.Instance.StartCardUse(card, handIndex);
     }
+    public void RemoveCardFromHand(int index)
+    {
+        if (index < 0 || index >= hand.Count)
+            return;
+
+        hand.RemoveAt(index);
+        HandUI.Instance.RefreshHand();
+    }
+
+
     private void Update()
     {
         if (Keyboard.current.digit1Key.wasPressedThisFrame)

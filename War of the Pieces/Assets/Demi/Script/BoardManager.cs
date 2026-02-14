@@ -145,6 +145,20 @@ public class BoardManager : MonoBehaviour
                 {
                     OnCellClicked(cell);
                 }
+
+                if (CardUseManager.Instance != null && CardUseManager.Instance.IsWaitingForTarget())
+                {
+                    CardUseManager.Instance.CancelCardUse();
+                }
+            }
+            else
+            {
+                // ★ 何にも当たらなかった場合もキャンセル
+                if (CardUseManager.Instance != null &&
+                    CardUseManager.Instance.IsWaitingForTarget())
+                {
+                    CardUseManager.Instance.CancelCardUse();
+                }
             }
         }
     }
@@ -155,6 +169,13 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
+        if (CardUseManager.Instance != null &&
+            CardUseManager.Instance.IsWaitingForTarget()) // カード使用待機中なら優先処理
+        {
+            Vector2Int gridPosition = new Vector2Int(cell.x, cell.y);
+            CardUseManager.Instance.ResolveCard(gridPosition);
+            return;
+        }
         Piece clickedPiece = pieceGrid[cell.x, cell.y];
 
         if (clickedPiece != null && clickedPiece.owner == 0)// ① 自分の駒をクリック → 選択

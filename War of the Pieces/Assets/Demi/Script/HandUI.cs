@@ -7,11 +7,13 @@ public class HandUI : MonoBehaviour
 {
     public GameObject cardPrefab;
     public Transform handPanel;
+    public static HandUI Instance;
 
     private List<GameObject> currentCards = new List<GameObject>();
 
     private void Start()
     {
+        Instance = this;
         RefreshHand();
     }
 
