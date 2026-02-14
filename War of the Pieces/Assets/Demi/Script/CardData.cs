@@ -3,7 +3,7 @@ using UnityEngine;
 public enum CardType
 {
     Draw,
-    Move,
+    AddMove,
     Spawn
 }
 
@@ -12,10 +12,27 @@ public class CardData : ScriptableObject
 {
     public string cardName;
     public CardType cardType;
+    public int value = 1;   // 効果量（追加移動数など）
 
     public virtual bool Resolve(Vector2Int targetPos)
     {
-        Debug.Log($"{cardName} 解決（仮）");
+        switch (cardType)
+        {
+            case CardType.Draw:
+                DeckManager.Instance.DrawCard();
+                break;
+
+            case CardType.Spawn:
+                Debug.Log("スポーンカード（未実装）");
+                break;
+
+            case CardType.AddMove:
+                TurnManager.Instance.AddExtraMove(value);
+                Debug.Log("移動回数 +1");
+                break;
+        }
+
         return true;
     }
+
 }

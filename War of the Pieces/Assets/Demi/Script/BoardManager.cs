@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class BoardManager : MonoBehaviour
@@ -17,9 +17,8 @@ public class BoardManager : MonoBehaviour
 
     private Piece selectedPiece;
     private Vector2Int selectedPosition;
-    private bool movedThisTurn = false;
 
-    private int CountPieces(int owner) //”Õã‚Ì‹î”ƒJƒEƒ“ƒgŠÖ”
+    private int CountPieces(int owner) //ç›¤ä¸Šã®é§’æ•°ã‚«ã‚¦ãƒ³ãƒˆé–¢æ•°
     {
         int count = 0;
 
@@ -37,31 +36,26 @@ public class BoardManager : MonoBehaviour
 
         return count;
     }
-    private void CheckVictory() //Ÿ—˜ƒ`ƒFƒbƒNŠÖ”
+    private void CheckVictory() //å‹åˆ©ãƒã‚§ãƒƒã‚¯é–¢æ•°
     {
-        // ‡@ “G‹î‚ª”Õã‚É‚¢‚È‚¢
+        // â‘  æ•µé§’ãŒç›¤ä¸Šã«ã„ãªã„
         if (CountPieces(1) == 0)
         {
-            Debug.Log("ƒvƒŒƒCƒ„[Ÿ—˜Ii“G‘S–Åj");
+            Debug.Log("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å‹åˆ©ï¼ï¼ˆæ•µå…¨æ»…ï¼‰");
             return;
         }
 
-        // ‡A ©•ª‚Ì‹î‚ª“Gw‚É“’B
+        // â‘¡ è‡ªåˆ†ã®é§’ãŒæ•µé™£ã«åˆ°é”
         for (int x = 0; x < boardSize; x++)
         {
             if (pieceGrid[x, boardSize - 1] != null &&
                 pieceGrid[x, boardSize - 1].owner == 0)
             {
-                Debug.Log("ƒvƒŒƒCƒ„[Ÿ—˜Ii“Gw“’Bj");
+                Debug.Log("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å‹åˆ©ï¼ï¼ˆæ•µé™£åˆ°é”ï¼‰");
                 return;
             }
         }
     }
-    public void ResetMoveFlag() //ƒ^[ƒ“I—¹ƒtƒ‰ƒO
-    {
-        movedThisTurn = false;
-    }
-
     private void Awake()
     {
         Instance = this;
@@ -70,13 +64,13 @@ public class BoardManager : MonoBehaviour
     {
         pieceGrid = new Piece[boardSize, boardSize];
         GenerateBoard();
-        SpawnEnemyTestPiece();//‰¼’u‚«‚Ì“G”z’u
+        SpawnEnemyTestPiece();//ä»®ç½®ãã®æ•µé…ç½®
     }
     private void Update()
     {
         HandleClick();
     }
-    private void GenerateBoard() // ”Õ–Ê¶¬
+    private void GenerateBoard() // ç›¤é¢ç”Ÿæˆ
     {
         cells = new BoardCell[boardSize, boardSize];
 
@@ -99,18 +93,18 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-    private void SetupCellColor(GameObject obj, int y) // ƒ}ƒXFİ’èi©wE“Gwj
+    private void SetupCellColor(GameObject obj, int y) // ãƒã‚¹è‰²è¨­å®šï¼ˆè‡ªé™£ãƒ»æ•µé™£ï¼‰
     {
         Renderer renderer = obj.GetComponent<Renderer>();
 
         if (renderer == null) return;
 
-        if (y == 0)// ©wi‰º1—ñj
+        if (y == 0)// è‡ªé™£ï¼ˆä¸‹1åˆ—ï¼‰
         {
             renderer.material.color = Color.blue;
         }
         
-        else if (y == boardSize - 1)// “Gwiã1—ñj
+        else if (y == boardSize - 1)// æ•µé™£ï¼ˆä¸Š1åˆ—ï¼‰
         {
             renderer.material.color = Color.red;
         }
@@ -119,7 +113,7 @@ public class BoardManager : MonoBehaviour
             renderer.material.color = Color.white;
         }
     }
-    private void HandleClick() // ƒNƒŠƒbƒNˆ—iRaycastj
+    private void HandleClick() // ã‚¯ãƒªãƒƒã‚¯å‡¦ç†ï¼ˆRaycastï¼‰
     {
         if (Mouse.current == null) return;
 
@@ -132,15 +126,15 @@ public class BoardManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                Piece piece = hit.collider.GetComponent<Piece>();// ‡@ Piece‚ğƒNƒŠƒbƒN‚µ‚½ê‡
+                Piece piece = hit.collider.GetComponent<Piece>();// â‘  Pieceã‚’ã‚¯ãƒªãƒƒã‚¯ã—ãŸå ´åˆ
                 if (piece != null)
                 {
-                    Vector2Int pos = FindPiecePosition(piece);// ‚»‚Ì‹î‚ÌÀ•W‚ğ’T‚·
+                    Vector2Int pos = FindPiecePosition(piece);// ãã®é§’ã®åº§æ¨™ã‚’æ¢ã™
                     OnCellClicked(cells[pos.x, pos.y]);
                     return;
                 }
 
-                BoardCell cell = hit.collider.GetComponent<BoardCell>();// ‡A Cell‚ğƒNƒŠƒbƒN‚µ‚½ê‡
+                BoardCell cell = hit.collider.GetComponent<BoardCell>();// â‘¡ Cellã‚’ã‚¯ãƒªãƒƒã‚¯ã—ãŸå ´åˆ
                 if (cell != null)
                 {
                     OnCellClicked(cell);
@@ -153,7 +147,7 @@ public class BoardManager : MonoBehaviour
             }
             else
             {
-                // š ‰½‚É‚à“–‚½‚ç‚È‚©‚Á‚½ê‡‚àƒLƒƒƒ“ƒZƒ‹
+                // â˜… ä½•ã«ã‚‚å½“ãŸã‚‰ãªã‹ã£ãŸå ´åˆã‚‚ã‚­ãƒ£ãƒ³ã‚»ãƒ«
                 if (CardUseManager.Instance != null &&
                     CardUseManager.Instance.IsWaitingForTarget())
                 {
@@ -162,7 +156,7 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
-    public void OnCellClicked(BoardCell cell) // ƒ}ƒXƒNƒŠƒbƒN
+    public void OnCellClicked(BoardCell cell) // ãƒã‚¹ã‚¯ãƒªãƒƒã‚¯æ™‚
     {
         if (!TurnManager.Instance.isPlayerTurn)
         {
@@ -170,7 +164,7 @@ public class BoardManager : MonoBehaviour
         }
 
         if (CardUseManager.Instance != null &&
-            CardUseManager.Instance.IsWaitingForTarget()) // ƒJ[ƒhg—p‘Ò‹@’†‚È‚ç—Dæˆ—
+            CardUseManager.Instance.IsWaitingForTarget()) // ã‚«ãƒ¼ãƒ‰ä½¿ç”¨å¾…æ©Ÿä¸­ãªã‚‰å„ªå…ˆå‡¦ç†
         {
             Vector2Int gridPosition = new Vector2Int(cell.x, cell.y);
             CardUseManager.Instance.ResolveCard(gridPosition);
@@ -178,33 +172,30 @@ public class BoardManager : MonoBehaviour
         }
         Piece clickedPiece = pieceGrid[cell.x, cell.y];
 
-        if (clickedPiece != null && clickedPiece.owner == 0)// ‡@ ©•ª‚Ì‹î‚ğƒNƒŠƒbƒN ¨ ‘I‘ğ
+        if (clickedPiece != null && clickedPiece.owner == 0) //â€é§’ã®é¸æŠ
         {
-            if (!movedThisTurn)
-            {
-                SelectPiece(clickedPiece, cell.x, cell.y);
-            }
+            SelectPiece(clickedPiece, cell.x, cell.y);
             return;
         }
 
-        if (selectedPiece != null && !movedThisTurn) // ‡A ‹î‘I‘ğ’† ¨ ˆÚ“®ˆ—
+        if (selectedPiece != null) //âé§’ã®ç§»å‹•
         {
             TryMovePiece(cell.x, cell.y);
             return;
         }
 
-        if (selectedPiece != null) // ‡B ‹óƒ}ƒXƒNƒŠƒbƒN ¨ ‘I‘ğƒLƒƒƒ“ƒZƒ‹
+        if (selectedPiece != null) // â‘¢ ç©ºãƒã‚¹ã‚¯ãƒªãƒƒã‚¯ â†’ é¸æŠã‚­ãƒ£ãƒ³ã‚»ãƒ«
         {
             CancelSelection();
             return;
         }
 
-        if (clickedPiece == null) // ‡C ‹î‚Ì”z’u
+        if (clickedPiece == null) // â‘£ é§’ã®é…ç½®
         {
             TryPlacePiece(cell);
         }
     }
-    public BoardCell GetCell(int x, int y) // À•Wæ“¾
+    public BoardCell GetCell(int x, int y) // åº§æ¨™å–å¾—
     {
         if (x < 0 || x >= boardSize || y < 0 || y >= boardSize)
             return null;
@@ -230,28 +221,28 @@ public class BoardManager : MonoBehaviour
 
     private void TryPlacePiece(BoardCell cell)
     {
-        // ©w”»’èi‰º1—ñj
+        // è‡ªé™£åˆ¤å®šï¼ˆä¸‹1åˆ—ï¼‰
         if (cell.y != 0)
         {
-            Debug.Log("©w‚Å‚Í‚ ‚è‚Ü‚¹‚ñ");
+            Debug.Log("è‡ªé™£ã§ã¯ã‚ã‚Šã¾ã›ã‚“");
             return;
         }
 
-        // ‹ó‚«ƒ}ƒX”»’è
+        // ç©ºããƒã‚¹åˆ¤å®š
         if (pieceGrid[cell.x, cell.y] != null)
         {
-            Debug.Log("‚·‚Å‚É‹î‚ª‚ ‚è‚Ü‚·");
+            Debug.Log("ã™ã§ã«é§’ãŒã‚ã‚Šã¾ã™");
             return;
         }
 
-        // è‚¿Šm”F
+        // æ‰‹æŒã¡ç¢ºèª
         if (playerHandPieces <= 0)
         {
-            Debug.Log("è‚¿‹î‚ª‚ ‚è‚Ü‚¹‚ñ");
+            Debug.Log("æ‰‹æŒã¡é§’ãŒã‚ã‚Šã¾ã›ã‚“");
             return;
         }
 
-        // ‹î¶¬
+        // é§’ç”Ÿæˆ
         Vector3 spawnPos = cell.transform.position + Vector3.up * 0.5f;
 
         GameObject obj = Instantiate(piecePrefab, spawnPos, Quaternion.identity);
@@ -264,9 +255,9 @@ public class BoardManager : MonoBehaviour
 
         playerHandPieces--;
 
-        Debug.Log($"‹î”z’uIc‚è: {playerHandPieces}");
+        Debug.Log($"é§’é…ç½®ï¼æ®‹ã‚Š: {playerHandPieces}");
     }
-    private void SelectPiece(Piece piece, int x, int y) //‹î‚Ì‘I‘ğ
+    private void SelectPiece(Piece piece, int x, int y) //é§’ã®é¸æŠ
     {
         if (selectedPiece == piece)
         {
@@ -277,61 +268,65 @@ public class BoardManager : MonoBehaviour
         selectedPiece = piece;
         selectedPosition = new Vector2Int(x, y);
 
-        Debug.Log($"‹î‘I‘ğ: {x},{y}");
+        Debug.Log($"é§’é¸æŠ: {x},{y}");
     }
-    private void CancelSelection()//‹î‘I‘ğ‚Ì‰ğœ
+    private void CancelSelection()//é§’é¸æŠã®è§£é™¤
     {
-        Debug.Log("‘I‘ğƒLƒƒƒ“ƒZƒ‹");
+        Debug.Log("é¸æŠã‚­ãƒ£ãƒ³ã‚»ãƒ«");
 
         selectedPiece = null;
     }
-    private void TryMovePiece(int targetX, int targetY) //‹î‚ÌˆÚ“®æ‘I‘ğ
+    private void TryMovePiece(int targetX, int targetY) //é§’ã®ç§»å‹•å…ˆé¸æŠ
     {
-        // ‘O‚É1ƒ}ƒX‚¾‚¯‹–‰Âi‰¼j
+        if (!TurnManager.Instance.CanMove()) // â‘  ç§»å‹•å›æ•°ãƒã‚§ãƒƒã‚¯
+        {
+            Debug.Log("ç§»å‹•å›æ•°ãŒã‚ã‚Šã¾ã›ã‚“");
+            return;
+        }
+       
         if (targetX == selectedPosition.x &&
-            targetY == selectedPosition.y + 1)
+            targetY == selectedPosition.y + 1) // å‰ã«1ãƒã‚¹ã ã‘è¨±å¯ï¼ˆä»®ï¼‰
         {
             Piece targetPiece = pieceGrid[targetX, targetY];
 
             if (targetPiece != null && targetPiece.owner != 0)
             {
-                // “G‚ª‚¢‚é ¨ í“¬
+                // æ•µãŒã„ã‚‹ â†’ æˆ¦é—˜
                 Battle(targetX, targetY, targetPiece);
             }
             else if (targetPiece == null)
             {
-                // ‹óƒ}ƒX ¨ ’ÊíˆÚ“®
+                // ç©ºãƒã‚¹ â†’ é€šå¸¸ç§»å‹•
                 MovePiece(targetX, targetY);
+                TurnManager.Instance.ConsumeMove();
             }
         }
         else
         {
-            Debug.Log("‚»‚±‚É‚ÍˆÚ“®‚Å‚«‚Ü‚¹‚ñ");
+            Debug.Log("ãã“ã«ã¯ç§»å‹•ã§ãã¾ã›ã‚“");
         }
     }
-    private void MovePiece(int targetX, int targetY) //‹î‚ÌˆÚ“®
+    private void MovePiece(int targetX, int targetY) //é§’ã®ç§»å‹•
     {
-        // ƒf[ƒ^XV
+        // ãƒ‡ãƒ¼ã‚¿æ›´æ–°
         pieceGrid[targetX, targetY] = selectedPiece;
         pieceGrid[selectedPosition.x, selectedPosition.y] = null;
 
-        // Œ©‚½–ÚXV
+        // è¦‹ãŸç›®æ›´æ–°
         Vector3 newPos = cells[targetX, targetY].transform.position + Vector3.up * 0.5f;
         selectedPiece.transform.position = newPos;
 
-        movedThisTurn = true;
-
-        Debug.Log("ˆÚ“®Š®—¹i‚±‚Ìƒ^[ƒ“‚Í‚à‚¤ˆÚ“®‚Å‚«‚Ü‚¹‚ñj");
+        Debug.Log("ç§»å‹•å®Œäº†ï¼ˆã“ã®ã‚¿ãƒ¼ãƒ³ã¯ã‚‚ã†ç§»å‹•ã§ãã¾ã›ã‚“ï¼‰");
 
         selectedPiece = null;
         CheckVictory();
     }
-    private void Battle(int targetX, int targetY, Piece enemyPiece) //í“¬
+    private void Battle(int targetX, int targetY, Piece enemyPiece) //æˆ¦é—˜
     {
         int playerCount = CountPieces(0);
         int enemyCount = CountPieces(1);
 
-        Debug.Log($"í“¬ŠJn Player:{playerCount} Enemy:{enemyCount}");
+        Debug.Log($"æˆ¦é—˜é–‹å§‹ Player:{playerCount} Enemy:{enemyCount}");
 
         bool playerWins = false;
 
@@ -345,7 +340,7 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
-            // “¯” ¨ UŒ‚‘¤Ÿ—˜
+            // åŒæ•° â†’ æ”»æ’ƒå´å‹åˆ©
             playerWins = true;
         }
 
@@ -355,18 +350,18 @@ public class BoardManager : MonoBehaviour
             pieceGrid[targetX, targetY] = null;
 
             MovePiece(targetX, targetY);
+            TurnManager.Instance.ConsumeMove();
 
-            Debug.Log("ƒvƒŒƒCƒ„[Ÿ—˜");
+            Debug.Log("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å‹åˆ©");
         }
         else
         {
             Destroy(selectedPiece.gameObject);
             pieceGrid[selectedPosition.x, selectedPosition.y] = null;
 
-            Debug.Log("ƒvƒŒƒCƒ„[”s–k");
+            Debug.Log("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ•—åŒ—");
 
             selectedPiece = null;
-            movedThisTurn = true;
         }
 
         CheckVictory();

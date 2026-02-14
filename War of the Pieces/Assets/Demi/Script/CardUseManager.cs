@@ -29,6 +29,7 @@ public class CardUseManager : MonoBehaviour
         Debug.Log($"{pendingCard.cardName} を {targetPosition} に使用");
 
         Debug.Log("解決"); // 効果発動（今は仮）
+        bool success = pendingCard.Resolve(targetPosition);
 
         DeckManager.Instance.RemoveCardFromHand(pendingHandIndex); // ★ 手札から削除
 
