@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class BoardManager : MonoBehaviour
@@ -10,6 +11,7 @@ public class BoardManager : MonoBehaviour
     public float cellSize = 1.0f;
     public GameObject cellPrefab;
     private BoardCell[,] cells;
+    private List<BoardCell> highlightedCells = new List<BoardCell>();
 
     public GameObject piecePrefab;
     private Piece[,] pieceGrid;
@@ -56,6 +58,62 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+    private void UpdatePieceCountUI() //駒数UI関数
+    {
+        if (GameUIManager.Instance == null)
+            return;
+
+        int playerCount = CountPieces(0);
+        int enemyCount = CountPieces(1);
+
+        GameUIManager.Instance.UpdatePieceCounts(playerCount, enemyCount);
+    }
+    private int GetTypeBonus(Piece attacker, Piece defender) //相性関数
+    {
+        // 赤 > 緑
+        if (attacker.type == PieceType.Red && defender.type == PieceType.Green)
+            return 1;
+
+        // 緑 > 青
+        if (attacker.type == PieceType.Green && defender.type == PieceType.Blue)
+            return 1;
+
+        // 青 > 赤
+        if (attacker.type == PieceType.Blue && defender.type == PieceType.Red)
+            return 1;
+
+        return 0;
+    }
+    private void HighlightMovableCells() //ハイライト関数
+    {
+        ClearHighlights();
+
+        int x = selectedPosition.x;
+        int y = selectedPosition.y + 1;
+
+        if (y >= boardSize) return;
+
+        BoardCell targetCell = cells[x, y];
+        Piece targetPiece = pieceGrid[x, y];
+
+        Renderer renderer = targetCell.GetComponent<Renderer>();
+
+        if (targetPiece == null)
+        {
+            renderer.material.color = Color.cyan; // 移動可能
+        }
+        else if (targetPiece.owner != 0)
+        {
+            bool willWin = PredictBattle(selectedPiece, targetPiece);
+
+            if (willWin)
+                renderer.material.color = Color.green;
+            else
+                renderer.material.color = Color.red;
+        }
+
+        highlightedCells.Add(targetCell);
+    }
     private void Awake()
     {
         Instance = this;
@@ -65,6 +123,7 @@ public class BoardManager : MonoBehaviour
         pieceGrid = new Piece[boardSize, boardSize];
         GenerateBoard();
         SpawnEnemyTestPiece();//仮置きの敵配置
+        UpdatePieceCountUI();
     }
     private void Update()
     {
@@ -180,6 +239,13 @@ public class BoardManager : MonoBehaviour
 
         if (selectedPiece != null) //➁駒の移動
         {
+            Piece targetPiece = pieceGrid[cell.x, cell.y];
+
+            if (targetPiece != null && targetPiece.owner != 0)
+            {
+                ShowBattlePrediction(selectedPiece, targetPiece);
+            }
+
             TryMovePiece(cell.x, cell.y);
             return;
         }
@@ -249,13 +315,12 @@ public class BoardManager : MonoBehaviour
 
         Piece piece = obj.GetComponent<Piece>();
         piece.owner = 0;
-        piece.type = PieceType.Soldier;
-
+        piece.type = (PieceType)Random.Range(0, 3);
+        piece.ApplyColor();
         pieceGrid[cell.x, cell.y] = piece;
 
         playerHandPieces--;
-
-        Debug.Log($"駒配置！残り: {playerHandPieces}");
+        UpdatePieceCountUI();
     }
     private void SelectPiece(Piece piece, int x, int y) //駒の選択
     {
@@ -267,6 +332,7 @@ public class BoardManager : MonoBehaviour
 
         selectedPiece = piece;
         selectedPosition = new Vector2Int(x, y);
+        HighlightMovableCells();
 
         Debug.Log($"駒選択: {x},{y}");
     }
@@ -274,6 +340,7 @@ public class BoardManager : MonoBehaviour
     {
         Debug.Log("選択キャンセル");
 
+        ClearHighlights();
         selectedPiece = null;
     }
     private void TryMovePiece(int targetX, int targetY) //駒の移動先選択
@@ -320,28 +387,41 @@ public class BoardManager : MonoBehaviour
 
         selectedPiece = null;
         CheckVictory();
+        UpdatePieceCountUI();
     }
     private void Battle(int targetX, int targetY, Piece enemyPiece) //戦闘
     {
         int playerCount = CountPieces(0);
         int enemyCount = CountPieces(1);
 
-        Debug.Log($"戦闘開始 Player:{playerCount} Enemy:{enemyCount}");
+        int typeBonus = GetTypeBonus(selectedPiece, enemyPiece); // ★ タイプ補正取得
 
-        bool playerWins = false;
+        int finalPlayerPower = playerCount + typeBonus;
+        int finalEnemyPower = enemyCount;
 
-        if (playerCount > enemyCount)
+        bool playerWins;
+
+        if (finalPlayerPower > finalEnemyPower)
         {
             playerWins = true;
         }
-        else if (playerCount < enemyCount)
+        else if (finalPlayerPower < finalEnemyPower)
         {
             playerWins = false;
         }
         else
         {
-            // 同数 → 攻撃側勝利
-            playerWins = true;
+            playerWins = true; // 同数なら攻撃側勝利
+        }
+
+        if (GameUIManager.Instance != null)
+        {
+            GameUIManager.Instance.ShowBattleResult(
+                playerCount,
+                typeBonus,
+                enemyCount,
+                playerWins
+            );
         }
 
         if (playerWins)
@@ -365,6 +445,7 @@ public class BoardManager : MonoBehaviour
         }
 
         CheckVictory();
+        UpdatePieceCountUI();
     }
     private void SpawnEnemyTestPiece()
     {
@@ -376,8 +457,44 @@ public class BoardManager : MonoBehaviour
 
         Piece piece = obj.GetComponent<Piece>();
         piece.owner = 1;
-
+        piece.type = PieceType.Green;
+        piece.ApplyColor();
         pieceGrid[x, y] = piece;
     }
+    private void ShowBattlePrediction(Piece attacker, Piece defender)
+    {
+        int playerCount = CountPieces(0);
+        int enemyCount = CountPieces(1);
 
+        int typeBonus = GetTypeBonus(attacker, defender);
+
+        int finalPlayerPower = playerCount + typeBonus;
+        int finalEnemyPower = enemyCount;
+
+        bool willWin = finalPlayerPower > finalEnemyPower;
+        bool isDraw = finalPlayerPower == finalEnemyPower;
+
+        if (GameUIManager.Instance != null)
+        {
+            GameUIManager.Instance.ShowPrediction(willWin, isDraw);
+        }
+    }
+    private bool PredictBattle(Piece attacker, Piece defender)
+    {
+        int playerCount = CountPieces(0);
+        int enemyCount = CountPieces(1);
+
+        int typeBonus = GetTypeBonus(attacker, defender);
+
+        return (playerCount + typeBonus) >= enemyCount;
+    }
+    private void ClearHighlights()
+    {
+        foreach (BoardCell cell in highlightedCells)
+        {
+            SetupCellColor(cell.gameObject, cell.y);
+        }
+
+        highlightedCells.Clear();
+    }
 }

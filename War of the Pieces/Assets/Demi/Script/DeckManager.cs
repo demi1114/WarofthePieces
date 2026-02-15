@@ -17,12 +17,14 @@ public class DeckManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        BuildDeck();
+        ShuffleDeck();
+
+        Debug.Log("ƒfƒbƒL–‡”: " + runtimeDeck.Count);
     }
 
     private void Start()
     {
-        BuildDeck();
-        ShuffleDeck();
     }
 
     void BuildDeck()

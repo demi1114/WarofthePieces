@@ -6,11 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MainScene.unity
-    guid: 97a2e22d9a95d1443824ce5cc0f36493
-  - enabled: 1
     path: Assets/Scenes/DemiScene.unity
     guid: 018719be5dfbe184e907c59efcc7014c
+  - enabled: 1
+    path: Assets/Scenes/MainScene.unity
+    guid: 97a2e22d9a95d1443824ce5cc0f36493
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

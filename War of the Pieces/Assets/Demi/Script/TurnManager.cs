@@ -34,7 +34,6 @@ public class TurnManager : MonoBehaviour
     public void StartTurn() // ターン制御
     {
         timer = turnTime;
-
         remainingMoves = baseMoveCount; // 移動回数リセット
 
         if (isPlayerTurn)
@@ -42,8 +41,11 @@ public class TurnManager : MonoBehaviour
             DeckManager.Instance.DrawCard();
         }
 
-        Debug.Log(isPlayerTurn ? "プレイヤーターン開始" : "敵ターン開始");
-        Debug.Log("残り移動回数: " + remainingMoves);
+        if (GameUIManager.Instance != null)
+        {
+            GameUIManager.Instance.UpdateTurn(isPlayerTurn);
+            GameUIManager.Instance.UpdateMoves(remainingMoves);
+        }
     }
 
     public void EndTurn()
@@ -72,14 +74,21 @@ public class TurnManager : MonoBehaviour
             return;
 
         remainingMoves--;
-
-        Debug.Log("移動消費 残り: " + remainingMoves);
+        
+        if (GameUIManager.Instance != null)
+        {
+            GameUIManager.Instance.UpdateMoves(remainingMoves);
+        }
     }
 
     public void AddExtraMove(int amount) // 追加移動（カード用）
     {
         remainingMoves += amount;
-        Debug.Log("追加移動 +" + amount + " 現在: " + remainingMoves);
+        
+        if (GameUIManager.Instance != null)
+        {
+            GameUIManager.Instance.UpdateMoves(remainingMoves);
+        }
     }
 
     public int GetRemainingMoves() // 残り移動取得（UI用）
