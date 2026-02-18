@@ -86,33 +86,27 @@ public class BoardManager : MonoBehaviour
     }
     private void HighlightMovableCells() //ハイライト関数
     {
-        ClearHighlights();
+        List<Vector2Int> movable =
+    selectedPiece.GetMovablePositions(selectedPosition, boardSize);
 
-        int x = selectedPosition.x;
-        int y = selectedPosition.y + 1;
-
-        if (y >= boardSize) return;
-
-        BoardCell targetCell = cells[x, y];
-        Piece targetPiece = pieceGrid[x, y];
-
-        Renderer renderer = targetCell.GetComponent<Renderer>();
-
-        if (targetPiece == null)
+        foreach (var pos in movable)
         {
-            renderer.material.color = Color.cyan; // 移動可能
-        }
-        else if (targetPiece.owner != 0)
-        {
-            bool willWin = PredictBattle(selectedPiece, targetPiece);
+            BoardCell targetCell = cells[pos.x, pos.y];
+            Piece targetPiece = pieceGrid[pos.x, pos.y];
 
-            if (willWin)
-                renderer.material.color = Color.green;
-            else
-                renderer.material.color = Color.red;
+            Renderer renderer = targetCell.GetComponent<Renderer>();
+
+            if (targetPiece == null)
+                renderer.material.color = Color.cyan;
+            else if (targetPiece.owner != selectedPiece.owner)
+            {
+                bool willWin = PredictBattle(selectedPiece, targetPiece);
+                renderer.material.color = willWin ? Color.green : Color.red;
+            }
+
+            highlightedCells.Add(targetCell);
         }
 
-        highlightedCells.Add(targetCell);
     }
     private void Awake()
     {
@@ -343,36 +337,35 @@ public class BoardManager : MonoBehaviour
         ClearHighlights();
         selectedPiece = null;
     }
-    private void TryMovePiece(int targetX, int targetY) //駒の移動先選択
+    private void TryMovePiece(int targetX, int targetY)
     {
-        if (!TurnManager.Instance.CanMove()) // ① 移動回数チェック
-        {
-            Debug.Log("移動回数がありません");
+        if (!TurnManager.Instance.CanMove())
             return;
-        }
-       
-        if (targetX == selectedPosition.x &&
-            targetY == selectedPosition.y + 1) // 前に1マスだけ許可（仮）
-        {
-            Piece targetPiece = pieceGrid[targetX, targetY];
 
-            if (targetPiece != null && targetPiece.owner != 0)
-            {
-                // 敵がいる → 戦闘
-                Battle(targetX, targetY, targetPiece);
-            }
-            else if (targetPiece == null)
-            {
-                // 空マス → 通常移動
-                MovePiece(targetX, targetY);
-                TurnManager.Instance.ConsumeMove();
-            }
-        }
-        else
+        List<Vector2Int> movable =
+            selectedPiece.GetMovablePositions(selectedPosition, boardSize);
+
+        Vector2Int target = new Vector2Int(targetX, targetY);
+
+        if (!movable.Contains(target))
         {
             Debug.Log("そこには移動できません");
+            return;
+        }
+
+        Piece targetPiece = pieceGrid[targetX, targetY];
+
+        if (targetPiece != null && targetPiece.owner != selectedPiece.owner)
+        {
+            Battle(targetX, targetY, targetPiece);
+        }
+        else if (targetPiece == null)
+        {
+            MovePiece(targetX, targetY);
+            TurnManager.Instance.ConsumeMove();
         }
     }
+
     private void MovePiece(int targetX, int targetY) //駒の移動
     {
         // データ更新

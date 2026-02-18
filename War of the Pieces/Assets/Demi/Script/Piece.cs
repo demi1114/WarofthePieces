@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum PieceType
@@ -35,4 +36,20 @@ public class Piece : MonoBehaviour
                 break;
         }
     }
+    public virtual List<Vector2Int> GetMovablePositions(Vector2Int currentPos, int boardSize)
+    {
+        List<Vector2Int> positions = new List<Vector2Int>();
+
+        int forward = (owner == 0) ? 1 : -1;
+
+        int newY = currentPos.y + forward;
+
+        if (newY >= 0 && newY < boardSize)
+        {
+            positions.Add(new Vector2Int(currentPos.x, newY));
+        }
+
+        return positions;
+    }
+
 }
