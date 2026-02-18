@@ -1,55 +1,43 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PieceType
-{
-    Red,
-    Blue,
-    Green
-}
-
 public class Piece : MonoBehaviour
 {
-    public int owner; // 0=下プレイヤー / 1=上プレイヤー
-    public PieceType type;
-    private void Start()
+    public int owner;
+    public PieceData data;
+
+    public void Initialize(PieceData pieceData, int ownerId)
     {
+        data = pieceData;
+        owner = ownerId;
         ApplyColor();
     }
-    public void ApplyColor()
+
+    private void ApplyColor()
     {
+        if (data == null) return;
+
         Renderer renderer = GetComponent<Renderer>();
         if (renderer == null) return;
 
-        switch (type)
-        {
-            case PieceType.Red:
-                renderer.material.color = Color.red;
-                break;
-
-            case PieceType.Blue:
-                renderer.material.color = Color.blue;
-                break;
-
-            case PieceType.Green:
-                renderer.material.color = Color.green;
-                break;
-        }
+        renderer.material.color = data.color;
     }
-    public virtual List<Vector2Int> GetMovablePositions(Vector2Int currentPos, int boardSize)
+
+    public PieceAttribute GetAttribute()
     {
-        List<Vector2Int> positions = new List<Vector2Int>();
-
-        int forward = (owner == 0) ? 1 : -1;
-
-        int newY = currentPos.y + forward;
-
-        if (newY >= 0 && newY < boardSize)
-        {
-            positions.Add(new Vector2Int(currentPos.x, newY));
-        }
-
-        return positions;
+        return data.attribute;
     }
+    public List<Vector2Int> GetMovablePositions(
+           Vector2Int currentPos,
+           int boardSize)
+    {
+        if (data == null || data.movePattern == null)
+            return new List<Vector2Int>();
 
+        return data.movePattern.GetMoves(
+            currentPos,
+            owner,
+            boardSize
+        );
+    }
 }
