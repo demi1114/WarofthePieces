@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TurnManager : MonoBehaviour
 {
@@ -6,13 +7,17 @@ public class TurnManager : MonoBehaviour
 
     [Header("Turn Settings")]
     public float turnTime = 60f;
-    public int baseMoveCount = 1;   // 基本移動回数
+    public int baseMoveCount = 1;
+
+    [Header("UI")]
+    public Button endTurnButton;   // ← 追加
 
     private float timer;
     public bool isPlayerTurn = true;
 
     private int remainingMoves;
-    private void Awake() // 初期化
+
+    private void Awake()
     {
         Instance = this;
     }
@@ -31,14 +36,21 @@ public class TurnManager : MonoBehaviour
             EndTurn();
         }
     }
-    public void StartTurn() // ターン制御
+
+    public void StartTurn()
     {
         timer = turnTime;
-        remainingMoves = baseMoveCount; // 移動回数リセット
+        remainingMoves = baseMoveCount;
 
         if (isPlayerTurn)
         {
             DeckManager.Instance.DrawCard();
+        }
+
+        // ★ ボタン制御
+        if (endTurnButton != null)
+        {
+            endTurnButton.interactable = isPlayerTurn;
         }
 
         if (GameUIManager.Instance != null)
@@ -57,46 +69,57 @@ public class TurnManager : MonoBehaviour
         StartTurn();
     }
 
+    // ★ ボタン専用メソッド
+    public void OnClickEndTurnButton()
+    {
+        if (!isPlayerTurn)
+            return;
+
+        EndTurn();
+    }
+
     public float GetRemainingTime()
     {
         return timer;
     }
 
     // 移動関連
-    public bool CanMove() // 移動可能か？
+    public bool CanMove()
     {
-        return remainingMoves > 0;
+        return isPlayerTurn && remainingMoves > 0;
     }
 
-    public void ConsumeMove() // 移動を消費
+    public void ConsumeMove()
     {
-        if (remainingMoves <= 0)
-            return;
+        if (!isPlayerTurn) return;
+        if (remainingMoves <= 0) return;
 
         remainingMoves--;
-        
+
         if (GameUIManager.Instance != null)
         {
             GameUIManager.Instance.UpdateMoves(remainingMoves);
         }
     }
 
-    public void AddExtraMove(int amount) // 追加移動（カード用）
+    public void AddExtraMove(int amount)
     {
+        if (!isPlayerTurn) return;
+
         remainingMoves += amount;
-        
+
         if (GameUIManager.Instance != null)
         {
             GameUIManager.Instance.UpdateMoves(remainingMoves);
         }
     }
 
-    public int GetRemainingMoves() // 残り移動取得（UI用）
+    public int GetRemainingMoves()
     {
         return remainingMoves;
     }
 
-    public void ForceEndTurn() // ターン強制終了（UIボタン用に将来使える）
+    public void ForceEndTurn()
     {
         EndTurn();
     }
