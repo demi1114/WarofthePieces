@@ -19,8 +19,12 @@ public class BoardManager : MonoBehaviour
     private int enemyHandPieces = 8; // 仮
     public List<PieceData> availablePieces;
 
+    [Header("Player Hand Settings")]
+    public List<PieceData> initialPieces; // 初期手駒（Inspector設定）
+    public List<PieceData> playerHand = new List<PieceData>();
 
     private Piece selectedPiece;
+    private PieceData selectedPlacePieceData;
     private Vector2Int selectedPosition;
 
     private int CountPieces(int owner) //盤上の駒数カウント関数
@@ -122,6 +126,10 @@ public class BoardManager : MonoBehaviour
         pieceGrid = new Piece[boardSize, boardSize];
         GenerateBoard();
         SpawnEnemyTestPieces();//仮置きの敵配置
+
+        playerHand = new List<PieceData>(initialPieces); // 初期手駒をコピー
+        HandUIManager.Instance.RefreshHand(); // UI更新
+
         UpdatePieceCountUI();
     }
     private void Update()
@@ -214,6 +222,11 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+    public void SelectPlacePiece(PieceData data)
+    {
+        selectedPlacePieceData = data;
+        Debug.Log("配置駒選択: " + data.pieceName);
+    }
     public void OnCellClicked(BoardCell cell) // マスクリック時
     {
         if (!TurnManager.Instance.isPlayerTurn)
@@ -305,18 +318,28 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
+        // 駒未選択チェック
+        if (selectedPlacePieceData == null)
+        {
+            Debug.Log("駒を選択してください");
+            return;
+        }
+
         // 駒生成
         Vector3 spawnPos = cell.transform.position + Vector3.up * 0.5f;
 
         GameObject obj = Instantiate(piecePrefab, spawnPos, Quaternion.identity);
 
         Piece piece = obj.GetComponent<Piece>();
-        piece.owner = 0;
-        PieceData randomData = availablePieces[Random.Range(0, availablePieces.Count)];
-        piece.Initialize(randomData, 0);
+        piece.Initialize(selectedPlacePieceData, 0);
         pieceGrid[cell.x, cell.y] = piece;
-        playerHandPieces--;
+        playerHand.Remove(selectedPlacePieceData); //手駒から削除
+        selectedPlacePieceData = null;
+
+        HandUIManager.Instance.RefreshHand(); // UI更新
         UpdatePieceCountUI();
+
+        Debug.Log("配置完了");
     }
     private void SelectPiece(Piece piece, int x, int y) //駒の選択
     {

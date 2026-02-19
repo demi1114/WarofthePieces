@@ -70,7 +70,8 @@ public class DeckManager : MonoBehaviour
         hand.Add(drawn);
 
         Debug.Log($"ÉhÉçÅ[: {drawn.cardName}");
-        FindObjectOfType<HandUI>().RefreshHand();
+        CardUIManager.Instance.RefreshHand(hand);
+
 
     }
     public void UseCard(int handIndex)
@@ -88,7 +89,8 @@ public class DeckManager : MonoBehaviour
             return;
 
         hand.RemoveAt(index);
-        HandUI.Instance.RefreshHand();
+        CardUIManager.Instance.RefreshHand(hand);
+
     }
 
 
