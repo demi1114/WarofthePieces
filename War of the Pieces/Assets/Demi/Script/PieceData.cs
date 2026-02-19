@@ -1,9 +1,14 @@
 using UnityEngine;
 public enum PieceAttribute
 {
-    Fire,
-    Wood,
-    Water
+    Human,
+    Fairy,
+    Machine,
+    Dragon,
+    Demon,
+    God,
+    Bystander,
+    Hope
 }
 
 [CreateAssetMenu(menuName = "Game/PieceData")]

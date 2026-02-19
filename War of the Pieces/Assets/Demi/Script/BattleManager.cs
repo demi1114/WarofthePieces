@@ -59,17 +59,17 @@ public class BattleManager : MonoBehaviour
     private bool IsStrongAgainst(PieceAttribute a, PieceAttribute b)
     {
         return
-            (a == PieceAttribute.Fire && b == PieceAttribute.Wood) ||
-            (a == PieceAttribute.Wood && b == PieceAttribute.Water) ||
-            (a == PieceAttribute.Water && b == PieceAttribute.Fire);
+            (a == PieceAttribute.Human && b == PieceAttribute.Demon) ||
+            (a == PieceAttribute.Demon && b == PieceAttribute.Fairy) ||
+            (a == PieceAttribute.Fairy && b == PieceAttribute.Human);
     }
 
     private bool IsWeakAgainst(PieceAttribute a, PieceAttribute b)
     {
         return
-            (a == PieceAttribute.Fire && b == PieceAttribute.Water) ||
-            (a == PieceAttribute.Wood && b == PieceAttribute.Fire) ||
-            (a == PieceAttribute.Water && b == PieceAttribute.Wood);
+            (a == PieceAttribute.Human && b == PieceAttribute.Demon) ||
+            (a == PieceAttribute.Demon && b == PieceAttribute.Fairy) ||
+            (a == PieceAttribute.Fairy && b == PieceAttribute.Human);
     }
 
     public bool PredictWinner(Piece attacker, Piece defender)
