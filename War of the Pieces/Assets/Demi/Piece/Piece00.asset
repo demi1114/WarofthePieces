@@ -14,5 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
   pieceName: "\u5175\u58EB"
   attribute: 0
-  color: {r: 0, g: 0.017838478, b: 1, a: 0}
-  movePattern: {fileID: 11400000, guid: 93c2ce57ef51bdf4aa64a10245cb10fa, type: 2}
+  movePattern: {fileID: 11400000, guid: 969f5fb9e88f8b14bae681c070809f24, type: 2}

@@ -1,43 +1,22 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Piece : MonoBehaviour
 {
-    public int owner;
-    public PieceData data;
+    public int owner;  // 0=ÉvÉåÉCÉÑÅ[, 1=ìG
+    private PieceData data;
 
-    public void Initialize(PieceData pieceData, int ownerId)
+    public void Initialize(PieceData pieceData, int owner)
     {
-        data = pieceData;
-        owner = ownerId;
-        ApplyColor();
+        this.data = pieceData;
+        this.owner = owner;
     }
 
-    private void ApplyColor()
+    public List<Vector2Int> GetMovablePositions(Vector2Int currentPos, int boardSize)
     {
-        if (data == null) return;
-
-        Renderer renderer = GetComponent<Renderer>();
-        if (renderer == null) return;
-
-        renderer.material.color = data.color;
+        if (data.movePattern == null) return new List<Vector2Int>();
+        return data.movePattern.GetMoves(currentPos, owner, boardSize);
     }
 
-    public PieceAttribute GetAttribute()
-    {
-        return data.attribute;
-    }
-    public List<Vector2Int> GetMovablePositions(
-           Vector2Int currentPos,
-           int boardSize)
-    {
-        if (data == null || data.movePattern == null)
-            return new List<Vector2Int>();
-
-        return data.movePattern.GetMoves(
-            currentPos,
-            owner,
-            boardSize
-        );
-    }
+    public PieceAttribute GetAttribute() => data.attribute;
 }

@@ -9,15 +9,9 @@ public class HandAreaSwitcher : MonoBehaviour
 
     private bool showingPieceHand = true;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
+    private void Awake() => Instance = this;
 
-    private void Start()
-    {
-        UpdateDisplay();
-    }
+    private void Start() => UpdateDisplay();
 
     public void ToggleHandArea()
     {
@@ -29,7 +23,6 @@ public class HandAreaSwitcher : MonoBehaviour
     {
         pieceHandArea.SetActive(showingPieceHand);
         cardHandArea.SetActive(!showingPieceHand);
-
         Debug.Log("Œ»İ•\¦: " + (showingPieceHand ? "è‹î" : "èD"));
     }
 }

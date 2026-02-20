@@ -1,4 +1,5 @@
 using UnityEngine;
+
 public enum PieceAttribute
 {
     Human,
@@ -12,11 +13,9 @@ public enum PieceAttribute
 }
 
 [CreateAssetMenu(menuName = "Game/PieceData")]
-
 public class PieceData : ScriptableObject
 {
     public string pieceName;
     public PieceAttribute attribute;
-    public Color color;
     public MovePattern movePattern;
 }
