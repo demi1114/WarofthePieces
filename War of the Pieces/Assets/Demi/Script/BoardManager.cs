@@ -127,6 +127,8 @@ public class BoardManager : MonoBehaviour
 
     private void SelectPiece(Piece piece, int x, int y)
     {
+        ClearHighlights();
+
         if (selectedPiece == piece)
         {
             CancelSelection();
@@ -226,6 +228,8 @@ public class BoardManager : MonoBehaviour
             }
             else pieceGrid[selectedPosition.x, selectedPosition.y] = null;
 
+            ClearHighlights();
+
             selectedPiece = null;
             TurnManager.Instance.ConsumeMove();
 
@@ -245,6 +249,7 @@ public class BoardManager : MonoBehaviour
         pieceGrid[selectedPosition.x, selectedPosition.y] = null;
         selectedPiece.transform.position = cells[x, y].transform.position + Vector3.up * 0.5f;
 
+        ClearHighlights();
         Debug.Log("移動完了（このターンはもう移動できません）");
 
         selectedPiece = null;

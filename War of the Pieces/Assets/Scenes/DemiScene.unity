@@ -562,8 +562,6 @@ MonoBehaviour:
   cellSize: 1.1
   cellPrefab: {fileID: 2158478232019387551, guid: 03678e73913c83e4dabb5d177dd0e0bf, type: 3}
   piecePrefab: {fileID: 4077091637235834342, guid: d1fa243eaae17734cbc160956ddd3ab2, type: 3}
-  availablePieces:
-  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   initialPieces:
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
@@ -571,6 +569,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
+  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
+  availablePieces:
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   playerHand: []
 --- !u!4 &420573078
@@ -1274,7 +1274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2153,7 +2153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
