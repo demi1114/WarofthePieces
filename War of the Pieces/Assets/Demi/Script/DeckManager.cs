@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class DeckManager : MonoBehaviour
 {
     public static DeckManager Instance;
+    public DeckData selectedDeck;
 
     public List<DeckEntry> deckList = new List<DeckEntry>();
     private List<CardData> runtimeDeck = new List<CardData>();
@@ -21,12 +22,7 @@ public class DeckManager : MonoBehaviour
 
     private void BuildDeck()
     {
-        runtimeDeck.Clear();
-        foreach (var entry in deckList)
-        {
-            for (int i = 0; i < entry.count; i++)
-                runtimeDeck.Add(entry.cardData);
-        }
+        runtimeDeck = new List<CardData>(selectedDeck.cards);
     }
 
     private void ShuffleDeck()

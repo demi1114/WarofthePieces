@@ -31,9 +31,23 @@ public class TurnManager : MonoBehaviour
         timer = turnTime;
         remainingMoves = baseMoveCount;
 
-        if (isPlayerTurn) DeckManager.Instance.DrawCard();
+        if (isPlayerTurn)
+        {
+            // プレイヤーターン処理
+            DeckManager.Instance.DrawCard();
 
-        if (endTurnButton != null) endTurnButton.interactable = isPlayerTurn;
+            // ボタン制御
+            if (endTurnButton != null)
+                endTurnButton.interactable = true;
+        }
+        else
+        {
+            // 敵ターン開始
+            if (endTurnButton != null)
+                endTurnButton.interactable = false;
+
+            BoardManager.Instance.ExecuteEnemyTurn();
+        }
 
         GameUIManager.Instance?.UpdateTurn(isPlayerTurn);
         GameUIManager.Instance?.UpdateMoves(remainingMoves);

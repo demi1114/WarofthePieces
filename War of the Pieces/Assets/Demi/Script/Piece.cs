@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class Piece : MonoBehaviour
 {
     public int owner;  // 0=ƒvƒŒƒCƒ„[, 1=“G
-    private PieceData data;
+    public PieceData data;
 
     public void Initialize(PieceData pieceData, int owner)
     {

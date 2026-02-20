@@ -501,6 +501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7fad49dcce5e74bb915bb326e05e53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeckManager
+  selectedDeck: {fileID: 11400000, guid: ce41ec268340df3499fb7a97950454b3, type: 2}
   deckList:
   - cardData: {fileID: 11400000, guid: 2df1e6a7e104a3146a1e47feb4925cd8, type: 2}
     count: 5
@@ -573,6 +574,7 @@ MonoBehaviour:
   availablePieces:
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   playerHand: []
+  enemyHand: []
 --- !u!4 &420573078
 Transform:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,6 +21,7 @@ public class BoardManager : MonoBehaviour
     public List<PieceData> initialPieces;   // プレイヤー初期手駒
     public List<PieceData> availablePieces; // 敵駒やランダム生成用
     public List<PieceData> playerHand = new List<PieceData>();
+    public List<PieceData> enemyHand = new List<PieceData>(); // AI用手駒
     private int playerHandPieces = 8;
     private int enemyHandPieces = 8;        // 仮
 
@@ -33,7 +35,6 @@ public class BoardManager : MonoBehaviour
     {
         pieceGrid = new Piece[boardSize, boardSize];
         GenerateBoard();
-        SpawnEnemyTestPieces();
 
         playerHand = new List<PieceData>(initialPieces);
         HandUIManager.Instance.RefreshHand();
@@ -140,6 +141,20 @@ public class BoardManager : MonoBehaviour
         HighlightMovableCells();
 
         Debug.Log($"駒選択: {x},{y}");
+    }
+
+    public Vector2Int FindPiecePosition(Piece piece)
+    {
+        for (int y = 0; y < boardSize; y++)
+        {
+            for (int x = 0; x < boardSize; x++)
+            {
+                if (pieceGrid[x, y] == piece)
+                    return new Vector2Int(x, y);
+            }
+        }
+
+        return new Vector2Int(-1, -1);
     }
 
     private void CancelSelection()
@@ -321,24 +336,133 @@ public class BoardManager : MonoBehaviour
     }
 
     // ------------------------
-    // 敵駒生成（テスト用）
+    // 敵AI（テスト用）
     // ------------------------
-    private void SpawnEnemyAt(int x, int y)
+    // --- 敵ターン処理呼び出し ---
+    public void ExecuteEnemyTurn()
     {
+        StartCoroutine(EnemyTurnRoutine());
+    }
+
+    private IEnumerator EnemyTurnRoutine()
+    {
+        Debug.Log("敵ターン開始");
+
+        yield return new WaitForSeconds(0.5f); // 遅延を少し入れると見やすい
+
+        // 1. 手札から駒をランダム配置
+        TryPlaceRandomEnemyPiece();
+
+        yield return new WaitForSeconds(0.5f);
+
+        // 2. 盤面上の敵駒をランダム移動
+        TryRandomMoveEnemyPiece();
+
+        yield return new WaitForSeconds(0.5f);
+
+        // 3. ターン終了
+        TurnManager.Instance.EndTurn();
+    }
+
+    // --- 敵駒ランダム配置 ---
+    private void TryPlaceRandomEnemyPiece()
+    {
+        if (enemyHandPieces <= 0) return;
+
+        // ランダム属性の敵駒を生成
+        PieceData randomData = availablePieces[Random.Range(0, availablePieces.Count)];
+
+        // 自陣ではなく敵陣（上1列）からランダムに配置
+        int y = boardSize - 1;
+        int x;
+        do
+        {
+            x = Random.Range(0, boardSize);
+        } while (pieceGrid[x, y] != null);
+
         Vector3 pos = cells[x, y].transform.position + Vector3.up * 0.5f;
         GameObject obj = Instantiate(piecePrefab, pos, Quaternion.identity);
 
         Piece piece = obj.GetComponent<Piece>();
-        PieceData randomData = availablePieces[Random.Range(0, availablePieces.Count)];
         piece.Initialize(randomData, 1);
 
         pieceGrid[x, y] = piece;
+        enemyHandPieces--;
+
+        Debug.Log($"敵駒配置: {randomData.pieceName} at ({x},{y})");
     }
 
-    private void SpawnEnemyTestPieces()
+    // --- 盤面上の敵駒ランダム移動 ---
+    private void TryRandomMoveEnemyPiece()
     {
-        SpawnEnemyAt(boardSize / 2 - 1, boardSize - 7);
-        SpawnEnemyAt(boardSize / 2 + 1, boardSize - 1);
+        // 盤面上の敵駒を取得
+        var enemyPieces = GetEnemyPiecesOnBoard();
+
+        if (enemyPieces.Count == 0) return;
+
+        Piece piece = enemyPieces[Random.Range(0, enemyPieces.Count)];
+        Vector2Int pos = FindPiecePosition(piece);
+
+        if (pos.x == -1) return;
+
+        // 移動可能マスを取得
+        var movable = piece.GetMovablePositions(pos, boardSize);
+
+        if (movable.Count == 0) return;
+
+        // ランダムに移動
+        Vector2Int target = movable[Random.Range(0, movable.Count)];
+        MoveEnemyPiece(piece, pos, target);
+
+        Debug.Log($"敵駒移動: {piece.data.pieceName} from ({pos.x},{pos.y}) to ({target.x},{target.y})");
+    }
+
+    // --- ヘルパー関数 ---
+    private List<Piece> GetEnemyPiecesOnBoard()
+    {
+        List<Piece> result = new List<Piece>();
+
+        for (int x = 0; x < boardSize; x++)
+        {
+            for (int y = 0; y < boardSize; y++)
+            {
+                Piece piece = pieceGrid[x, y];
+                if (piece != null && piece.owner == 1)
+                    result.Add(piece);
+            }
+        }
+
+        return result;
+    }
+
+    private void MoveEnemyPiece(Piece piece, Vector2Int from, Vector2Int to)
+    {
+        Piece targetPiece = pieceGrid[to.x, to.y];
+
+        if (targetPiece != null)
+        {
+            // 戦闘処理
+            BattleResult result = BattleManager.Instance.ResolveBattle(piece, targetPiece);
+            Piece winner = result.winner;
+            Piece loser = result.loser;
+
+            Vector2Int loserPos = FindPiecePosition(loser);
+            pieceGrid[loserPos.x, loserPos.y] = null;
+            Destroy(loser.gameObject);
+
+            if (winner != piece)
+            {
+                // 敵駒が負けた場合、移動せず終了
+                return;
+            }
+        }
+
+        // 移動
+        pieceGrid[to.x, to.y] = piece;
+        pieceGrid[from.x, from.y] = null;
+        piece.transform.position = cells[to.x, to.y].transform.position + Vector3.up * 0.5f;
+
+        UpdatePieceCountUI();
     }
 
     // ------------------------
