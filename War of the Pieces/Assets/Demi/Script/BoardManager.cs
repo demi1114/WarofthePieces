@@ -350,8 +350,25 @@ public class BoardManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f); // 遅延を少し入れると見やすい
 
+
         // 1. 手札から駒をランダム配置
         TryPlaceRandomEnemyPiece();
+
+        yield return new WaitForSeconds(0.5f);
+
+        // ① ドロー
+        EnemyDeckManager.Instance.DrawCard();
+
+        yield return new WaitForSeconds(0.5f);
+
+        // ② カード使用
+        CardData card = EnemyDeckManager.Instance.GetRandomCardFromHand();
+
+        if (card != null)
+        {
+            Debug.Log("敵カード使用: " + card.cardName);
+            card.Resolve(Vector2Int.zero); // 今はターゲット無し想定
+        }
 
         yield return new WaitForSeconds(0.5f);
 
