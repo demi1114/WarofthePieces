@@ -16,24 +16,32 @@ public class DeckManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        BuildDeck();
+        InitializeDeck(); 
+    }
+
+    public void InitializeDeck()
+    {
+        if (selectedDeck == null || !selectedDeck.IsValidDeck())
+        {
+            Debug.LogError("ƒfƒbƒL‚ª20–‡‚Å‚Í‚ ‚è‚Ü‚¹‚ñ");
+            return;
+        }
+
+        runtimeDeck = new List<CardData>(selectedDeck.cards);
         ShuffleDeck();
     }
-
-    private void BuildDeck()
-    {
-        runtimeDeck = new List<CardData>(selectedDeck.cards);
-    }
-
     private void ShuffleDeck()
     {
         for (int i = 0; i < runtimeDeck.Count; i++)
         {
-            int r = Random.Range(i, runtimeDeck.Count);
-            CardData temp = runtimeDeck[i];
-            runtimeDeck[i] = runtimeDeck[r];
-            runtimeDeck[r] = temp;
+            int rand = Random.Range(i, runtimeDeck.Count);
+            (runtimeDeck[i], runtimeDeck[rand]) = (runtimeDeck[rand], runtimeDeck[i]);
         }
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current.digit1Key.wasPressedThisFrame) UseCard(0);
     }
 
     public void DrawCard()
@@ -61,8 +69,4 @@ public class DeckManager : MonoBehaviour
         CardUIManager.Instance?.RefreshHand(hand);
     }
 
-    private void Update()
-    {
-        if (Keyboard.current.digit1Key.wasPressedThisFrame) UseCard(0);
-    }
 }
