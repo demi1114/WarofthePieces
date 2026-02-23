@@ -3,8 +3,8 @@ using UnityEngine;
 public enum CardType
 {
     Draw,
+    DrawBoth,
     AddMove,
-    Spawn
 }
 
 [CreateAssetMenu(menuName = "Card/Create Card")]
@@ -19,11 +19,18 @@ public class CardData : ScriptableObject
         switch (cardType)
         {
             case CardType.Draw:
-                DeckManager.Instance.DrawCard();
+                for (int i = 0; i < value; i++)
+                {
+                    DeckManager.Instance.DrawCard();
+                }
                 break;
 
-            case CardType.Spawn:
-                Debug.Log("スポーンカード（未実装）");
+            case CardType.DrawBoth:
+                for (int i = 0; i < value; i++)
+                {
+                    DeckManager.Instance.DrawCard();
+                    EnemyDeckManager.Instance.DrawCard();
+                }
                 break;
 
             case CardType.AddMove:

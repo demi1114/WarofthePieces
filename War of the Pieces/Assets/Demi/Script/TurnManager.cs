@@ -15,6 +15,7 @@ public class TurnManager : MonoBehaviour
     private float timer;
     public bool isPlayerTurn = true;
     private int remainingMoves;
+    private int extraMovesThisTurn = 0;
 
     private void Awake() => Instance = this;
 
@@ -55,6 +56,7 @@ public class TurnManager : MonoBehaviour
 
     public void EndTurn()
     {
+        extraMovesThisTurn = 0;
         isPlayerTurn = !isPlayerTurn;
         StartTurn();
     }
@@ -76,8 +78,9 @@ public class TurnManager : MonoBehaviour
 
     public void AddExtraMove(int amount)
     {
-        if (!isPlayerTurn) return;
+        extraMovesThisTurn += amount;
         remainingMoves += amount;
+
         GameUIManager.Instance?.UpdateMoves(remainingMoves);
     }
 

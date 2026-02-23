@@ -48,6 +48,7 @@ public class EnemyDeckManager : MonoBehaviour
         CardData card = runtimeDeck[0];
         runtimeDeck.RemoveAt(0);
         hand.Add(card);
+        Debug.Log("‘‚¦‚½‚æ");
     }
 
     public CardData GetRandomCardFromHand()
