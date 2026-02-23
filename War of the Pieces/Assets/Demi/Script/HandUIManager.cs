@@ -14,7 +14,7 @@ public class HandUIManager : MonoBehaviour
     {
         foreach (Transform child in handArea) Destroy(child.gameObject);
 
-        foreach (PieceData piece in BoardManager.Instance.playerHand)
+        foreach (PieceData piece in BoardManager.Instance.playerHandPiece)
         {
             GameObject btn = Instantiate(handButtonPrefab, handArea);
             btn.GetComponentInChildren<TMP_Text>().text = piece.pieceName;

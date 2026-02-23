@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Card00
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: A
-  cardType: 0
+  cardType: 1
   value: 2

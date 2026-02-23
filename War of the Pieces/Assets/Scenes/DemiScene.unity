@@ -571,10 +571,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
+  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   availablePieces:
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
-  playerHand: []
-  enemyHand: []
+  playerHandPiece: []
+  enemyHandPiece:
+  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
+  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
+  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
+  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
+  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
+  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
+  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
+  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
 --- !u!4 &420573078
 Transform:
   m_ObjectHideFlags: 0

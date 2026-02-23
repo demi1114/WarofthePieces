@@ -20,10 +20,8 @@ public class BoardManager : MonoBehaviour
     [Header("Player/Enemy Settings")]
     public List<PieceData> initialPieces;   // プレイヤー初期手駒
     public List<PieceData> availablePieces; // 敵駒やランダム生成用
-    public List<PieceData> playerHand = new List<PieceData>();
-    public List<PieceData> enemyHand = new List<PieceData>(); // AI用手駒
-    private int playerHandPieces = 8;
-    private int enemyHandPieces = 8;        // 仮
+    public List<PieceData> playerHandPiece = new List<PieceData>();
+    public List<PieceData> enemyHandPiece = new List<PieceData>(); // AI用手駒
 
     private Piece selectedPiece;
     private PieceData selectedPlacePieceData;
@@ -36,7 +34,7 @@ public class BoardManager : MonoBehaviour
         pieceGrid = new Piece[boardSize, boardSize];
         GenerateBoard();
 
-        playerHand = new List<PieceData>(initialPieces);
+        playerHandPiece = new List<PieceData>(initialPieces);
         HandUIManager.Instance.RefreshHand();
         UpdatePieceCountUI();
     }
@@ -168,7 +166,7 @@ public class BoardManager : MonoBehaviour
     {
         if (cell.y != 0) { Debug.Log("自陣ではありません"); return; }
         if (pieceGrid[cell.x, cell.y] != null) { Debug.Log("すでに駒があります"); return; }
-        if (playerHandPieces <= 0) { Debug.Log("手持ち駒がありません"); return; }
+        if (playerHandPiece.Count <= 0) { Debug.Log("手持ち駒がありません"); return; }
         if (selectedPlacePieceData == null) { Debug.Log("駒を選択してください"); return; }
 
         Vector3 pos = cell.transform.position + Vector3.up * 0.5f;
@@ -177,7 +175,7 @@ public class BoardManager : MonoBehaviour
         piece.Initialize(selectedPlacePieceData, 0);
 
         pieceGrid[cell.x, cell.y] = piece;
-        playerHand.Remove(selectedPlacePieceData);
+        playerHandPiece.Remove(selectedPlacePieceData);
         selectedPlacePieceData = null;
 
         HandUIManager.Instance.RefreshHand();
@@ -301,7 +299,7 @@ public class BoardManager : MonoBehaviour
 
     private bool CheckAnnihilationVictory()
     {
-        if (CountPieces(1) <= 0 && enemyHandPieces <= 0)
+        if (CountPieces(1) <= 0 && enemyHandPiece.Count <= 0)
         {
             Debug.Log("プレイヤー勝利！（敵全滅）");
             return true;
@@ -384,29 +382,38 @@ public class BoardManager : MonoBehaviour
     // --- 敵駒ランダム配置 ---
     private void TryPlaceRandomEnemyPiece()
     {
-        if (enemyHandPieces <= 0) return;
+        if (enemyHandPiece.Count == 0) return;
 
-        // ランダム属性の敵駒を生成
-        PieceData randomData = availablePieces[Random.Range(0, availablePieces.Count)];
-
-        // 自陣ではなく敵陣（上1列）からランダムに配置
         int y = boardSize - 1;
-        int x;
-        do
-        {
-            x = Random.Range(0, boardSize);
-        } while (pieceGrid[x, y] != null);
 
-        Vector3 pos = cells[x, y].transform.position + Vector3.up * 0.5f;
+        // 空きマス収集
+        List<int> emptyX = new List<int>();
+        for (int x = 0; x < boardSize; x++)
+        {
+            if (pieceGrid[x, y] == null)
+                emptyX.Add(x);
+        }
+
+        if (emptyX.Count == 0) return;
+
+        // 手駒からランダム選択
+        int pieceIndex = Random.Range(0, enemyHandPiece.Count);
+        PieceData data = enemyHandPiece[pieceIndex];
+
+        int chosenX = emptyX[Random.Range(0, emptyX.Count)];
+
+        Vector3 pos = cells[chosenX, y].transform.position + Vector3.up * 0.5f;
         GameObject obj = Instantiate(piecePrefab, pos, Quaternion.identity);
 
         Piece piece = obj.GetComponent<Piece>();
-        piece.Initialize(randomData, 1);
+        piece.Initialize(data, 1);
 
-        pieceGrid[x, y] = piece;
-        enemyHandPieces--;
+        pieceGrid[chosenX, y] = piece;
 
-        Debug.Log($"敵駒配置: {randomData.pieceName} at ({x},{y})");
+        // 🔥 ここが重要
+        enemyHandPiece.RemoveAt(pieceIndex);
+
+        Debug.Log($"敵駒配置: {data.pieceName} at ({chosenX},{y})");
     }
 
     // --- 盤面上の敵駒ランダム移動 ---
@@ -498,7 +505,7 @@ public class BoardManager : MonoBehaviour
     {
         Piece targetPiece = pieceGrid[to.x, to.y];
 
-        if (targetPiece != null)
+        if (targetPiece != null && targetPiece.owner != piece.owner)
         {
             // 戦闘処理
             BattleResult result = BattleManager.Instance.ResolveBattle(piece, targetPiece);
@@ -522,6 +529,19 @@ public class BoardManager : MonoBehaviour
         piece.transform.position = cells[to.x, to.y].transform.position + Vector3.up * 0.5f;
 
         UpdatePieceCountUI();
+    }
+    public void RemoveEnemyReservePiece(int index)
+    {
+        if (index < 0 || index >= enemyHandPiece.Count) return;
+
+        enemyHandPiece.RemoveAt(index);
+    }
+    public void RemovePlayerReservePiece(int index)
+    {
+        if (index < 0 || index >= playerHandPiece.Count) return;
+
+        playerHandPiece.RemoveAt(index);
+        HandUIManager.Instance.RefreshHand();
     }
 
     // ------------------------
