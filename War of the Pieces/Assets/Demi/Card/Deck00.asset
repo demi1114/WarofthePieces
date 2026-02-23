@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Deck00
   m_EditorClassIdentifier: Assembly-CSharp::DeckData
   cards:
-  - {fileID: 11400000, guid: 2df1e6a7e104a3146a1e47feb4925cd8, type: 2}
+  - {fileID: 11400000, guid: 35788deb9c9673f4f98b8a287e03eb1e, type: 2}
   - {fileID: 11400000, guid: 35788deb9c9673f4f98b8a287e03eb1e, type: 2}
   - {fileID: 11400000, guid: 35788deb9c9673f4f98b8a287e03eb1e, type: 2}
   - {fileID: 11400000, guid: 35788deb9c9673f4f98b8a287e03eb1e, type: 2}

@@ -451,7 +451,49 @@ public class BoardManager : MonoBehaviour
 
         return result;
     }
+    public List<Piece> GetPlayerPiecesOnBoard()
+    {
+        List<Piece> result = new List<Piece>();
 
+        for (int x = 0; x < boardSize; x++)
+        {
+            for (int y = 0; y < boardSize; y++)
+            {
+                Piece piece = pieceGrid[x, y];
+                if (piece != null && piece.owner == 0)
+                    result.Add(piece);
+            }
+        }
+
+        return result;
+    }
+    public List<Piece> GetPiecesByOwner(int owner)
+    {
+        List<Piece> result = new List<Piece>();
+
+        for (int x = 0; x < boardSize; x++)
+        {
+            for (int y = 0; y < boardSize; y++)
+            {
+                Piece piece = pieceGrid[x, y];
+                if (piece != null && piece.owner == owner)
+                    result.Add(piece);
+            }
+        }
+
+        return result;
+    }
+    public void RemovePiece(Piece piece)
+    {
+        Vector2Int pos = FindPiecePosition(piece);
+
+        if (pos.x == -1) return;
+
+        pieceGrid[pos.x, pos.y] = null;
+        Destroy(piece.gameObject);
+
+        UpdatePieceCountUI();
+    }
     private void MoveEnemyPiece(Piece piece, Vector2Int from, Vector2Int to)
     {
         Piece targetPiece = pieceGrid[to.x, to.y];
