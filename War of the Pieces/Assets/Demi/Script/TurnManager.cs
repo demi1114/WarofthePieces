@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 
 public class TurnManager : MonoBehaviour
@@ -34,16 +34,16 @@ public class TurnManager : MonoBehaviour
 
         if (isPlayerTurn)
         {
-            // ƒvƒŒƒCƒ„[ƒ^[ƒ“ˆ—
+            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¿ãƒ¼ãƒ³å‡¦ç†
             DeckManager.Instance.DrawCard();
 
-            // ƒ{ƒ^ƒ“§Œä
+            // ãƒœã‚¿ãƒ³åˆ¶å¾¡
             if (endTurnButton != null)
                 endTurnButton.interactable = true;
         }
         else
         {
-            // “Gƒ^[ƒ“ŠJŽn
+            // æ•µã‚¿ãƒ¼ãƒ³é–‹å§‹
             if (endTurnButton != null)
                 endTurnButton.interactable = false;
 
@@ -56,6 +56,9 @@ public class TurnManager : MonoBehaviour
 
     public void EndTurn()
     {
+        // ã“ã“è¿½åŠ ï¼šã‚¿ãƒ¼ãƒ³çµ‚äº†æ™‚ã«ä¸€æ™‚ãƒãƒ•ã‚’ãƒªã‚»ãƒƒãƒˆ
+        ResetAllTemporaryBuffs();
+
         extraMovesThisTurn = 0;
         isPlayerTurn = !isPlayerTurn;
         StartTurn();
@@ -66,7 +69,7 @@ public class TurnManager : MonoBehaviour
         if (isPlayerTurn) EndTurn();
     }
 
-    // ˆÚ“®ŠÖ˜A
+    // ç§»å‹•é–¢é€£
     public bool CanMove() => isPlayerTurn && remainingMoves > 0;
 
     public void ConsumeMove()
@@ -84,6 +87,18 @@ public class TurnManager : MonoBehaviour
         GameUIManager.Instance?.UpdateMoves(remainingMoves);
     }
 
+    private void ResetAllTemporaryBuffs()
+    {
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼é§’
+        var playerPieces = BoardManager.Instance.GetPiecesByOwner(0);
+        foreach (var piece in playerPieces)
+            piece.ResetTemporaryPower();
+
+        // æ•µé§’
+        var enemyPieces = BoardManager.Instance.GetPiecesByOwner(1);
+        foreach (var piece in enemyPieces)
+            piece.ResetTemporaryPower();
+    }
     public int GetRemainingMoves() => remainingMoves;
     public float GetRemainingTime() => timer;
 

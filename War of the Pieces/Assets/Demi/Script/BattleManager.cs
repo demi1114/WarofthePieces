@@ -20,13 +20,18 @@ public class BattleManager : MonoBehaviour
 
     public BattleResult ResolveBattle(Piece attacker, Piece defender)
     {
-        int attackerCount = BoardManager.Instance.GetBoardCount(attacker.owner);
-        int defenderCount = BoardManager.Instance.GetBoardCount(defender.owner);
+        int attackerScore =
+            BoardManager.Instance.GetBoardCount(attacker.owner)
+            + attacker.CurrentPower;
+
+        int defenderScore =
+            BoardManager.Instance.GetBoardCount(defender.owner)
+            + defender.CurrentPower;
 
         int bonus = GetAttributeModifier(attacker.GetAttribute(), defender.GetAttribute());
-        attackerCount += bonus;
+        attackerScore += bonus;
 
-        if (attackerCount > defenderCount)
+        if (attackerScore > defenderScore)
             return new BattleResult(attacker, defender);
         else
             return new BattleResult(defender, attacker);
@@ -35,16 +40,11 @@ public class BattleManager : MonoBehaviour
     private int GetAttributeModifier(PieceAttribute attackerAttr, PieceAttribute defenderAttr)
     {
         if (IsStrongAgainst(attackerAttr, defenderAttr)) return 1;
-        if (IsWeakAgainst(attackerAttr, defenderAttr)) return -1;
+        if (IsStrongAgainst(attackerAttr, defenderAttr)) return -1;
         return 0;
     }
 
     private bool IsStrongAgainst(PieceAttribute a, PieceAttribute b) =>
-        (a == PieceAttribute.Human && b == PieceAttribute.Demon) ||
-        (a == PieceAttribute.Demon && b == PieceAttribute.Fairy) ||
-        (a == PieceAttribute.Fairy && b == PieceAttribute.Human);
-
-    private bool IsWeakAgainst(PieceAttribute a, PieceAttribute b) =>
         (a == PieceAttribute.Human && b == PieceAttribute.Demon) ||
         (a == PieceAttribute.Demon && b == PieceAttribute.Fairy) ||
         (a == PieceAttribute.Fairy && b == PieceAttribute.Human);

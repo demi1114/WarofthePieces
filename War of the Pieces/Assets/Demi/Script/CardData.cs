@@ -14,6 +14,12 @@ public enum CardType
     LoseEnemyReservePieces,//手駒ロスト系
     LoseOwnReservePieces,
     LoseEnemyBoardByType,
+    BuffOwnBoardByTypePermanent,//強化弱体化系
+    BuffOwnBoardByTypeTemporary,
+    DebuffEnemySinglePermanent,
+    DebuffEnemySingleTemporary,
+    DebuffEnemyRandomTemporary,
+    DebuffEnemyRandomPermanent,
 }
 
 [CreateAssetMenu(menuName = "Card/Create Card")]
@@ -22,7 +28,9 @@ public class CardData : ScriptableObject
     public string cardName;
     public CardType cardType;
     public PieceAttribute targetPieceAttribute;
-    public int value = 1;   // 効果量（追加移動数など）
+    [Header("Effect Settings")]
+    public int amount = 1;        // 強化量・弱体量・ドロー枚数
+    public int targetCount = 1;   // 対象数（複数効果用）
 
     public virtual bool Resolve(Vector2Int targetPos)
     {
@@ -30,7 +38,7 @@ public class CardData : ScriptableObject
         {
             case CardType.Draw:
                 {
-                    for (int i = 0; i < value; i++)
+                    for (int i = 0; i < amount; i++)
                     {
                         DeckManager.Instance.DrawCard();
                     }
@@ -39,7 +47,7 @@ public class CardData : ScriptableObject
 
             case CardType.DrawBoth:
                 {
-                    for (int i = 0; i < value; i++)
+                    for (int i = 0; i < amount; i++)
                     {
                         DeckManager.Instance.DrawCard();
                         EnemyDeckManager.Instance.DrawCard();
@@ -48,7 +56,7 @@ public class CardData : ScriptableObject
                 }
 
             case CardType.AddMove:
-                TurnManager.Instance.AddExtraMove(value);
+                TurnManager.Instance.AddExtraMove(amount);
                 Debug.Log("移動回数 +1");
                 break;
 
@@ -56,7 +64,7 @@ public class CardData : ScriptableObject
                 {
                     var pieces = BoardManager.Instance.GetPlayerPiecesOnBoard();
 
-                    int removeCount = Mathf.Min(value, pieces.Count);
+                    int removeCount = Mathf.Min(targetCount, pieces.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
@@ -71,7 +79,7 @@ public class CardData : ScriptableObject
 
                     var enemyPieces = BoardManager.Instance.GetPiecesByOwner(opponentOwner);
 
-                    int removeCount = Mathf.Min(value, enemyPieces.Count);
+                    int removeCount = Mathf.Min(targetCount, enemyPieces.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
@@ -84,7 +92,7 @@ public class CardData : ScriptableObject
                 {
                     var pieces = BoardManager.Instance.GetPiecesByOwner(0);
 
-                    int removeCount = Mathf.Min(value, pieces.Count);
+                    int removeCount = Mathf.Min(targetCount, pieces.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
@@ -104,7 +112,7 @@ public class CardData : ScriptableObject
 
                     var pieces = BoardManager.Instance.GetPiecesByOwner(opponentOwner);
 
-                    int removeCount = Mathf.Min(value, pieces.Count);
+                    int removeCount = Mathf.Min(targetCount, pieces.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
@@ -128,7 +136,7 @@ public class CardData : ScriptableObject
                     allPieces.AddRange(playerPieces);
                     allPieces.AddRange(enemyPieces);
 
-                    int removeCount = Mathf.Min(value, allPieces.Count);
+                    int removeCount = Mathf.Min(targetCount, allPieces.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
@@ -146,7 +154,7 @@ public class CardData : ScriptableObject
                 {
                     var reserve = BoardManager.Instance.enemyHandPiece;
 
-                    int removeCount = Mathf.Min(value, reserve.Count);
+                    int removeCount = Mathf.Min(targetCount, reserve.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
@@ -161,7 +169,7 @@ public class CardData : ScriptableObject
                 {
                     var reserve = BoardManager.Instance.playerHandPiece;
 
-                    int removeCount = Mathf.Min(value, reserve.Count);
+                    int removeCount = Mathf.Min(targetCount, reserve.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
@@ -185,7 +193,7 @@ public class CardData : ScriptableObject
                             filtered.Add(piece);
                     }
 
-                    int removeCount = Mathf.Min(value, filtered.Count);
+                    int removeCount = Mathf.Min(targetCount, filtered.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
@@ -195,6 +203,91 @@ public class CardData : ScriptableObject
                     Debug.Log($"相手の {targetPieceAttribute} を {removeCount} 体破壊");
 
                     return true;
+                }
+
+            case CardType.BuffOwnBoardByTypePermanent:
+                {
+                    var pieces = BoardManager.Instance.GetPiecesByOwner(0);
+
+                    List<Piece> filtered = new List<Piece>();
+
+                    foreach (var piece in pieces)
+                    {
+                        if (piece.data.attribute == targetPieceAttribute)
+                            filtered.Add(piece);
+                    }
+
+                    int applyCount = Mathf.Min(amount, filtered.Count);
+
+                    for (int i = 0; i < applyCount; i++)
+                    {
+                        filtered[i].AddPermanentPower(1); // ← 強化量を固定1にするなら
+                                                          // 強化量も変数化したいなら別intを追加
+                    }
+
+                    break;
+                }
+
+            case CardType.BuffOwnBoardByTypeTemporary:
+                {
+                    var pieces = BoardManager.Instance.GetPiecesByOwner(0);
+
+                    List<Piece> filtered = new List<Piece>();
+
+                    foreach (var piece in pieces)
+                    {
+                        if (piece.data.attribute == targetPieceAttribute)
+                            filtered.Add(piece);
+                    }
+
+                    int applyCount = Mathf.Min(amount, filtered.Count);
+
+                    for (int i = 0; i < applyCount; i++)
+                    {
+                        filtered[i].AddTemporaryPower(1);
+                    }
+
+                    break;
+                }
+
+            case CardType.DebuffEnemySinglePermanent:
+                {
+                    Piece target = BoardManager.Instance.GetPieceAt(targetPos);
+
+                    if (target != null && target.owner == 1)
+                    {
+                        target.AddPermanentPower(-amount);
+                    }
+
+                    break;
+                }
+
+            case CardType.DebuffEnemySingleTemporary:
+                {
+                    Piece target = BoardManager.Instance.GetPieceAt(targetPos);
+
+                    if (target != null && target.owner == 1)
+                    {
+                        target.AddTemporaryPower(-amount);
+                    }
+
+                    break;
+                }
+
+            case CardType.DebuffEnemyRandomTemporary:
+                {
+                    var pieces = BoardManager.Instance.GetPiecesByOwner(1);
+
+                    int applyCount = Mathf.Min(amount, pieces.Count);
+
+                    for (int i = 0; i < applyCount; i++)
+                    {
+                        int randomIndex = Random.Range(0, pieces.Count);
+                        pieces[randomIndex].AddTemporaryPower(-1);
+                        pieces.RemoveAt(randomIndex);
+                    }
+
+                    break;
                 }
         }
 

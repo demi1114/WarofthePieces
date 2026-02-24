@@ -193,7 +193,10 @@ public class BoardManager : MonoBehaviour
 
         foreach (var pos in movable)
         {
+            if (!IsInsideBoard(pos)) continue;
+
             BoardCell targetCell = cells[pos.x, pos.y];
+
             if (pieceGrid[pos.x, pos.y] == null)
                 targetCell.GetComponent<Renderer>().material.color = Color.cyan;
 
@@ -279,6 +282,21 @@ public class BoardManager : MonoBehaviour
         return new Vector2Int(-1, -1);
     }
 
+    private bool IsInsideBoard(Vector2Int pos)
+    {
+        return pos.x >= 0 && pos.x < boardSize &&
+               pos.y >= 0 && pos.y < boardSize;
+    }
+
+    public Piece GetPieceAt(Vector2Int pos)
+    {
+        if (pos.x < 0 || pos.x >= boardSize ||
+            pos.y < 0 || pos.y >= boardSize)
+            return null;
+
+        return pieceGrid[pos.x, pos.y];
+    }
+
     // ------------------------
     // 戦闘関連
     // ------------------------
@@ -315,6 +333,20 @@ public class BoardManager : MonoBehaviour
                 Debug.Log("プレイヤー勝利！（敵陣到達）");
                 return true;
             }
+
+        return false;
+    }
+
+    private bool CheckDefeatByInvasion()
+    {
+        for (int x = 0; x < boardSize; x++)
+        {
+            if (pieceGrid[x, 0] != null && pieceGrid[x, 0].owner == 1)
+            {
+                Debug.Log("ゲーム敗北！（敵が自陣に到達）");
+                return true;
+            }
+        }
 
         return false;
     }
@@ -419,26 +451,50 @@ public class BoardManager : MonoBehaviour
     // --- 盤面上の敵駒ランダム移動 ---
     private void TryRandomMoveEnemyPiece()
     {
-        // 盤面上の敵駒を取得
         var enemyPieces = GetEnemyPiecesOnBoard();
 
-        if (enemyPieces.Count == 0) return;
+        if (enemyPieces == null || enemyPieces.Count == 0)
+            return;
 
-        Piece piece = enemyPieces[Random.Range(0, enemyPieces.Count)];
+        int pieceIndex = Random.Range(0, enemyPieces.Count);
+        if (pieceIndex < 0 || pieceIndex >= enemyPieces.Count)
+            return;
+
+        Piece piece = enemyPieces[pieceIndex];
+
         Vector2Int pos = FindPiecePosition(piece);
+        if (!IsInsideBoard(pos))
+            return;
 
-        if (pos.x == -1) return;
-
-        // 移動可能マスを取得
         var movable = piece.GetMovablePositions(pos, boardSize);
+        if (movable == null || movable.Count == 0)
+            return;
 
-        if (movable.Count == 0) return;
+        List<Vector2Int> validMoves = new List<Vector2Int>();
 
-        // ランダムに移動
-        Vector2Int target = movable[Random.Range(0, movable.Count)];
-        MoveEnemyPiece(piece, pos, target);
+        foreach (var move in movable)
+        {
+            if (!IsInsideBoard(move)) continue;
 
-        Debug.Log($"敵駒移動: {piece.data.pieceName} from ({pos.x},{pos.y}) to ({target.x},{target.y})");
+            Piece target = pieceGrid[move.x, move.y];
+
+            // 敵同士の重なり禁止
+            if (target == null || target.owner != 1)
+                validMoves.Add(move);
+        }
+
+        if (validMoves.Count == 0)
+            return;
+
+        int moveIndex = Random.Range(0, validMoves.Count);
+        if (moveIndex < 0 || moveIndex >= validMoves.Count)
+            return;
+
+        Vector2Int targetPos = validMoves[moveIndex];
+
+        MoveEnemyPiece(piece, pos, targetPos);
+
+        Debug.Log($"敵駒移動: {piece.data.pieceName} → ({targetPos.x},{targetPos.y})");
     }
 
     // --- ヘルパー関数 ---
@@ -529,6 +585,7 @@ public class BoardManager : MonoBehaviour
         piece.transform.position = cells[to.x, to.y].transform.position + Vector3.up * 0.5f;
 
         UpdatePieceCountUI();
+        CheckDefeatByInvasion();
     }
     public void RemoveEnemyReservePiece(int index)
     {
@@ -560,6 +617,13 @@ public class BoardManager : MonoBehaviour
             if (piece != null)
             {
                 Vector2Int pos = GetPiecePosition(piece);
+
+                if (!IsInsideBoard(pos))
+                {
+                    Debug.LogWarning("盤面外の駒参照を検出しました");
+                    return;
+                }
+
                 OnCellClicked(cells[pos.x, pos.y]);
                 return;
             }
