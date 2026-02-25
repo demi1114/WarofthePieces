@@ -51,6 +51,19 @@ public class EnemyDeckManager : MonoBehaviour
         Debug.Log("増えたよ");
     }
 
+    public void RemoveTopCards(int count)
+    {
+        if (runtimeDeck.Count == 0) return;
+
+        int removeCount = Mathf.Min(count, runtimeDeck.Count);
+
+        for (int i = 0; i < removeCount; i++)
+        {
+            runtimeDeck.RemoveAt(0);
+        }
+
+        Debug.Log($"敵デッキを {removeCount} 枚ロストしました");
+    }
     public CardData GetRandomCardFromHand()
     {
         if (hand.Count == 0) return null;

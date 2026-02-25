@@ -56,6 +56,20 @@ public class DeckManager : MonoBehaviour
         Debug.Log($"ドロー: {drawn.cardName}");
     }
 
+    public void RemoveTopCards(int count)
+    {
+        if (runtimeDeck.Count == 0) return;
+
+        int removeCount = Mathf.Min(count, runtimeDeck.Count);
+
+        for (int i = 0; i < removeCount; i++)
+        {
+            runtimeDeck.RemoveAt(0);
+        }
+
+        Debug.Log($"デッキを {removeCount} 枚ロストしました");
+    }
+
     public void UseCard(int handIndex)
     {
         if (handIndex < 0 || handIndex >= hand.Count) return;

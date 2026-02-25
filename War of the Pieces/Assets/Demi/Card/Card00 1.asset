@@ -15,5 +15,5 @@ MonoBehaviour:
   cardName: B
   cardType: 16
   targetPieceAttribute: 0
-  amount: 8
+  amount: 20
   targetCount: 8

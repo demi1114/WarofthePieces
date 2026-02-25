@@ -14,12 +14,14 @@ public enum CardType
     LoseEnemyReservePieces,//éËãÓÉçÉXÉgån
     LoseOwnReservePieces,
     LoseEnemyBoardByType,
-    BuffOwnBoardByTypePermanent,//ã≠âªé„ëÃâªån
+    BuffOwnBoardByTypePermanent,//ã≠âªån
     BuffOwnBoardByTypeTemporary,
-    DebuffEnemySinglePermanent,
+    DebuffEnemySinglePermanent,//é„ëÃâªån
     DebuffEnemySingleTemporary,
     DebuffEnemyRandomTemporary,
-    DebuffEnemyRandomPermanent,
+    LoseEnemyDeck,//ÉfÉbÉLÉçÉXÉgån
+    LoseOwnDeck,
+    LoseBothDeck,
 }
 
 [CreateAssetMenu(menuName = "Card/Create Card")]
@@ -287,6 +289,25 @@ public class CardData : ScriptableObject
                         pieces.RemoveAt(randomIndex);
                     }
 
+                    break;
+                }
+
+            case CardType.LoseEnemyDeck:
+                {
+                    EnemyDeckManager.Instance.RemoveTopCards(amount);
+                    break;
+                }
+
+            case CardType.LoseOwnDeck:
+                {
+                    DeckManager.Instance.RemoveTopCards(amount);
+                    break;
+                }
+
+            case CardType.LoseBothDeck:
+                {
+                    DeckManager.Instance.RemoveTopCards(amount);
+                    EnemyDeckManager.Instance.RemoveTopCards(amount);
                     break;
                 }
         }
