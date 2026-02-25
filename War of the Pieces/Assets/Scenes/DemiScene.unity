@@ -571,7 +571,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
-  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
+  - {fileID: 11400000, guid: 896a2c9cce017de49a6d7107e09044b8, type: 2}
   availablePieces:
   - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
   playerHandPiece: []

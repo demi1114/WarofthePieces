@@ -14,6 +14,7 @@ public enum CardType
     LoseEnemyReservePieces,//手駒ロスト系
     LoseOwnReservePieces,
     LoseEnemyBoardByType,
+    LoseOwnReserveByType,
     BuffOwnBoardByTypePermanent,//強化系
     BuffOwnBoardByTypeTemporary,
     DebuffEnemySinglePermanent,//弱体化系
@@ -205,6 +206,34 @@ public class CardData : ScriptableObject
                     Debug.Log($"相手の {targetPieceAttribute} を {removeCount} 体破壊");
 
                     return true;
+                }
+
+            case CardType.LoseOwnReserveByType:
+                {
+                    var reserve = BoardManager.Instance.playerHandPiece;
+
+                    List<int> removeIndexes = new List<int>();
+
+                    for (int i = 0; i < reserve.Count; i++)
+                    {
+                        if (reserve[i].attribute == targetPieceAttribute)
+                        {
+                            removeIndexes.Add(i);
+                        }
+                    }
+
+                    int removeCount = Mathf.Min(targetCount, removeIndexes.Count);
+
+                    for (int i = 0; i < removeCount; i++)
+                    {
+                        // 後ろから削除（インデックスずれ防止）
+                        int index = removeIndexes[removeIndexes.Count - 1 - i];
+                        BoardManager.Instance.RemovePlayerReservePiece(index);
+                    }
+
+                    Debug.Log($"自分の手駒 {targetPieceAttribute} を {removeCount} 個ロスト");
+
+                    break;
                 }
 
             case CardType.BuffOwnBoardByTypePermanent:
