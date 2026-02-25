@@ -23,6 +23,11 @@ public enum CardType
     LoseEnemyDeck,//デッキロスト系
     LoseOwnDeck,
     LoseBothDeck,
+    ReturnEnemyBoardPieces,//バウンス系
+    ReturnOwnBoardPieces,
+    ReturnRandomBoardPieces,
+    AddSpecificReservePiece,//手駒追加系
+    AddRandomReservePieceByType,
 }
 
 [CreateAssetMenu(menuName = "Card/Create Card")]
@@ -34,6 +39,9 @@ public class CardData : ScriptableObject
     [Header("Effect Settings")]
     public int amount = 1;        // 強化量・弱体量・ドロー枚数
     public int targetCount = 1;   // 対象数（複数効果用）
+    [Header("Piece Add Settings")]
+    public PieceData specificPiece;          // 特定の駒
+    public List<PieceData> candidatePieces;  // ランダム候補リスト
 
     public virtual bool Resolve(Vector2Int targetPos)
     {
@@ -337,6 +345,94 @@ public class CardData : ScriptableObject
                 {
                     DeckManager.Instance.RemoveTopCards(amount);
                     EnemyDeckManager.Instance.RemoveTopCards(amount);
+                    break;
+                }
+
+            case CardType.ReturnOwnBoardPieces:
+                {
+                    var pieces = BoardManager.Instance.GetPiecesByOwner(0);
+
+                    int returnCount = Mathf.Min(targetCount, pieces.Count);
+
+                    for (int i = 0; i < returnCount; i++)
+                    {
+                        BoardManager.Instance.ReturnPieceToReserve(pieces[i]);
+                    }
+
+                    break;
+                }
+
+            case CardType.ReturnEnemyBoardPieces:
+                {
+                    var pieces = BoardManager.Instance.GetPiecesByOwner(1);
+
+                    int returnCount = Mathf.Min(targetCount, pieces.Count);
+
+                    for (int i = 0; i < returnCount; i++)
+                    {
+                        BoardManager.Instance.ReturnPieceToReserve(pieces[i]);
+                    }
+
+                    break;
+                }
+
+            case CardType.ReturnRandomBoardPieces:
+                {
+                    var playerPieces = BoardManager.Instance.GetPiecesByOwner(0);
+                    var enemyPieces = BoardManager.Instance.GetPiecesByOwner(1);
+
+                    List<Piece> all = new List<Piece>();
+                    all.AddRange(playerPieces);
+                    all.AddRange(enemyPieces);
+
+                    int returnCount = Mathf.Min(targetCount, all.Count);
+
+                    for (int i = 0; i < returnCount; i++)
+                    {
+                        int rand = Random.Range(0, all.Count);
+                        BoardManager.Instance.ReturnPieceToReserve(all[rand]);
+                        all.RemoveAt(rand);
+                    }
+
+                    break;
+                }
+
+            case CardType.AddSpecificReservePiece:
+                {
+                    if (specificPiece == null) break;
+
+                    for (int i = 0; i < amount; i++)
+                    {
+                        BoardManager.Instance.AddPlayerReservePiece(specificPiece);
+                    }
+
+                    break;
+                }
+
+            case CardType.AddRandomReservePieceByType:
+                {
+                    if (candidatePieces == null || candidatePieces.Count == 0)
+                        break;
+
+                    List<PieceData> filtered = new List<PieceData>();
+
+                    foreach (var piece in candidatePieces)
+                    {
+                        if (piece.attribute == targetPieceAttribute)
+                        {
+                            filtered.Add(piece);
+                        }
+                    }
+
+                    if (filtered.Count == 0)
+                        break;
+
+                    for (int i = 0; i < amount; i++)
+                    {
+                        int rand = Random.Range(0, filtered.Count);
+                        BoardManager.Instance.AddPlayerReservePiece(filtered[rand]);
+                    }
+
                     break;
                 }
         }

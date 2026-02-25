@@ -557,6 +557,29 @@ public class BoardManager : MonoBehaviour
 
         UpdatePieceCountUI();
     }
+    public void ReturnPieceToReserve(Piece piece)
+    {
+        Vector2Int pos = FindPiecePosition(piece);
+        if (pos.x == -1) return;
+
+        // 盤面から削除
+        pieceGrid[pos.x, pos.y] = null;
+
+        // 手駒に追加
+        if (piece.owner == 0)
+        {
+            playerHandPiece.Add(piece.data);
+            HandUIManager.Instance.RefreshHand();
+        }
+        else
+        {
+            enemyHandPiece.Add(piece.data);
+        }
+
+        Destroy(piece.gameObject);
+
+        UpdatePieceCountUI();
+    }
     private void MoveEnemyPiece(Piece piece, Vector2Int from, Vector2Int to)
     {
         Piece targetPiece = pieceGrid[to.x, to.y];
@@ -599,6 +622,15 @@ public class BoardManager : MonoBehaviour
 
         playerHandPiece.RemoveAt(index);
         HandUIManager.Instance.RefreshHand();
+    }
+    public void AddPlayerReservePiece(PieceData piece)
+    {
+        if (piece == null) return;
+
+        playerHandPiece.Add(piece);
+        HandUIManager.Instance.RefreshHand();
+
+        Debug.Log($"手駒に追加: {piece.pieceName}");
     }
 
     // ------------------------
