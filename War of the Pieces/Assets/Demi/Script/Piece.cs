@@ -18,6 +18,21 @@ public class Piece : MonoBehaviour
         CurrentPower = BasePower;
     }
 
+    public void Transform(PieceData newData) // 変身処理
+    {
+        if (newData == null) return;
+
+        data = newData;
+
+        // 基礎パワーを新しい駒に合わせる
+        BasePower = newData.basePower;
+
+        // 一時強化はリセットする設計にする（安全）
+        CurrentPower = BasePower;
+
+        Debug.Log($"駒が {newData.pieceName} に変身しました");
+    }
+
     public void AddPermanentPower(int amount)
     {
         BasePower += amount;

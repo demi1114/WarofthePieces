@@ -546,6 +546,40 @@ public class BoardManager : MonoBehaviour
 
         return result;
     }
+    public List<Vector2Int> GetEmptyPlayerCells()
+    {
+        List<Vector2Int> empty = new List<Vector2Int>();
+
+        for (int x = 0; x < boardSize; x++)
+        {
+            if (pieceGrid[x, 0] == null) // 自陣は y=0
+            {
+                empty.Add(new Vector2Int(x, 0));
+            }
+        }
+
+        return empty;
+    }
+    public List<Vector2Int> GetEmptyCellsInPlayerArea()
+    {
+        List<Vector2Int> empty = new List<Vector2Int>();
+
+        for (int x = 0; x < boardSize; x++)
+        {
+            for (int y = 0; y < boardSize; y++)
+            {
+                // プレイヤー陣地は y == 0 のみ（あなたの仕様に合わせる）
+                if (y != 0) continue;
+
+                if (pieceGrid[x, y] == null)
+                {
+                    empty.Add(new Vector2Int(x, y));
+                }
+            }
+        }
+
+        return empty;
+    }
     public void RemovePiece(Piece piece)
     {
         Vector2Int pos = FindPiecePosition(piece);
@@ -631,6 +665,38 @@ public class BoardManager : MonoBehaviour
         HandUIManager.Instance.RefreshHand();
 
         Debug.Log($"手駒に追加: {piece.pieceName}");
+    }
+    public void SpawnSpecificPieceInPlayerArea(PieceData data, Vector2Int pos)
+    {
+        if (data == null) return;
+
+        if (pieceGrid[pos.x, pos.y] != null) return;
+
+        Vector3 spawnPos = cells[pos.x, pos.y].transform.position + Vector3.up * 0.5f;
+
+        GameObject obj = Instantiate(piecePrefab, spawnPos, Quaternion.identity);
+        Piece piece = obj.GetComponent<Piece>();
+
+        piece.Initialize(data, 0); // プレイヤー側固定
+
+        pieceGrid[pos.x, pos.y] = piece;
+
+        UpdatePieceCountUI();
+    }
+    public void SpawnPieceOnBoard(PieceData data, int owner, Vector2Int pos)
+    {
+        if (pieceGrid[pos.x, pos.y] != null) return;
+
+        Vector3 spawnPos = cells[pos.x, pos.y].transform.position + Vector3.up * 0.5f;
+
+        GameObject obj = Instantiate(piecePrefab, spawnPos, Quaternion.identity);
+        Piece piece = obj.GetComponent<Piece>();
+
+        piece.Initialize(data, owner);
+
+        pieceGrid[pos.x, pos.y] = piece;
+
+        UpdatePieceCountUI();
     }
 
     // ------------------------

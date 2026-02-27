@@ -28,6 +28,12 @@ public enum CardType
     ReturnRandomBoardPieces,
     AddSpecificReservePiece,//手駒追加系
     AddRandomReservePieceByType,
+    LoseAllBoardPieces,//盤面全ロスト
+    SpawnSpecificPieceRandomly,//直接召喚
+    TransformOwnSingle,//変身系
+    TransformEnemySingle,
+    TransformOwnRandom,
+    TransformAllOwn,
 }
 
 [CreateAssetMenu(menuName = "Card/Create Card")]
@@ -431,6 +437,88 @@ public class CardData : ScriptableObject
                     {
                         int rand = Random.Range(0, filtered.Count);
                         BoardManager.Instance.AddPlayerReservePiece(filtered[rand]);
+                    }
+
+                    break;
+                }
+
+            case CardType.LoseAllBoardPieces:
+                {
+                    var playerPieces = BoardManager.Instance.GetPiecesByOwner(0);
+                    var enemyPieces = BoardManager.Instance.GetPiecesByOwner(1);
+
+                    List<Piece> all = new List<Piece>();
+                    all.AddRange(playerPieces);
+                    all.AddRange(enemyPieces);
+
+                    foreach (var piece in all)
+                    {
+                        BoardManager.Instance.RemovePiece(piece);
+                    }
+
+                    Debug.Log("盤面のすべての駒をロスト");
+
+                    break;
+                }
+
+            case CardType.SpawnSpecificPieceRandomly:
+                {
+                    if (specificPiece == null) break;
+
+                    var emptyCells = BoardManager.Instance.GetEmptyPlayerCells();
+
+                    int spawnCount = Mathf.Min(amount, emptyCells.Count);
+
+                    for (int i = 0; i < spawnCount; i++)
+                    {
+                        int rand = Random.Range(0, emptyCells.Count);
+                        Vector2Int pos = emptyCells[rand];
+
+                        BoardManager.Instance.SpawnSpecificPieceInPlayerArea(specificPiece, pos);
+
+                        emptyCells.RemoveAt(rand);
+                    }
+
+                    break;
+                }
+
+            case CardType.TransformOwnSingle:
+                {
+                    if (specificPiece == null) break;
+
+                    Piece target = BoardManager.Instance.GetPieceAt(targetPos);
+
+                    if (target != null && target.owner == 0)
+                    {
+                        target.Transform(specificPiece);
+                    }
+
+                    break;
+                }
+
+            case CardType.TransformEnemySingle:
+                {
+                    if (specificPiece == null) break;
+
+                    Piece target = BoardManager.Instance.GetPieceAt(targetPos);
+
+                    if (target != null && target.owner == 1)
+                    {
+                        target.Transform(specificPiece);
+                    }
+
+                    break;
+                }
+
+            case CardType.TransformAllOwn:
+                {
+                    if (specificPiece == null) break;
+
+                    var pieces = BoardManager.Instance.GetPiecesByOwner(0);
+
+                    foreach (var piece in pieces)
+                    {
+                        piece.Transform(specificPiece);
                     }
 
                     break;

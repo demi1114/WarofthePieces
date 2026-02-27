@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Card00 1
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: B
-  cardType: 24
+  cardType: 30
   targetPieceAttribute: 1
   amount: 1
   targetCount: 1
