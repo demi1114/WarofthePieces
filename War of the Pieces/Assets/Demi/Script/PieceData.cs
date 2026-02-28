@@ -1,5 +1,14 @@
 using UnityEngine;
 
+public enum PieceRace
+{
+    Attack,
+    Beast,
+    Spirit,
+    Undead,
+    Angel,
+    Slime
+}
 public enum PieceAttribute
 {
     Human,
@@ -16,6 +25,7 @@ public enum PieceAttribute
 public class PieceData : ScriptableObject
 {
     public string pieceName;
+    public PieceRace race;
     public PieceAttribute attribute;
     public MovePattern movePattern;
 

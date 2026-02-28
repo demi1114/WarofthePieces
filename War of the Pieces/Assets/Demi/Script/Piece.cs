@@ -6,6 +6,8 @@ public class Piece : MonoBehaviour
     public int owner;  // 0=ƒvƒŒƒCƒ„[, 1=“G
     public PieceData data;
 
+    public List<Ability> abilities;
+
     public int BasePower { get; private set; }
     public int CurrentPower { get; private set; }
 
@@ -55,4 +57,18 @@ public class Piece : MonoBehaviour
     }
 
     public PieceAttribute GetAttribute() => data.attribute;
+
+   /* public void TriggerTurnStart()
+    {
+        AbilityContext context = new AbilityContext
+        {
+            owner = owner,
+            sourcePiece = this
+        };
+
+        foreach (var ability in data.abilities)
+        {
+            ability.OnTurnStart(context);
+        }
+    }*/
 }

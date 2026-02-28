@@ -56,6 +56,23 @@ public class DeckManager : MonoBehaviour
         Debug.Log($"ドロー: {drawn.cardName}");
     }
 
+    public void DrawCardByCategory(CardCategory category)
+    {
+        for (int i = 0; i < runtimeDeck.Count; i++)
+        {
+            if (runtimeDeck[i].category == category)
+            {
+                CardData card = runtimeDeck[i];
+                runtimeDeck.RemoveAt(i);
+                hand.Add(card);
+                CardUIManager.Instance?.RefreshHand(hand);
+                Debug.Log($"特定タイプドロー: {card.cardName}");
+                return;
+            }
+            Debug.Log("該当するカードがデッキにありません");
+        }
+    }
+
     public void RemoveTopCards(int count)
     {
         if (runtimeDeck.Count == 0) return;

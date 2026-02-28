@@ -35,6 +35,13 @@ public enum CardType
     TransformOwnRandom,
     TransformAllOwn,
 }
+public enum CardCategory
+{
+    Attack,
+    Defense,
+    Spell,
+    Support
+}
 
 [CreateAssetMenu(menuName = "Card/Create Card")]
 public class CardData : ScriptableObject
@@ -44,6 +51,7 @@ public class CardData : ScriptableObject
     [Header("Abilities")]
     public List<Ability> abilities = new List<Ability>();
 
+    public CardCategory category;
     public CardType cardType;
     public PieceAttribute targetPieceAttribute;
     [Header("Effect Settings")]
@@ -57,15 +65,6 @@ public class CardData : ScriptableObject
     {
         switch (cardType)
         {
-            /*case CardType.Draw:
-                {
-                    for (int i = 0; i < amount; i++)
-                    {
-                        DeckManager.Instance.DrawCard();
-                    }
-                    break;
-                }*/
-
             case CardType.DrawBoth:
                 {
                     for (int i = 0; i < amount; i++)

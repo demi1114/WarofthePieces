@@ -32,6 +32,11 @@ public class TurnManager : MonoBehaviour
         timer = turnTime;
         remainingMoves = baseMoveCount;
 
+        /*foreach (var piece in BoardManager.Instance.GetPiecesByOwner(currentPlayer))
+        {
+            piece.TriggerTurnStart();
+        }*/
+
         if (isPlayerTurn)
         {
             // プレイヤーターン処理
