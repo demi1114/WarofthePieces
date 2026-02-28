@@ -40,6 +40,10 @@ public enum CardType
 public class CardData : ScriptableObject
 {
     public string cardName;
+
+    [Header("Abilities")]
+    public List<Ability> abilities = new List<Ability>();
+
     public CardType cardType;
     public PieceAttribute targetPieceAttribute;
     [Header("Effect Settings")]
@@ -53,14 +57,14 @@ public class CardData : ScriptableObject
     {
         switch (cardType)
         {
-            case CardType.Draw:
+            /*case CardType.Draw:
                 {
                     for (int i = 0; i < amount; i++)
                     {
                         DeckManager.Instance.DrawCard();
                     }
                     break;
-                }
+                }*/
 
             case CardType.DrawBoth:
                 {
@@ -524,6 +528,20 @@ public class CardData : ScriptableObject
                     break;
                 }
         }
+
+
+        AbilityContext context = new AbilityContext
+        {
+            owner = 0,
+            targetPosition = targetPos,
+            sourceCard = this
+        };
+
+        foreach (var ability in abilities)
+        {
+            ability.OnCardUse(context);
+        }
+
 
         return true;
     }
