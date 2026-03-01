@@ -1,9 +1,9 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 public class Piece : MonoBehaviour
 {
-    public int owner;  // 0=ƒvƒŒƒCƒ„[, 1=“G
+    public int owner;  // 0=ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼, 1=æ•µ
     public PieceData data;
 
     public List<Ability> abilities;
@@ -11,45 +11,67 @@ public class Piece : MonoBehaviour
     public int BasePower { get; private set; }
     public int CurrentPower { get; private set; }
 
+    private int permanentModifier = 0;
+    private int temporaryModifier = 0;
+
     public void Initialize(PieceData pieceData, int owner)
     {
         this.data = pieceData;
         this.owner = owner;
 
         BasePower = pieceData.basePower;
-        CurrentPower = BasePower;
+
+        permanentModifier = 0;
+        temporaryModifier = 0;
+
+        RecalculatePower();
     }
 
-    public void Transform(PieceData newData) // •Ïgˆ—
+    // ğŸ”„ å¤‰èº«å‡¦ç†
+    public void Transform(PieceData newData)
     {
         if (newData == null) return;
 
         data = newData;
-
-        // Šî‘bƒpƒ[‚ğV‚µ‚¢‹î‚É‡‚í‚¹‚é
         BasePower = newData.basePower;
 
-        // ˆê‹­‰»‚ÍƒŠƒZƒbƒg‚·‚éİŒv‚É‚·‚éiˆÀ‘Sj
-        CurrentPower = BasePower;
+        // ä¸€æ™‚åŠ¹æœã¯æ¶ˆã™
+        temporaryModifier = 0;
 
-        Debug.Log($"‹î‚ª {newData.pieceName} ‚É•Ïg‚µ‚Ü‚µ‚½");
+        RecalculatePower();
+
+        Debug.Log($"é§’ãŒ {newData.pieceName} ã«å¤‰èº«ã—ã¾ã—ãŸ");
     }
 
+    // ğŸŸ¢ æ°¸ç¶šå¼·åŒ–
     public void AddPermanentPower(int amount)
     {
-        BasePower += amount;
-        CurrentPower += amount;
+        permanentModifier += amount;
+        RecalculatePower();
     }
 
+    // ğŸŸ¡ ä¸€æ™‚å¼·åŒ–
     public void AddTemporaryPower(int amount)
     {
-        CurrentPower += amount;
+        temporaryModifier += amount;
+        RecalculatePower();
     }
 
+    // ğŸ” ã‚¿ãƒ¼ãƒ³çµ‚äº†æ™‚
     public void ResetTemporaryPower()
     {
-        CurrentPower = BasePower;
+        temporaryModifier = 0;
+        RecalculatePower();
     }
+
+    // ğŸ’¡ å¸¸ã«ã“ã“ã‹ã‚‰è¨ˆç®—ã™ã‚‹
+    private void RecalculatePower()
+    {
+        CurrentPower = BasePower + permanentModifier + temporaryModifier;
+
+        // ã“ã“ã§UIæ›´æ–°ãªã©
+    }
+
     public List<Vector2Int> GetMovablePositions(Vector2Int currentPos, int boardSize)
     {
         if (data.movePattern == null) return new List<Vector2Int>();
@@ -57,18 +79,4 @@ public class Piece : MonoBehaviour
     }
 
     public PieceAttribute GetAttribute() => data.attribute;
-
-   /* public void TriggerTurnStart()
-    {
-        AbilityContext context = new AbilityContext
-        {
-            owner = owner,
-            sourcePiece = this
-        };
-
-        foreach (var ability in data.abilities)
-        {
-            ability.OnTurnStart(context);
-        }
-    }*/
 }

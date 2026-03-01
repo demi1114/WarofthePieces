@@ -701,4 +701,5 @@ public class BoardManager : MonoBehaviour
         }
         else CardUseManager.Instance?.CancelCardUse();
     }
+
 }

@@ -57,7 +57,7 @@ public class TurnManager : MonoBehaviour
     public void EndTurn()
     {
         // ここ追加：ターン終了時に一時バフをリセット
-        ResetAllTemporaryBuffs();
+        ResetTemporaryBuffs(isPlayerTurn ? 0 : 1);
 
         extraMovesThisTurn = 0;
         isPlayerTurn = !isPlayerTurn;
@@ -86,17 +86,11 @@ public class TurnManager : MonoBehaviour
 
         GameUIManager.Instance?.UpdateMoves(remainingMoves);
     }
-
-    private void ResetAllTemporaryBuffs()
+    private void ResetTemporaryBuffs(int owner)
     {
-        // プレイヤー駒
-        var playerPieces = BoardManager.Instance.GetPiecesByOwner(0);
-        foreach (var piece in playerPieces)
-            piece.ResetTemporaryPower();
+        var pieces = BoardManager.Instance.GetPiecesByOwner(owner);
 
-        // 敵駒
-        var enemyPieces = BoardManager.Instance.GetPiecesByOwner(1);
-        foreach (var piece in enemyPieces)
+        foreach (var piece in pieces)
             piece.ResetTemporaryPower();
     }
     public int GetRemainingMoves() => remainingMoves;

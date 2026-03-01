@@ -58,10 +58,10 @@ public class CardData : ScriptableObject
     {
         switch (cardType)
         {
-            case CardType.AddMove:
+           /* case CardType.AddMove:
                 TurnManager.Instance.AddExtraMove(amount);
                 Debug.Log("à⁄ìÆâÒêî +1");
-                break;
+                break;*/
 
             case CardType.LoseOwnBoardPieces:
                 {
@@ -145,51 +145,6 @@ public class CardData : ScriptableObject
 
                         allPieces.RemoveAt(randomIndex);
                     }
-                    break;
-                }
-
-            case CardType.BuffOwnBoardByTypePermanent:
-                {
-                    var pieces = BoardManager.Instance.GetPiecesByOwner(0);
-
-                    List<Piece> filtered = new List<Piece>();
-
-                    foreach (var piece in pieces)
-                    {
-                        if (piece.data.attribute == targetPieceAttribute)
-                            filtered.Add(piece);
-                    }
-
-                    int applyCount = Mathf.Min(amount, filtered.Count);
-
-                    for (int i = 0; i < applyCount; i++)
-                    {
-                        filtered[i].AddPermanentPower(1); // Å© ã≠âªó Çå≈íË1Ç…Ç∑ÇÈÇ»ÇÁ
-                                                          // ã≠âªó Ç‡ïœêîâªÇµÇΩÇ¢Ç»ÇÁï intÇí«â¡
-                    }
-
-                    break;
-                }
-
-            case CardType.BuffOwnBoardByTypeTemporary:
-                {
-                    var pieces = BoardManager.Instance.GetPiecesByOwner(0);
-
-                    List<Piece> filtered = new List<Piece>();
-
-                    foreach (var piece in pieces)
-                    {
-                        if (piece.data.attribute == targetPieceAttribute)
-                            filtered.Add(piece);
-                    }
-
-                    int applyCount = Mathf.Min(amount, filtered.Count);
-
-                    for (int i = 0; i < applyCount; i++)
-                    {
-                        filtered[i].AddTemporaryPower(1);
-                    }
-
                     break;
                 }
 
