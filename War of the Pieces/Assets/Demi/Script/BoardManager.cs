@@ -235,7 +235,7 @@ public class BoardManager : MonoBehaviour
 
             Piece winner = result.winner;
             Piece loser = result.loser;
-            Vector2Int loserPos = GetPiecePosition(loser);
+            Vector2Int loserPos = FindPiecePosition(loser);
 
             pieceGrid[loserPos.x, loserPos.y] = null;
             Destroy(loser.gameObject);
@@ -276,15 +276,6 @@ public class BoardManager : MonoBehaviour
         selectedPiece = null;
         CheckInvasionVictory();
         UpdatePieceCountUI();
-    }
-
-    private Vector2Int GetPiecePosition(Piece piece)
-    {
-        for (int y = 0; y < boardSize; y++)
-            for (int x = 0; x < boardSize; x++)
-                if (pieceGrid[x, y] == piece) return new Vector2Int(x, y);
-
-        return new Vector2Int(-1, -1);
     }
 
     private bool IsInsideBoard(Vector2Int pos)
@@ -559,26 +550,6 @@ public class BoardManager : MonoBehaviour
 
         return empty;
     }
-    public List<Vector2Int> GetEmptyCellsInPlayerArea()
-    {
-        List<Vector2Int> empty = new List<Vector2Int>();
-
-        for (int x = 0; x < boardSize; x++)
-        {
-            for (int y = 0; y < boardSize; y++)
-            {
-                // プレイヤー陣地は y == 0 のみ（あなたの仕様に合わせる）
-                if (y != 0) continue;
-
-                if (pieceGrid[x, y] == null)
-                {
-                    empty.Add(new Vector2Int(x, y));
-                }
-            }
-        }
-
-        return empty;
-    }
     public void RemovePiece(Piece piece)
     {
         Vector2Int pos = FindPiecePosition(piece);
@@ -666,6 +637,26 @@ public class BoardManager : MonoBehaviour
 
         UpdatePieceCountUI();
     }
+    public void ReplacePiece(Piece oldPiece, PieceData newData)
+    {
+        if (oldPiece == null || newData == null) return;
+
+        Vector2Int pos = FindPiecePosition(oldPiece);
+        if (!IsInsideBoard(pos)) return;
+
+        int owner = oldPiece.owner;
+
+        // 選択中なら解除（超重要）
+        if (selectedPiece == oldPiece)
+            CancelSelection();
+
+        // 盤面から削除
+        pieceGrid[pos.x, pos.y] = null;
+        Destroy(oldPiece.gameObject);
+
+        // 新駒生成
+        SpawnPieceOnBoard(newData, owner, pos);
+    }
 
     // ------------------------
     // クリック処理
@@ -682,7 +673,7 @@ public class BoardManager : MonoBehaviour
             Piece piece = hit.collider.GetComponent<Piece>();
             if (piece != null)
             {
-                Vector2Int pos = GetPiecePosition(piece);
+                Vector2Int pos = FindPiecePosition(piece);
 
                 if (!IsInsideBoard(pos))
                 {

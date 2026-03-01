@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 712f4fb1451c182459d5bce3d1a6307d, type: 3}
-  m_Name: Card00 4
-  m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardName: E
-  cardType: 3
-  value: 2
+  m_Script: {fileID: 11500000, guid: 3a6f02fb2a3f6a74da16609afb39f059, type: 3}
+  m_Name: New Transform Selected Own Piece Ability
+  m_EditorClassIdentifier: Assembly-CSharp::TransformSelectedOwnPieceAbility
+  transformTo: {fileID: 0}

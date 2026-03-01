@@ -3,6 +3,7 @@ using UnityEngine;
 
 public enum CardType
 {
+    A,
     LoseOwnBoardPieces,//盤面ロスト系
     LoseOpponentBoardPieces,
     LoseOwnBoardPiecesRandom,
@@ -16,10 +17,6 @@ public enum CardType
     ReturnRandomBoardPieces,
     LoseAllBoardPieces,//盤面全ロスト
     SpawnSpecificPieceRandomly,//直接召喚
-    TransformOwnSingle,//変身系
-    TransformEnemySingle,
-    TransformOwnRandom,
-    TransformAllOwn,
 }
 public enum CardCategory
 {
@@ -266,53 +263,19 @@ public class CardData : ScriptableObject
                     break;
                 }
 
-            case CardType.TransformOwnSingle:
+            case CardType.A:
                 {
-                    if (specificPiece == null) break;
-
-                    Piece target = BoardManager.Instance.GetPieceAt(targetPos);
-
-                    if (target != null && target.owner == 0)
-                    {
-                        target.Transform(specificPiece);
-                    }
-
                     break;
                 }
+                
 
-            case CardType.TransformEnemySingle:
-                {
-                    if (specificPiece == null) break;
-
-                    Piece target = BoardManager.Instance.GetPieceAt(targetPos);
-
-                    if (target != null && target.owner == 1)
-                    {
-                        target.Transform(specificPiece);
-                    }
-
-                    break;
-                }
-
-            case CardType.TransformAllOwn:
-                {
-                    if (specificPiece == null) break;
-
-                    var pieces = BoardManager.Instance.GetPiecesByOwner(0);
-
-                    foreach (var piece in pieces)
-                    {
-                        piece.Transform(specificPiece);
-                    }
-
-                    break;
-                }
         }
 
 
         AbilityContext context = new AbilityContext
         {
             owner = owner,
+            hasTargetPosition = true,
             targetPosition = targetPos,
             sourceCard = this
         };
