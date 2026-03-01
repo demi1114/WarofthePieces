@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Ability/AddRandomReservePieceByAttribute")]
 public class AddRandomReservePieceByAttributeAbility : Ability
 {
-    public PieceData database;
+    public PieceDatabase database;
     public PieceAttribute targetAttribute;
     public int amount = 1;
 

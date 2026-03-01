@@ -15,6 +15,7 @@ MonoBehaviour:
   cardName: 
   abilities:
   - {fileID: 11400000, guid: a82968c4d26630540b11d39f40087b97, type: 2}
+  - {fileID: 11400000, guid: a82968c4d26630540b11d39f40087b97, type: 2}
   category: 0
   cardType: 0
   targetPieceAttribute: 0

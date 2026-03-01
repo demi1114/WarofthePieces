@@ -3,18 +3,13 @@ using UnityEngine;
 
 public enum CardType
 {
-    Draw,//ƒhƒ[Œn
-    DrawBoth,
+   
     AddMove,//ˆÚ“®Œn
     LoseOwnBoardPieces,//”Õ–ÊƒƒXƒgŒn
     LoseOpponentBoardPieces,
     LoseOwnBoardPiecesRandom,
     LoseOpponentBoardPiecesRandom,
     LoseAllBoardPiecesRandom,
-    LoseEnemyReservePieces,//è‹îƒƒXƒgŒn
-    LoseOwnReservePieces,
-    LoseEnemyBoardByType,
-    LoseOwnReserveByType,
     BuffOwnBoardByTypePermanent,//‹­‰»Œn
     BuffOwnBoardByTypeTemporary,
     DebuffEnemySinglePermanent,//ã‘Ì‰»Œn
@@ -26,8 +21,6 @@ public enum CardType
     ReturnEnemyBoardPieces,//ƒoƒEƒ“ƒXŒn
     ReturnOwnBoardPieces,
     ReturnRandomBoardPieces,
-    AddSpecificReservePiece,//è‹î’Ç‰ÁŒn
-    AddRandomReservePieceByType,
     LoseAllBoardPieces,//”Õ–Ê‘SƒƒXƒg
     SpawnSpecificPieceRandomly,//’¼Ú¢Š«
     TransformOwnSingle,//•ÏgŒn
@@ -65,16 +58,6 @@ public class CardData : ScriptableObject
     {
         switch (cardType)
         {
-            case CardType.DrawBoth:
-                {
-                    for (int i = 0; i < amount; i++)
-                    {
-                        DeckManager.Instance.DrawCard();
-                        EnemyDeckManager.Instance.DrawCard();
-                    }
-                    break;
-                }
-
             case CardType.AddMove:
                 TurnManager.Instance.AddExtraMove(amount);
                 Debug.Log("ˆÚ“®‰ñ” +1");
@@ -162,81 +145,6 @@ public class CardData : ScriptableObject
 
                         allPieces.RemoveAt(randomIndex);
                     }
-                    break;
-                }
-
-            case CardType.LoseEnemyReservePieces:
-                {
-                    var reserve = ReserveManager.Instance.GetReserve(1 - owner);
-
-                    int removeCount = Mathf.Min(targetCount, reserve.Count);
-
-                    for (int i = 0; i < removeCount; i++)
-                    {
-                        ReserveManager.Instance.RemovePiece(owner, reserve.Count - 1);
-                    }
-
-                    break;
-                }
-
-            case CardType.LoseOwnReservePieces:
-                {
-                    var reserve = ReserveManager.Instance.GetReserve(owner);
-
-                    int removeCount = Mathf.Min(targetCount, reserve.Count);
-
-                    for (int i = 0; i < removeCount; i++)
-                    {
-                        ReserveManager.Instance.RemovePiece(owner, reserve.Count - 1);
-                    }
-
-                    break;
-                }
-
-            case CardType.LoseEnemyBoardByType:
-                {
-                    var enemyPieces = BoardManager.Instance.GetPiecesByOwner(1 - owner);
-
-                    List<Piece> filtered = new List<Piece>();
-
-                    foreach (var piece in enemyPieces)
-                    {
-                        if (piece.data.attribute == targetPieceAttribute)
-                            filtered.Add(piece);
-                    }
-
-                    int removeCount = Mathf.Min(targetCount, filtered.Count);
-
-                    for (int i = 0; i < removeCount; i++)
-                    {
-                        BoardManager.Instance.RemovePiece(filtered[i]);
-                    }
-
-                    Debug.Log($"‘Šè‚Ì {targetPieceAttribute} ‚ğ {removeCount} ‘Ì”j‰ó");
-
-                    return true;
-                }
-
-            case CardType.LoseOwnReserveByType:
-                {
-                    var reserve = ReserveManager.Instance.GetReserve(owner);
-
-                    List<int> removeIndexes = new List<int>();
-
-                    for (int i = 0; i < reserve.Count; i++)
-                    {
-                        if (reserve[i].attribute == targetPieceAttribute)
-                            removeIndexes.Add(i);
-                    }
-
-                    int removeCount = Mathf.Min(targetCount, removeIndexes.Count);
-
-                    for (int i = 0; i < removeCount; i++)
-                    {
-                        int index = removeIndexes[removeIndexes.Count - 1 - i];
-                        ReserveManager.Instance.RemovePiece(owner, index);
-                    }
-
                     break;
                 }
 
@@ -388,43 +296,6 @@ public class CardData : ScriptableObject
                         int rand = Random.Range(0, all.Count);
                         BoardManager.Instance.ReturnPieceToReserve(all[rand]);
                         all.RemoveAt(rand);
-                    }
-
-                    break;
-                }
-
-            case CardType.AddSpecificReservePiece:
-                {
-                    if (specificPiece == null) break;
-
-                    for (int i = 0; i < amount; i++)
-                    {
-                        ReserveManager.Instance.AddPiece(owner, specificPiece);
-                    }
-
-                    break;
-                }
-
-            case CardType.AddRandomReservePieceByType:
-                {
-                    if (candidatePieces == null || candidatePieces.Count == 0)
-                        break;
-
-                    List<PieceData> filtered = new List<PieceData>();
-
-                    foreach (var piece in candidatePieces)
-                    {
-                        if (piece.attribute == targetPieceAttribute)
-                            filtered.Add(piece);
-                    }
-
-                    if (filtered.Count == 0)
-                        break;
-
-                    for (int i = 0; i < amount; i++)
-                    {
-                        int rand = Random.Range(0, filtered.Count);
-                        ReserveManager.Instance.AddPiece(owner, filtered[rand]);
                     }
 
                     break;
