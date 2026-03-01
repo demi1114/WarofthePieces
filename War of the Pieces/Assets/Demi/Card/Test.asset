@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 712f4fb1451c182459d5bce3d1a6307d, type: 3}
-  m_Name: New Card Data
+  m_Name: Test
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: 
   abilities:
-  - {fileID: 11400000, guid: 07cebc7d3acc5ee49837283b4a0cc156, type: 2}
+  - {fileID: 11400000, guid: 543ff4aef889dba4fb604bb72df5556a, type: 2}
   category: 0
   cardType: 0
   targetPieceAttribute: 0

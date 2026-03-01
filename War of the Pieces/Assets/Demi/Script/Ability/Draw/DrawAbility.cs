@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//使用者がドローする
 [CreateAssetMenu(menuName = "Ability/Draw")]
 public class DrawAbility : Ability
 {

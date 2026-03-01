@@ -61,7 +61,7 @@ public class CardData : ScriptableObject
     public PieceData specificPiece;          // 特定の駒
     public List<PieceData> candidatePieces;  // ランダム候補リスト
 
-    public virtual bool Resolve(Vector2Int targetPos)
+    public virtual bool Resolve(int owner, Vector2Int targetPos)
     {
         switch (cardType)
         {
@@ -128,20 +128,15 @@ public class CardData : ScriptableObject
 
             case CardType.LoseOpponentBoardPiecesRandom:
                 {
-                    int opponentOwner = 1;
-
-                    var pieces = BoardManager.Instance.GetPiecesByOwner(opponentOwner);
+                    var pieces = BoardManager.Instance.GetPiecesByOwner(1);
 
                     int removeCount = Mathf.Min(targetCount, pieces.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
-                        int randomIndex = Random.Range(0, pieces.Count);
-                        Piece randomPiece = pieces[randomIndex];
-
-                        BoardManager.Instance.RemovePiece(randomPiece);
-
-                        pieces.RemoveAt(randomIndex);
+                        int rand = Random.Range(0, pieces.Count);
+                        BoardManager.Instance.RemovePiece(pieces[rand]);
+                        pieces.RemoveAt(rand);
                     }
                     break;
                 }
@@ -172,14 +167,13 @@ public class CardData : ScriptableObject
 
             case CardType.LoseEnemyReservePieces:
                 {
-                    var reserve = BoardManager.Instance.enemyHandPiece;
+                    var reserve = ReserveManager.Instance.GetReserve(1 - owner);
 
                     int removeCount = Mathf.Min(targetCount, reserve.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
-                        int lastIndex = reserve.Count - 1;
-                        BoardManager.Instance.RemoveEnemyReservePiece(lastIndex);
+                        ReserveManager.Instance.RemovePiece(owner, reserve.Count - 1);
                     }
 
                     break;
@@ -187,23 +181,21 @@ public class CardData : ScriptableObject
 
             case CardType.LoseOwnReservePieces:
                 {
-                    var reserve = BoardManager.Instance.playerHandPiece;
+                    var reserve = ReserveManager.Instance.GetReserve(owner);
 
                     int removeCount = Mathf.Min(targetCount, reserve.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
-                        int lastIndex = reserve.Count - 1;
-                        BoardManager.Instance.RemovePlayerReservePiece(lastIndex);
+                        ReserveManager.Instance.RemovePiece(owner, reserve.Count - 1);
                     }
 
-                    Debug.Log($"自分の手駒を {removeCount} 失いました");
                     break;
                 }
 
             case CardType.LoseEnemyBoardByType:
                 {
-                    var enemyPieces = BoardManager.Instance.GetPiecesByOwner(1);
+                    var enemyPieces = BoardManager.Instance.GetPiecesByOwner(1 - owner);
 
                     List<Piece> filtered = new List<Piece>();
 
@@ -227,28 +219,23 @@ public class CardData : ScriptableObject
 
             case CardType.LoseOwnReserveByType:
                 {
-                    var reserve = BoardManager.Instance.playerHandPiece;
+                    var reserve = ReserveManager.Instance.GetReserve(owner);
 
                     List<int> removeIndexes = new List<int>();
 
                     for (int i = 0; i < reserve.Count; i++)
                     {
                         if (reserve[i].attribute == targetPieceAttribute)
-                        {
                             removeIndexes.Add(i);
-                        }
                     }
 
                     int removeCount = Mathf.Min(targetCount, removeIndexes.Count);
 
                     for (int i = 0; i < removeCount; i++)
                     {
-                        // 後ろから削除（インデックスずれ防止）
                         int index = removeIndexes[removeIndexes.Count - 1 - i];
-                        BoardManager.Instance.RemovePlayerReservePiece(index);
+                        ReserveManager.Instance.RemovePiece(owner, index);
                     }
-
-                    Debug.Log($"自分の手駒 {targetPieceAttribute} を {removeCount} 個ロスト");
 
                     break;
                 }
@@ -412,7 +399,7 @@ public class CardData : ScriptableObject
 
                     for (int i = 0; i < amount; i++)
                     {
-                        BoardManager.Instance.AddPlayerReservePiece(specificPiece);
+                        ReserveManager.Instance.AddPiece(owner, specificPiece);
                     }
 
                     break;
@@ -428,9 +415,7 @@ public class CardData : ScriptableObject
                     foreach (var piece in candidatePieces)
                     {
                         if (piece.attribute == targetPieceAttribute)
-                        {
                             filtered.Add(piece);
-                        }
                     }
 
                     if (filtered.Count == 0)
@@ -439,7 +424,7 @@ public class CardData : ScriptableObject
                     for (int i = 0; i < amount; i++)
                     {
                         int rand = Random.Range(0, filtered.Count);
-                        BoardManager.Instance.AddPlayerReservePiece(filtered[rand]);
+                        ReserveManager.Instance.AddPiece(owner, filtered[rand]);
                     }
 
                     break;
@@ -531,7 +516,7 @@ public class CardData : ScriptableObject
 
         AbilityContext context = new AbilityContext
         {
-            owner = 0,
+            owner = owner,
             targetPosition = targetPos,
             sourceCard = this
         };

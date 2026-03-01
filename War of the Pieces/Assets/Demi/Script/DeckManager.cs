@@ -90,7 +90,7 @@ public class DeckManager : MonoBehaviour
     public void UseCard(int handIndex)
     {
         if (handIndex < 0 || handIndex >= hand.Count) return;
-        CardUseManager.Instance.StartCardUse(hand[handIndex], handIndex);
+        CardUseManager.Instance.StartCardUse(hand[handIndex], handIndex, 0);
     }
 
     public void RemoveCardFromHand(int index)

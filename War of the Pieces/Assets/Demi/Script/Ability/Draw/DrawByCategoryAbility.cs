@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//特定カードサーチ
 [CreateAssetMenu(menuName = "Ability/Draw By Category")]
 public class DrawByCategoryAbility : Ability
 {

@@ -20,8 +20,6 @@ public class BoardManager : MonoBehaviour
     [Header("Player/Enemy Settings")]
     public List<PieceData> initialPieces;   // プレイヤー初期手駒
     public List<PieceData> availablePieces; // 敵駒やランダム生成用
-    public List<PieceData> playerHandPiece = new List<PieceData>();
-    public List<PieceData> enemyHandPiece = new List<PieceData>(); // AI用手駒
 
     private Piece selectedPiece;
     private PieceData selectedPlacePieceData;
@@ -34,16 +32,18 @@ public class BoardManager : MonoBehaviour
         pieceGrid = new Piece[boardSize, boardSize];
         GenerateBoard();
 
-        playerHandPiece = new List<PieceData>(initialPieces);
-        HandUIManager.Instance.RefreshHand();
+        // 初期手駒をReserveに追加
+        foreach (var piece in initialPieces)
+        {
+            ReserveManager.Instance.AddPiece(0, piece);
+        }
+
         UpdatePieceCountUI();
     }
 
     private void Update() => HandleClick();
 
-    // ------------------------
     // 盤面生成・セル設定
-    // ------------------------
     private void GenerateBoard()
     {
         cells = new BoardCell[boardSize, boardSize];
@@ -72,9 +72,7 @@ public class BoardManager : MonoBehaviour
         else r.material.color = Color.white;               // 通常
     }
 
-    // ------------------------
     // 駒操作・配置
-    // ------------------------
     public void SelectPlacePiece(PieceData data)
     {
         selectedPlacePieceData = data;
@@ -166,8 +164,15 @@ public class BoardManager : MonoBehaviour
     {
         if (cell.y != 0) { Debug.Log("自陣ではありません"); return; }
         if (pieceGrid[cell.x, cell.y] != null) { Debug.Log("すでに駒があります"); return; }
-        if (playerHandPiece.Count <= 0) { Debug.Log("手持ち駒がありません"); return; }
         if (selectedPlacePieceData == null) { Debug.Log("駒を選択してください"); return; }
+
+        var reserve = ReserveManager.Instance.GetReserve(0);
+
+        if (!reserve.Contains(selectedPlacePieceData))
+        {
+            Debug.Log("その駒は手駒に存在しません");
+            return;
+        }
 
         Vector3 pos = cell.transform.position + Vector3.up * 0.5f;
         GameObject obj = Instantiate(piecePrefab, pos, Quaternion.identity);
@@ -175,18 +180,18 @@ public class BoardManager : MonoBehaviour
         piece.Initialize(selectedPlacePieceData, 0);
 
         pieceGrid[cell.x, cell.y] = piece;
-        playerHandPiece.Remove(selectedPlacePieceData);
+
+        int index = reserve.IndexOf(selectedPlacePieceData);
+        ReserveManager.Instance.RemovePiece(0, index);
+
         selectedPlacePieceData = null;
 
-        HandUIManager.Instance.RefreshHand();
         UpdatePieceCountUI();
 
         Debug.Log("配置完了");
     }
 
-    // ------------------------
     // 移動処理
-    // ------------------------
     private void HighlightMovableCells()
     {
         List<Vector2Int> movable = selectedPiece.GetMovablePositions(selectedPosition, boardSize);
@@ -317,7 +322,8 @@ public class BoardManager : MonoBehaviour
 
     private bool CheckAnnihilationVictory()
     {
-        if (CountPieces(1) <= 0 && enemyHandPiece.Count <= 0)
+        if (CountPieces(1) <= 0 &&
+        ReserveManager.Instance.GetReserveCount(1) <= 0)
         {
             Debug.Log("プレイヤー勝利！（敵全滅）");
             return true;
@@ -365,9 +371,7 @@ public class BoardManager : MonoBehaviour
         return count;
     }
 
-    // ------------------------
     // 敵AI（テスト用）
-    // ------------------------
     // --- 敵ターン処理呼び出し ---
     public void ExecuteEnemyTurn()
     {
@@ -397,7 +401,8 @@ public class BoardManager : MonoBehaviour
         if (card != null)
         {
             Debug.Log("敵カード使用: " + card.cardName);
-            card.Resolve(Vector2Int.zero); // 今はターゲット無し想定
+            CardUseManager.Instance.StartCardUse(card, -1, 1);
+            CardUseManager.Instance.ResolveCard(Vector2Int.zero);
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -414,23 +419,20 @@ public class BoardManager : MonoBehaviour
     // --- 敵駒ランダム配置 ---
     private void TryPlaceRandomEnemyPiece()
     {
-        if (enemyHandPiece.Count == 0) return;
+        var reserve = ReserveManager.Instance.GetReserve(1);
+        if (reserve.Count == 0) return;
 
         int y = boardSize - 1;
 
-        // 空きマス収集
         List<int> emptyX = new List<int>();
         for (int x = 0; x < boardSize; x++)
-        {
             if (pieceGrid[x, y] == null)
                 emptyX.Add(x);
-        }
 
         if (emptyX.Count == 0) return;
 
-        // 手駒からランダム選択
-        int pieceIndex = Random.Range(0, enemyHandPiece.Count);
-        PieceData data = enemyHandPiece[pieceIndex];
+        int pieceIndex = Random.Range(0, reserve.Count);
+        PieceData data = reserve[pieceIndex];
 
         int chosenX = emptyX[Random.Range(0, emptyX.Count)];
 
@@ -442,10 +444,7 @@ public class BoardManager : MonoBehaviour
 
         pieceGrid[chosenX, y] = piece;
 
-        // 🔥 ここが重要
-        enemyHandPiece.RemoveAt(pieceIndex);
-
-        Debug.Log($"敵駒配置: {data.pieceName} at ({chosenX},{y})");
+        ReserveManager.Instance.RemovePiece(1, pieceIndex);
     }
 
     // --- 盤面上の敵駒ランダム移動 ---
@@ -599,16 +598,7 @@ public class BoardManager : MonoBehaviour
         // 盤面から削除
         pieceGrid[pos.x, pos.y] = null;
 
-        // 手駒に追加
-        if (piece.owner == 0)
-        {
-            playerHandPiece.Add(piece.data);
-            HandUIManager.Instance.RefreshHand();
-        }
-        else
-        {
-            enemyHandPiece.Add(piece.data);
-        }
+        ReserveManager.Instance.AddPiece(piece.owner, piece.data);
 
         Destroy(piece.gameObject);
 
@@ -643,28 +633,6 @@ public class BoardManager : MonoBehaviour
 
         UpdatePieceCountUI();
         CheckDefeatByInvasion();
-    }
-    public void RemoveEnemyReservePiece(int index)
-    {
-        if (index < 0 || index >= enemyHandPiece.Count) return;
-
-        enemyHandPiece.RemoveAt(index);
-    }
-    public void RemovePlayerReservePiece(int index)
-    {
-        if (index < 0 || index >= playerHandPiece.Count) return;
-
-        playerHandPiece.RemoveAt(index);
-        HandUIManager.Instance.RefreshHand();
-    }
-    public void AddPlayerReservePiece(PieceData piece)
-    {
-        if (piece == null) return;
-
-        playerHandPiece.Add(piece);
-        HandUIManager.Instance.RefreshHand();
-
-        Debug.Log($"手駒に追加: {piece.pieceName}");
     }
     public void SpawnSpecificPieceInPlayerArea(PieceData data, Vector2Int pos)
     {

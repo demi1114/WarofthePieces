@@ -25,7 +25,7 @@ public class CardUIManager : MonoBehaviour
             btn.GetComponentInChildren<TMP_Text>().text = card.cardName;
             btn.GetComponent<Button>().onClick.AddListener(() =>
             {
-                CardUseManager.Instance.StartCardUse(card, index);
+                CardUseManager.Instance.StartCardUse(card, index, 0);
             });
         }
     }

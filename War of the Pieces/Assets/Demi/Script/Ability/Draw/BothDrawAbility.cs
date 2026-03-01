@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//‚¨Œİ‚¢‚ªƒhƒ[‚·‚é
 [CreateAssetMenu(menuName = "Ability/Both Draw")]
 public class BothDrawAbility : Ability
 {

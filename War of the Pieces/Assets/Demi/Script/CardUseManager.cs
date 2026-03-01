@@ -6,32 +6,39 @@ public class CardUseManager : MonoBehaviour
 
     private CardData pendingCard;
     private int pendingHandIndex = -1;
+    private int pendingOwner = -1;   // ← 追加
 
     private void Awake() => Instance = this;
 
-    public void StartCardUse(CardData card, int handIndex)
+    public void StartCardUse(CardData card, int handIndex, int owner)
     {
         pendingCard = card;
         pendingHandIndex = handIndex;
-        Debug.Log($"{card.cardName} 使用待機中");
+        pendingOwner = owner;   // ← 保存
+
+        Debug.Log($"{card.cardName} 使用待機中 (owner:{owner})");
     }
 
     public void ResolveCard(Vector2Int targetPosition)
     {
         if (pendingCard == null) return;
 
-        bool success = pendingCard.Resolve(targetPosition);
+        bool success = pendingCard.Resolve(pendingOwner, targetPosition); // ← 修正
 
-        DeckManager.Instance.RemoveCardFromHand(pendingHandIndex);
+        if (success)
+            DeckManager.Instance.RemoveCardFromHand(pendingHandIndex);
 
         pendingCard = null;
         pendingHandIndex = -1;
+        pendingOwner = -1;
     }
 
     public void CancelCardUse()
     {
         pendingCard = null;
         pendingHandIndex = -1;
+        pendingOwner = -1;
+
         Debug.Log("カード使用キャンセル");
     }
 
