@@ -79,11 +79,16 @@ public class TurnManager : MonoBehaviour
         GameUIManager.Instance?.UpdateMoves(remainingMoves);
     }
 
-    public void AddExtraMove(int amount)
+    public int GetCurrentTurnOwner()
     {
-        extraMovesThisTurn += amount;
-        remainingMoves += amount;
+        return isPlayerTurn ? 0 : 1;
+    }
+    public void AddExtraMove(int owner, int amount)
+    {
+        if (owner != GetCurrentTurnOwner()) return;
+        if (amount <= 0) return;
 
+        remainingMoves += amount;
         GameUIManager.Instance?.UpdateMoves(remainingMoves);
     }
     private void ResetTemporaryBuffs(int owner)

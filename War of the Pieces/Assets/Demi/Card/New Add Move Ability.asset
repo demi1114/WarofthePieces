@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4966996a03a43748bfb8f64a4973088, type: 3}
-  m_Name: New Buff Own Board Temporary Ability
-  m_EditorClassIdentifier: Assembly-CSharp::BuffOwnBoardTemporaryAbility
-  targetAttribute: 0
-  amount: 1
+  m_Script: {fileID: 11500000, guid: d7686c020c3fe86469c9ed5a057171f8, type: 3}
+  m_Name: New Add Move Ability
+  m_EditorClassIdentifier: Assembly-CSharp::AddMoveAbility
+  amount: 5
