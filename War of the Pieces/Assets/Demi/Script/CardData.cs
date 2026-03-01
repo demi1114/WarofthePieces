@@ -3,21 +3,14 @@ using UnityEngine;
 
 public enum CardType
 {
-   
-    AddMove,//移動系
     LoseOwnBoardPieces,//盤面ロスト系
     LoseOpponentBoardPieces,
     LoseOwnBoardPiecesRandom,
     LoseOpponentBoardPiecesRandom,
     LoseAllBoardPiecesRandom,
-    BuffOwnBoardByTypePermanent,//強化系
-    BuffOwnBoardByTypeTemporary,
     DebuffEnemySinglePermanent,//弱体化系
     DebuffEnemySingleTemporary,
     DebuffEnemyRandomTemporary,
-    LoseEnemyDeck,//デッキロスト系
-    LoseOwnDeck,
-    LoseBothDeck,
     ReturnEnemyBoardPieces,//バウンス系
     ReturnOwnBoardPieces,
     ReturnRandomBoardPieces,
@@ -58,10 +51,6 @@ public class CardData : ScriptableObject
     {
         switch (cardType)
         {
-           /* case CardType.AddMove:
-                TurnManager.Instance.AddExtraMove(amount);
-                Debug.Log("移動回数 +1");
-                break;*/
 
             case CardType.LoseOwnBoardPieces:
                 {
@@ -332,8 +321,6 @@ public class CardData : ScriptableObject
         {
             ability.OnCardUse(context);
         }
-
-
         return true;
     }
 

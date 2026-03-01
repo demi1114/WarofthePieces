@@ -15,7 +15,6 @@ public class TurnManager : MonoBehaviour
     private float timer;
     public bool isPlayerTurn = true;
     private int remainingMoves;
-    private int extraMovesThisTurn = 0;
 
     private void Awake() => Instance = this;
 
@@ -59,7 +58,6 @@ public class TurnManager : MonoBehaviour
         // ここ追加：ターン終了時に一時バフをリセット
         ResetTemporaryBuffs(isPlayerTurn ? 0 : 1);
 
-        extraMovesThisTurn = 0;
         isPlayerTurn = !isPlayerTurn;
         StartTurn();
     }
