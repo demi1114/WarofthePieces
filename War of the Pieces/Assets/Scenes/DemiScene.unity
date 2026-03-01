@@ -456,17 +456,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeckManager
   selectedDeck: {fileID: 11400000, guid: ce41ec268340df3499fb7a97950454b3, type: 2}
-  deckList:
-  - cardData: {fileID: 11400000, guid: 2df1e6a7e104a3146a1e47feb4925cd8, type: 2}
-    count: 5
-  - cardData: {fileID: 11400000, guid: 35788deb9c9673f4f98b8a287e03eb1e, type: 2}
-    count: 4
-  - cardData: {fileID: 11400000, guid: 86b053a60e34d69419856298e01b0c47, type: 2}
-    count: 4
-  - cardData: {fileID: 11400000, guid: 33516b4b1ecf7d14fba63eece30b817e, type: 2}
-    count: 4
-  - cardData: {fileID: 11400000, guid: 7637f5f151ea31746a59486f0135f8b4, type: 2}
-    count: 3
+  deckList: []
   hand: []
   maxHandSize: 8
 --- !u!4 &370988997
@@ -2754,6 +2744,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e4592a5d25df94293a560205da1c7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ReserveUIManager
+  owner: 0
   handArea: {fileID: 1057843509}
   handButtonPrefab: {fileID: 8968321681337313505, guid: 9367ff76422729549b0fd77cbe3ba055, type: 3}
 --- !u!1 &2083653204

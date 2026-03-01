@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum PieceRace
@@ -31,4 +32,16 @@ public class PieceData : ScriptableObject
 
     [Header("Battle Stats")]
     public int basePower = 1;
+
+    public List<PieceData> allPieces;
+
+    public List<PieceData> GetByRace(PieceRace race)
+    {
+        return allPieces.FindAll(p => p.race == race);
+    }
+
+    public List<PieceData> GetByAttribute(PieceAttribute attribute)
+    {
+        return allPieces.FindAll(p => p.attribute == attribute);
+    }
 }

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Piece00 1
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
   pieceName: "\u3088\u3046\u305B\u3044"
+  race: 2
   attribute: 1
   movePattern: {fileID: 11400000, guid: 4b6fca3223b674143a9301081dd6ec5e, type: 2}
   basePower: 1
+  allPieces: []

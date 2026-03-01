@@ -26,7 +26,7 @@ public class ReserveManager : MonoBehaviour
         return GetReserve(owner).Count;
     }
 
-    // ===== 追加 =====
+    //追加
     public void AddPiece(int owner, PieceData piece)
     {
         if (piece == null) return;
@@ -35,7 +35,7 @@ public class ReserveManager : MonoBehaviour
         OnReserveChanged?.Invoke();
     }
 
-    // ===== 指定削除 =====
+    //指定削除
     public void RemovePiece(int owner, int index)
     {
         var reserve = GetReserve(owner);
@@ -44,8 +44,45 @@ public class ReserveManager : MonoBehaviour
         reserve.RemoveAt(index);
         OnReserveChanged?.Invoke();
     }
+    //race指定ランダム削除
+    public void RemoveRandomPieceByRace(int owner, PieceRace race)
+    {
+        var reserve = GetReserve(owner);
 
-    // ===== ランダム削除 =====
+        List<int> candidates = new List<int>();
+
+        for (int i = 0; i < reserve.Count; i++)
+        {
+            if (reserve[i].race == race)
+                candidates.Add(i);
+        }
+
+        if (candidates.Count == 0) return;
+
+        int rand = UnityEngine.Random.Range(0, candidates.Count);
+        RemovePiece(owner, candidates[rand]);
+    }
+
+    //attribute指定ランダム削除
+    public void RemoveRandomPieceByAttribute(int owner, PieceAttribute attribute)
+    {
+        var reserve = GetReserve(owner);
+
+        List<int> candidates = new List<int>();
+
+        for (int i = 0; i < reserve.Count; i++)
+        {
+            if (reserve[i].attribute == attribute)
+                candidates.Add(i);
+        }
+
+        if (candidates.Count == 0) return;
+
+        int rand = UnityEngine.Random.Range(0, candidates.Count);
+        RemovePiece(owner, candidates[rand]);
+    }
+
+    //ランダム削除
     public void RemoveRandomPiece(int owner)
     {
         var reserve = GetReserve(owner);
