@@ -10,10 +10,7 @@ public class DrawAbility : Ability
     {
         for (int i = 0; i < amount; i++)
         {
-            if (context.owner == 0)
-                DeckManager.Instance.DrawCard();
-            else
-                EnemyDeckManager.Instance.DrawCard();
+            DeckManager.Instance.DrawCard(context.owner);
         }
     }
 }

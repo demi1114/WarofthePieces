@@ -233,25 +233,6 @@ public class CardData : ScriptableObject
                     break;
                 }
 
-            case CardType.LoseEnemyDeck:
-                {
-                    EnemyDeckManager.Instance.RemoveTopCards(amount);
-                    break;
-                }
-
-            case CardType.LoseOwnDeck:
-                {
-                    DeckManager.Instance.RemoveTopCards(amount);
-                    break;
-                }
-
-            case CardType.LoseBothDeck:
-                {
-                    DeckManager.Instance.RemoveTopCards(amount);
-                    EnemyDeckManager.Instance.RemoveTopCards(amount);
-                    break;
-                }
-
             case CardType.ReturnOwnBoardPieces:
                 {
                     var pieces = BoardManager.Instance.GetPiecesByOwner(0);

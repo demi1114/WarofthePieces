@@ -26,7 +26,7 @@ public class CardUseManager : MonoBehaviour
         bool success = pendingCard.Resolve(pendingOwner, targetPosition); // Å© èCê≥
 
         if (success)
-            DeckManager.Instance.RemoveCardFromHand(pendingHandIndex);
+            DeckManager.Instance.RemoveCardFromHand(pendingOwner, pendingHandIndex);
 
         pendingCard = null;
         pendingHandIndex = -1;

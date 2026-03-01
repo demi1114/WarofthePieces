@@ -455,10 +455,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a7fad49dcce5e74bb915bb326e05e53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeckManager
-  selectedDeck: {fileID: 11400000, guid: ce41ec268340df3499fb7a97950454b3, type: 2}
-  deckList: []
-  hand: []
-  maxHandSize: 8
+  playerDeckData: {fileID: 11400000, guid: ce41ec268340df3499fb7a97950454b3, type: 2}
+  enemyDeckData: {fileID: 11400000, guid: 36430402265581748a7e559ac56052f1, type: 2}
+  playerMaxHandSize: 8
+  enemyMaxHandSize: 5
 --- !u!4 &370988997
 Transform:
   m_ObjectHideFlags: 0

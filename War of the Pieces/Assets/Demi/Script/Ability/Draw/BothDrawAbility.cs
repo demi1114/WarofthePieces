@@ -10,8 +10,8 @@ public class BothDrawAbility : Ability
     {
         for (int i = 0; i < amount; i++)
         {
-            DeckManager.Instance.DrawCard();
-            EnemyDeckManager.Instance.DrawCard();
+            DeckManager.Instance.DrawCard(context.owner);
+            DeckManager.Instance.DrawCard(1 - context.owner);
         }
     }
 }

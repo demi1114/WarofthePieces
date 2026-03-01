@@ -11,10 +11,7 @@ public class DrawByCategoryAbility : Ability
     {
         for (int i = 0; i < amount; i++)
         {
-            if (context.owner == 0)
-                DeckManager.Instance.DrawCardByCategory(category);
-            else
-                EnemyDeckManager.Instance.DrawCardByCategory(category);
+            DeckManager.Instance.DrawCardByCategory(context.owner, category);
         }
     }
 }

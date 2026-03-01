@@ -5,99 +5,177 @@ using UnityEngine.InputSystem;
 public class DeckManager : MonoBehaviour
 {
     public static DeckManager Instance;
-    public DeckData selectedDeck;
 
-    public List<DeckEntry> deckList = new List<DeckEntry>();
-    private List<CardData> runtimeDeck = new List<CardData>();
-    public List<CardData> hand = new List<CardData>();
+    [Header("Deck Data")]
+    public DeckData playerDeckData;
+    public DeckData enemyDeckData;
 
-    public int maxHandSize = 8;
+    private List<CardData> playerDeck = new List<CardData>();
+    private List<CardData> enemyDeck = new List<CardData>();
+
+    private List<CardData> playerHand = new List<CardData>();
+    private List<CardData> enemyHand = new List<CardData>();
+
+    public int playerMaxHandSize = 8;
+    public int enemyMaxHandSize = 5;
 
     private void Awake()
     {
         Instance = this;
-        InitializeDeck(); 
+        InitializeDeck(0);
+        InitializeDeck(1);
     }
 
-    public void InitializeDeck()
+    // =============================
+    // 初期化
+    // =============================
+
+    public void InitializeDeck(int owner)
     {
-        if (selectedDeck == null || !selectedDeck.IsValidDeck())
+        DeckData source = owner == 0 ? playerDeckData : enemyDeckData;
+
+        if (source == null || !source.IsValidDeck())
         {
-            Debug.LogError("デッキが20枚ではありません");
+            Debug.LogError($"{owner} のデッキが20枚ではありません");
             return;
         }
 
-        runtimeDeck = new List<CardData>(selectedDeck.cards);
-        ShuffleDeck();
+        var runtime = new List<CardData>(source.cards);
+        Shuffle(runtime);
+
+        if (owner == 0)
+            playerDeck = runtime;
+        else
+            enemyDeck = runtime;
     }
-    private void ShuffleDeck()
+
+    private void Shuffle(List<CardData> deck)
     {
-        for (int i = 0; i < runtimeDeck.Count; i++)
+        for (int i = 0; i < deck.Count; i++)
         {
-            int rand = Random.Range(i, runtimeDeck.Count);
-            (runtimeDeck[i], runtimeDeck[rand]) = (runtimeDeck[rand], runtimeDeck[i]);
+            int rand = Random.Range(i, deck.Count);
+            (deck[i], deck[rand]) = (deck[rand], deck[i]);
         }
     }
 
-    private void Update()
+    // =============================
+    // 共通取得
+    // =============================
+
+    private List<CardData> GetDeck(int owner)
     {
-        if (Keyboard.current.digit1Key.wasPressedThisFrame) UseCard(0);
+        return owner == 0 ? playerDeck : enemyDeck;
     }
 
-    public void DrawCard()
+    private List<CardData> GetHand(int owner)
     {
-        if (runtimeDeck.Count == 0 || hand.Count >= maxHandSize) return;
+        return owner == 0 ? playerHand : enemyHand;
+    }
 
-        CardData drawn = runtimeDeck[0];
-        runtimeDeck.RemoveAt(0);
+    private int GetMaxHandSize(int owner)
+    {
+        return owner == 0 ? playerMaxHandSize : enemyMaxHandSize;
+    }
+
+    // =============================
+    // ドロー
+    // =============================
+
+    public void DrawCard(int owner)
+    {
+        var deck = GetDeck(owner);
+        var hand = GetHand(owner);
+
+        if (deck.Count == 0 || hand.Count >= GetMaxHandSize(owner))
+            return;
+
+        CardData drawn = deck[0];
+        deck.RemoveAt(0);
         hand.Add(drawn);
 
-        CardUIManager.Instance?.RefreshHand(hand);
-        Debug.Log($"ドロー: {drawn.cardName}");
+        if (owner == 0)
+            CardUIManager.Instance?.RefreshHand(hand);
+
+        Debug.Log($"{owner} ドロー: {drawn.cardName}");
     }
 
-    public void DrawCardByCategory(CardCategory category)
+    public void DrawCardByCategory(int owner, CardCategory category)
     {
-        for (int i = 0; i < runtimeDeck.Count; i++)
+        var deck = GetDeck(owner);
+        var hand = GetHand(owner);
+
+        for (int i = 0; i < deck.Count; i++)
         {
-            if (runtimeDeck[i].category == category)
+            if (deck[i].category == category)
             {
-                CardData card = runtimeDeck[i];
-                runtimeDeck.RemoveAt(i);
+                CardData card = deck[i];
+                deck.RemoveAt(i);
                 hand.Add(card);
-                CardUIManager.Instance?.RefreshHand(hand);
-                Debug.Log($"特定タイプドロー: {card.cardName}");
+
+                if (owner == 0)
+                    CardUIManager.Instance?.RefreshHand(hand);
+
+                Debug.Log($"{owner} 特定タイプドロー: {card.cardName}");
                 return;
             }
-            Debug.Log("該当するカードがデッキにありません");
         }
+
+        Debug.Log("該当カードなし");
     }
 
-    public void RemoveTopCards(int count)
-    {
-        if (runtimeDeck.Count == 0) return;
+    // =============================
+    // デッキロスト
+    // =============================
 
-        int removeCount = Mathf.Min(count, runtimeDeck.Count);
+    public void RemoveTopCards(int owner, int count)
+    {
+        var deck = GetDeck(owner);
+
+        if (deck.Count == 0) return;
+
+        int removeCount = Mathf.Min(count, deck.Count);
 
         for (int i = 0; i < removeCount; i++)
         {
-            runtimeDeck.RemoveAt(0);
+            deck.RemoveAt(0);
         }
 
-        Debug.Log($"デッキを {removeCount} 枚ロストしました");
+        Debug.Log($"{owner} のデッキを {removeCount} 枚ロスト");
     }
+
+    // =============================
+    // 手札操作
+    // =============================
 
     public void UseCard(int handIndex)
     {
-        if (handIndex < 0 || handIndex >= hand.Count) return;
-        CardUseManager.Instance.StartCardUse(hand[handIndex], handIndex, 0);
+        if (handIndex < 0 || handIndex >= playerHand.Count) return;
+
+        CardUseManager.Instance.StartCardUse(playerHand[handIndex], handIndex, 0);
     }
 
-    public void RemoveCardFromHand(int index)
+    public void RemoveCardFromHand(int owner, int index)
     {
+        var hand = GetHand(owner);
+
         if (index < 0 || index >= hand.Count) return;
+
         hand.RemoveAt(index);
-        CardUIManager.Instance?.RefreshHand(hand);
+
+        if (owner == 0)
+            CardUIManager.Instance?.RefreshHand(hand);
     }
 
+    public CardData GetRandomCardFromHand(int owner)
+    {
+        var hand = GetHand(owner);
+
+        if (hand.Count == 0) return null;
+
+        int index = Random.Range(0, hand.Count);
+        CardData card = hand[index];
+        hand.RemoveAt(index);
+
+        return card;
+    }
 }
