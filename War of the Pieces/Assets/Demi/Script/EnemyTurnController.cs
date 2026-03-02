@@ -152,7 +152,9 @@ public class EnemyTurnController : MonoBehaviour
         if (target != null && target.owner != piece.owner)
         {
             BattleResult result =
-                BattleManager.Instance.ResolveBattle(piece, target);
+                BattleManager.Instance.ResolveBattle(piece, target,
+                BoardManager.Instance.GetBoardCount(piece.owner),
+                BoardManager.Instance.GetBoardCount(target.owner));
 
             Piece winner = result.winner;
             Piece loser = result.loser;

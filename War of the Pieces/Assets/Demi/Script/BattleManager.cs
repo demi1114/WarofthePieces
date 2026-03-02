@@ -15,20 +15,29 @@ public class BattleResult
 public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance;
+    private void Awake()
+    {
+        Instance = this;
+    }
 
-    private void Awake() => Instance = this;
 
-    public BattleResult ResolveBattle(Piece attacker, Piece defender)
+    public BattleResult ResolveBattle(
+    Piece attacker,
+    Piece defender,
+    int attackerBoardCount,
+    int defenderBoardCount)
     {
         int attackerScore =
-            BoardManager.Instance.GetBoardCount(attacker.owner)
-            + attacker.CurrentPower;
+            attackerBoardCount + attacker.CurrentPower;
 
         int defenderScore =
-            BoardManager.Instance.GetBoardCount(defender.owner)
-            + defender.CurrentPower;
+            defenderBoardCount + defender.CurrentPower;
 
-        int bonus = GetAttributeModifier(attacker.GetAttribute(), defender.GetAttribute());
+        int bonus =
+            GetAttributeModifier(
+                attacker.GetAttribute(),
+                defender.GetAttribute());
+
         attackerScore += bonus;
 
         if (attackerScore > defenderScore)
@@ -49,6 +58,13 @@ public class BattleManager : MonoBehaviour
         (a == PieceAttribute.Demon && b == PieceAttribute.Fairy) ||
         (a == PieceAttribute.Fairy && b == PieceAttribute.Human);
 
-    public bool PredictWinner(Piece attacker, Piece defender) =>
-        ResolveBattle(attacker, defender).winner == attacker;
+    public bool PredictWinner(Piece attacker, Piece defender, int attackerBoardCount, int defenderBoardCount)
+    {
+        return ResolveBattle(
+            attacker,
+            defender,
+            attackerBoardCount,
+            defenderBoardCount
+        ).winner == attacker;
+    }
 }

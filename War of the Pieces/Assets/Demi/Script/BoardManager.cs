@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -233,7 +232,19 @@ public class BoardManager : MonoBehaviour
         // 戦闘
         if (targetPiece != null && targetPiece.owner != selectedPiece.owner)
         {
-            BattleResult result = BattleManager.Instance.ResolveBattle(selectedPiece, targetPiece);
+            int attackerCount =
+                GetBoardCount(selectedPiece.owner);
+
+            int defenderCount =
+                GetBoardCount(targetPiece.owner);
+
+            BattleResult result =
+                BattleManager.Instance.ResolveBattle(
+                    selectedPiece,
+                    targetPiece,
+                    attackerCount,
+                    defenderCount
+                );
 
             Piece winner = result.winner;
             Piece loser = result.loser;
@@ -290,9 +301,7 @@ public class BoardManager : MonoBehaviour
         return pieceGrid[pos.x, pos.y];
     }
 
-    // ------------------------
     // 戦闘関連
-    // ------------------------
     public int GetBoardCount(int owner)
     {
         int count = 0;
@@ -304,7 +313,8 @@ public class BoardManager : MonoBehaviour
 
     private void ShowBattlePrediction(Piece attacker, Piece defender)
     {
-        bool willWin = BattleManager.Instance.PredictWinner(attacker, defender);
+        bool willWin = BattleManager.Instance.PredictWinner(attacker, defender,
+            GetBoardCount(attacker.owner), GetBoardCount(defender.owner));
         GameUIManager.Instance?.ShowPrediction(willWin, false);
     }
 
@@ -324,7 +334,6 @@ public class BoardManager : MonoBehaviour
 
     // 敵AI（テスト用）
     // --- 敵ターン処理呼び出し ---
-
     public void MovePieceInternal(Piece piece, Vector2Int from, Vector2Int to)
     {
         pieceGrid[to.x, to.y] = piece;
@@ -414,9 +423,7 @@ public class BoardManager : MonoBehaviour
         SpawnPieceOnBoard(newData, owner, pos);
     }
 
-    // ------------------------
     // クリック処理
-    // ------------------------
     private void HandleClick()
     {
         if (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame) return;
