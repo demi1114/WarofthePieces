@@ -47,7 +47,6 @@ public class EnemyTurnController : MonoBehaviour
             bool moved = TryRandomMoveEnemyPiece();
             if (!moved) break;
 
-            TurnManager.Instance.ConsumeMove();
             yield return new WaitForSeconds(actionDelay);
         }
 
@@ -113,19 +112,17 @@ public class EnemyTurnController : MonoBehaviour
         if (enemyPieces.Count == 0) return false;
 
         Piece piece = enemyPieces[Random.Range(0, enemyPieces.Count)];
-        Vector2Int from = BoardManager.Instance.FindPiecePosition(piece);
+        Vector2Int from =
+            BoardManager.Instance.FindPiecePosition(piece);
 
-        var movable = piece.GetMovablePositions(from,
+        var movable =
+            piece.GetMovablePositions(from,
             BoardManager.Instance.boardSize);
-
-        if (movable.Count == 0) return false;
 
         List<Vector2Int> validMoves = new List<Vector2Int>();
 
         foreach (var move in movable)
         {
-            if (!IsInsideBoard(move)) continue;
-
             Piece target =
                 BoardManager.Instance.GetPieceAt(move);
 
@@ -138,43 +135,9 @@ public class EnemyTurnController : MonoBehaviour
         Vector2Int to =
             validMoves[Random.Range(0, validMoves.Count)];
 
-        ExecuteEnemyMove(piece, from, to);
+        BoardManager.Instance.TryMovePiece(piece, from, to);
 
         return true;
     }
 
-    private void ExecuteEnemyMove(Piece piece, Vector2Int from, Vector2Int to)
-    {
-        Piece target =
-            BoardManager.Instance.GetPieceAt(to);
-
-        // í“¬
-        if (target != null && target.owner != piece.owner)
-        {
-            BattleResult result =
-                BattleManager.Instance.ResolveBattle(piece, target,
-                BoardManager.Instance.GetBoardCount(piece.owner),
-                BoardManager.Instance.GetBoardCount(target.owner));
-
-            Piece winner = result.winner;
-            Piece loser = result.loser;
-
-            loser.AddTemporaryPower(-loser.CurrentPower);
-
-            if (winner != piece)
-                return; // •‰‚¯‚½‚çˆÚ“®‚µ‚È‚¢
-        }
-
-        BoardManager.Instance.MovePieceInternal(piece, from, to);
-
-        Debug.Log("“G‹îˆÚ“®");
-    }
-
-    private bool IsInsideBoard(Vector2Int pos)
-    {
-        int size = BoardManager.Instance.boardSize;
-
-        return pos.x >= 0 && pos.x < size &&
-               pos.y >= 0 && pos.y < size;
-    }
 }

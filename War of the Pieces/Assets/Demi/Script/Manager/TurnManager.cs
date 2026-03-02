@@ -68,7 +68,13 @@ public class TurnManager : MonoBehaviour
     }
 
     // 移動関連
-    public bool CanMove() => isPlayerTurn && remainingMoves > 0;
+    public bool CanMove(int owner)
+    {
+        if (owner != GetCurrentTurnOwner())
+            return false;
+
+        return remainingMoves > 0;
+    }
 
     public void ConsumeMove()
     {

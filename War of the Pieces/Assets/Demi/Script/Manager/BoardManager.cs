@@ -103,11 +103,21 @@ public class BoardManager : MonoBehaviour
         // ② 移動可能駒が選択中
         if (selectedPiece != null)
         {
+            Vector2Int from = selectedPosition;
+            Vector2Int to = new Vector2Int(cell.x, cell.y);
+
             Piece targetPiece = pieceGrid[cell.x, cell.y];
             if (targetPiece != null && targetPiece.owner != 0)
                 ShowBattlePrediction(selectedPiece, targetPiece);
 
-            TryMovePiece(cell.x, cell.y);
+            bool moved = TryMovePiece(selectedPiece, from, to);
+
+            if (moved || !TurnManager.Instance.CanMove(0))
+            {
+                ClearHighlights();
+                selectedPiece = null;
+            }
+
             return;
         }
 
@@ -218,32 +228,31 @@ public class BoardManager : MonoBehaviour
         highlightedCells.Clear();
     }
 
-    private void TryMovePiece(int targetX, int targetY)
+    public bool TryMovePiece(Piece piece, Vector2Int from, Vector2Int to)
     {
-        if (!TurnManager.Instance.CanMove()) return;
+        if (!TurnManager.Instance.CanMove(piece.owner))
+            return false;
 
-        Vector2Int target = new Vector2Int(targetX, targetY);
-        List<Vector2Int> movable = selectedPiece.GetMovablePositions(selectedPosition, boardSize);
+        if (piece.owner != TurnManager.Instance.GetCurrentTurnOwner())
+            return false;
 
-        if (!movable.Contains(target)) { Debug.Log("そこには移動できません"); return; }
+        List<Vector2Int> movable =
+            piece.GetMovablePositions(from, boardSize);
 
-        Piece targetPiece = pieceGrid[targetX, targetY];
+        if (!movable.Contains(to))
+            return false;
 
-        // 戦闘
-        if (targetPiece != null && targetPiece.owner != selectedPiece.owner)
+        Piece target = GetPieceAt(to);
+
+        // --- 戦闘 ---
+        if (target != null && target.owner != piece.owner)
         {
-            int attackerCount =
-                GetBoardCount(selectedPiece.owner);
-
-            int defenderCount =
-                GetBoardCount(targetPiece.owner);
-
             BattleResult result =
                 BattleManager.Instance.ResolveBattle(
-                    selectedPiece,
-                    targetPiece,
-                    attackerCount,
-                    defenderCount
+                    piece,
+                    target,
+                    GetBoardCount(piece.owner),
+                    GetBoardCount(target.owner)
                 );
 
             Piece winner = result.winner;
@@ -251,39 +260,26 @@ public class BoardManager : MonoBehaviour
 
             loser.AddTemporaryPower(-loser.CurrentPower);
 
-            if (winner == selectedPiece)
+            if (winner != piece)
             {
-                pieceGrid[targetX, targetY] = selectedPiece;
-                pieceGrid[selectedPosition.x, selectedPosition.y] = null;
-                selectedPiece.transform.position = cells[targetX, targetY].transform.position + Vector3.up * 0.5f;
+                TurnManager.Instance.ConsumeMove();
+                VictoryManager.Instance.CheckAfterAction();
+                return false;
             }
-            else pieceGrid[selectedPosition.x, selectedPosition.y] = null;
-
-            ClearHighlights();
-            selectedPiece = null;
-            TurnManager.Instance.ConsumeMove();
-
-            VictoryManager.Instance.CheckAfterAction();
-            return;
         }
 
-        // 通常移動
-        MovePiece(targetX, targetY);
+        // --- 実際の移動 ---
+        pieceGrid[to.x, to.y] = piece;
+        pieceGrid[from.x, from.y] = null;
+
+        piece.transform.position =
+            cells[to.x, to.y].transform.position + Vector3.up * 0.5f;
+
         TurnManager.Instance.ConsumeMove();
-    }
-
-    private void MovePiece(int x, int y)
-    {
-        pieceGrid[x, y] = selectedPiece;
-        pieceGrid[selectedPosition.x, selectedPosition.y] = null;
-        selectedPiece.transform.position = cells[x, y].transform.position + Vector3.up * 0.5f;
-
-        ClearHighlights();
-        Debug.Log("移動完了（このターンはもう移動できません）");
-
-        selectedPiece = null;
         VictoryManager.Instance.CheckAfterAction();
         UpdatePieceCountUI();
+
+        return true;
     }
 
     private bool IsInsideBoard(Vector2Int pos)
@@ -330,19 +326,6 @@ public class BoardManager : MonoBehaviour
             for (int x = 0; x < boardSize; x++)
                 if (pieceGrid[x, y] != null && pieceGrid[x, y].owner == owner) count++;
         return count;
-    }
-
-    // 敵AI（テスト用）
-    // --- 敵ターン処理呼び出し ---
-    public void MovePieceInternal(Piece piece, Vector2Int from, Vector2Int to)
-    {
-        pieceGrid[to.x, to.y] = piece;
-        pieceGrid[from.x, from.y] = null;
-
-        piece.transform.position =
-            cells[to.x, to.y].transform.position + Vector3.up * 0.5f;
-
-        UpdatePieceCountUI();
     }
 
     // --- ヘルパー関数 ---
