@@ -46,7 +46,7 @@ public class TurnManager : MonoBehaviour
             if (endTurnButton != null)
                 endTurnButton.interactable = false;
 
-            BoardManager.Instance.ExecuteEnemyTurn();
+            EnemyTurnController.Instance.ExecuteTurn();
         }
 
         GameUIManager.Instance?.UpdateTurn(isPlayerTurn);

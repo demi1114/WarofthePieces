@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c47bd4512ccc614c99a9afbef7e6355, type: 3}
-  m_Name: New Debuff Random Enemy Temporary Ability
-  m_EditorClassIdentifier: Assembly-CSharp::DebuffRandomEnemyTemporaryAbility
-  amount: 3
-  count: 1
+  m_Script: {fileID: 11500000, guid: 0d1f96aa5244aa54b98ba2dc7da9e797, type: 3}
+  m_Name: New Bounce Random Pieces Ability
+  m_EditorClassIdentifier: Assembly-CSharp::BounceRandomPiecesAbility
+  amount: 0

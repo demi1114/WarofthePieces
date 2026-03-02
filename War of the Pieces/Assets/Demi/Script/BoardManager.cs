@@ -252,8 +252,7 @@ public class BoardManager : MonoBehaviour
             selectedPiece = null;
             TurnManager.Instance.ConsumeMove();
 
-            CheckAnnihilationVictory();
-            CheckInvasionVictory();
+            VictoryManager.Instance.CheckAfterAction();
             return;
         }
 
@@ -272,7 +271,7 @@ public class BoardManager : MonoBehaviour
         Debug.Log("移動完了（このターンはもう移動できません）");
 
         selectedPiece = null;
-        CheckInvasionVictory();
+        VictoryManager.Instance.CheckAfterAction();
         UpdatePieceCountUI();
     }
 
@@ -309,43 +308,6 @@ public class BoardManager : MonoBehaviour
         GameUIManager.Instance?.ShowPrediction(willWin, false);
     }
 
-    private bool CheckAnnihilationVictory()
-    {
-        if (CountPieces(1) <= 0 &&
-        ReserveManager.Instance.GetReserveCount(1) <= 0)
-        {
-            Debug.Log("プレイヤー勝利！（敵全滅）");
-            return true;
-        }
-        return false;
-    }
-
-    private bool CheckInvasionVictory()
-    {
-        for (int x = 0; x < boardSize; x++)
-            if (pieceGrid[x, boardSize - 1]?.owner == 0)
-            {
-                Debug.Log("プレイヤー勝利！（敵陣到達）");
-                return true;
-            }
-
-        return false;
-    }
-
-    private bool CheckDefeatByInvasion()
-    {
-        for (int x = 0; x < boardSize; x++)
-        {
-            if (pieceGrid[x, 0] != null && pieceGrid[x, 0].owner == 1)
-            {
-                Debug.Log("ゲーム敗北！（敵が自陣に到達）");
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private void UpdatePieceCountUI()
     {
         GameUIManager.Instance?.UpdatePieceCounts(CountPieces(0), CountPieces(1));
@@ -362,159 +324,19 @@ public class BoardManager : MonoBehaviour
 
     // 敵AI（テスト用）
     // --- 敵ターン処理呼び出し ---
-    public void ExecuteEnemyTurn()
+
+    public void MovePieceInternal(Piece piece, Vector2Int from, Vector2Int to)
     {
-        StartCoroutine(EnemyTurnRoutine());
-    }
+        pieceGrid[to.x, to.y] = piece;
+        pieceGrid[from.x, from.y] = null;
 
-    private IEnumerator EnemyTurnRoutine()
-    {
-        Debug.Log("敵ターン開始");
-        yield return new WaitForSeconds(0.5f); // 遅延を少し入れると見やすい
+        piece.transform.position =
+            cells[to.x, to.y].transform.position + Vector3.up * 0.5f;
 
-        // ドロー
-        EnemyDeckManager.Instance.DrawCard();
-        yield return new WaitForSeconds(0.5f);
-
-        // 駒配置を2回試行（moveとは無関係）
-        for (int i = 0; i < 2; i++)
-        {
-            bool placed = TryPlaceRandomEnemyPiece();
-            if (!placed) break;
-
-            yield return new WaitForSeconds(0.5f);
-        }
-
-        // 移動（remainingMoves分だけ）
-        int moveCount = TurnManager.Instance.GetRemainingMoves();
-
-        for (int i = 0; i < moveCount; i++)
-        {
-            bool moved = TryRandomMoveEnemyPiece();
-            if (!moved) break;
-
-            TurnManager.Instance.ConsumeMove();
-            yield return new WaitForSeconds(0.5f);
-        }
-
-
-        // カード使用
-        CardData card = EnemyDeckManager.Instance.GetRandomCardFromHand();
-
-        if (card != null)
-        {
-            Debug.Log("敵カード使用: " + card.cardName);
-            CardUseManager.Instance.StartCardUse(card, -1, 1);
-            CardUseManager.Instance.ResolveCard(Vector2Int.zero);
-            yield return new WaitForSeconds(0.5f);
-        }
-
-        // 3. ターン終了
-        TurnManager.Instance.EndTurn();
-    }
-
-    // --- 敵駒ランダム配置 ---
-    private bool TryPlaceRandomEnemyPiece()
-    {
-        var reserve = ReserveManager.Instance.GetReserve(1);
-        if (reserve.Count == 0) return false;
-
-        int y = boardSize - 1;
-
-        List<int> emptyX = new List<int>();
-        for (int x = 0; x < boardSize; x++)
-            if (pieceGrid[x, y] == null)
-                emptyX.Add(x);
-
-        if (emptyX.Count == 0) return false;
-
-        int pieceIndex = Random.Range(0, reserve.Count);
-        PieceData data = reserve[pieceIndex];
-
-        int chosenX = emptyX[Random.Range(0, emptyX.Count)];
-
-        Vector3 pos = cells[chosenX, y].transform.position + Vector3.up * 0.5f;
-        GameObject obj = Instantiate(piecePrefab, pos, Quaternion.identity);
-
-        Piece piece = obj.GetComponent<Piece>();
-        piece.Initialize(data, 1);
-
-        pieceGrid[chosenX, y] = piece;
-        ReserveManager.Instance.RemovePiece(1, pieceIndex);
-
-        Debug.Log("敵駒配置");
-
-        return true;
-    }
-
-    // --- 盤面上の敵駒ランダム移動 ---
-    private bool TryRandomMoveEnemyPiece()
-    {
-        var enemyPieces = GetEnemyPiecesOnBoard();
-        if (enemyPieces.Count == 0) return false;
-
-        Piece piece = enemyPieces[Random.Range(0, enemyPieces.Count)];
-        Vector2Int pos = FindPiecePosition(piece);
-
-        var movable = piece.GetMovablePositions(pos, boardSize);
-        if (movable.Count == 0) return false;
-
-        List<Vector2Int> validMoves = new List<Vector2Int>();
-
-        foreach (var move in movable)
-        {
-            if (!IsInsideBoard(move)) continue;
-
-            Piece target = pieceGrid[move.x, move.y];
-
-            if (target == null || target.owner != 1)
-                validMoves.Add(move);
-        }
-
-        if (validMoves.Count == 0) return false;
-
-        Vector2Int targetPos = validMoves[Random.Range(0, validMoves.Count)];
-
-        MoveEnemyPiece(piece, pos, targetPos);
-
-        Debug.Log("敵駒移動");
-
-        return true;
+        UpdatePieceCountUI();
     }
 
     // --- ヘルパー関数 ---
-    private List<Piece> GetEnemyPiecesOnBoard()
-    {
-        List<Piece> result = new List<Piece>();
-
-        for (int x = 0; x < boardSize; x++)
-        {
-            for (int y = 0; y < boardSize; y++)
-            {
-                Piece piece = pieceGrid[x, y];
-                if (piece != null && piece.owner == 1)
-                    result.Add(piece);
-            }
-        }
-
-        return result;
-    }
-    public List<Piece> GetPlayerPiecesOnBoard()
-    {
-        List<Piece> result = new List<Piece>();
-
-        for (int x = 0; x < boardSize; x++)
-        {
-            for (int y = 0; y < boardSize; y++)
-            {
-                Piece piece = pieceGrid[x, y];
-                if (piece != null && piece.owner == 0)
-                    result.Add(piece);
-            }
-        }
-
-        return result;
-    }
     public List<Piece> GetPiecesByOwner(int owner)
     {
         List<Piece> result = new List<Piece>();
@@ -530,20 +352,6 @@ public class BoardManager : MonoBehaviour
         }
 
         return result;
-    }
-    public List<Vector2Int> GetEmptyPlayerCells()
-    {
-        List<Vector2Int> empty = new List<Vector2Int>();
-
-        for (int x = 0; x < boardSize; x++)
-        {
-            if (pieceGrid[x, 0] == null) // 自陣は y=0
-            {
-                empty.Add(new Vector2Int(x, 0));
-            }
-        }
-
-        return empty;
     }
     public void RemovePiece(Piece piece)
     {
@@ -567,50 +375,6 @@ public class BoardManager : MonoBehaviour
         ReserveManager.Instance.AddPiece(piece.owner, piece.data);
 
         Destroy(piece.gameObject);
-
-        UpdatePieceCountUI();
-    }
-    private void MoveEnemyPiece(Piece piece, Vector2Int from, Vector2Int to)
-    {
-        Piece targetPiece = pieceGrid[to.x, to.y];
-
-        if (targetPiece != null && targetPiece.owner != piece.owner)
-        {
-            // 戦闘処理
-            BattleResult result = BattleManager.Instance.ResolveBattle(piece, targetPiece);
-            Piece winner = result.winner;
-            Piece loser = result.loser;
-
-            loser.AddTemporaryPower(-loser.CurrentPower);
-
-            if (winner != piece)
-            {
-                return;  // 敵駒が負けた場合、移動せず終了
-            }
-        }
-
-        // 移動
-        pieceGrid[to.x, to.y] = piece;
-        pieceGrid[from.x, from.y] = null;
-        piece.transform.position = cells[to.x, to.y].transform.position + Vector3.up * 0.5f;
-
-        UpdatePieceCountUI();
-        CheckDefeatByInvasion();
-    }
-    public void SpawnSpecificPieceInPlayerArea(PieceData data, Vector2Int pos)
-    {
-        if (data == null) return;
-
-        if (pieceGrid[pos.x, pos.y] != null) return;
-
-        Vector3 spawnPos = cells[pos.x, pos.y].transform.position + Vector3.up * 0.5f;
-
-        GameObject obj = Instantiate(piecePrefab, spawnPos, Quaternion.identity);
-        Piece piece = obj.GetComponent<Piece>();
-
-        piece.Initialize(data, 0); // プレイヤー側固定
-
-        pieceGrid[pos.x, pos.y] = piece;
 
         UpdatePieceCountUI();
     }
