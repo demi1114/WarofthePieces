@@ -72,7 +72,8 @@ public class TurnManager : MonoBehaviour
 
     public void ConsumeMove()
     {
-        if (!isPlayerTurn || remainingMoves <= 0) return;
+        if (remainingMoves <= 0) return;
+
         remainingMoves--;
         GameUIManager.Instance?.UpdateMoves(remainingMoves);
     }
@@ -96,7 +97,10 @@ public class TurnManager : MonoBehaviour
         foreach (var piece in pieces)
             piece.ResetTemporaryPower();
     }
-    public int GetRemainingMoves() => remainingMoves;
+    public int GetRemainingMoves()
+    {
+        return remainingMoves;
+    }
     public float GetRemainingTime() => timer;
 
     public void ForceEndTurn() => EndTurn();

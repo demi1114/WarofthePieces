@@ -5,14 +5,14 @@ public class Piece : MonoBehaviour
 {
     public int owner;  // 0=プレイヤー, 1=敵
     public PieceData data;
-
     public List<Ability> abilities;
 
     public int BasePower { get; private set; }
     public int CurrentPower { get; private set; }
-
     private int permanentModifier = 0;
     private int temporaryModifier = 0;
+
+    private bool isDead = false;
 
     public void Initialize(PieceData pieceData, int owner)
     {
@@ -23,6 +23,7 @@ public class Piece : MonoBehaviour
 
         permanentModifier = 0;
         temporaryModifier = 0;
+        isDead = false;
 
         RecalculatePower();
     }
@@ -67,9 +68,24 @@ public class Piece : MonoBehaviour
     // 💡 常にここから計算する
     private void RecalculatePower()
     {
+        if (isDead) return;
+
         CurrentPower = BasePower + permanentModifier + temporaryModifier;
 
-        // ここでUI更新など
+        if (CurrentPower <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        if (isDead) return;
+        isDead = true;
+
+        Debug.Log($"{data.pieceName} がパワー0で死亡");
+
+        BoardManager.Instance.RemovePiece(this);
     }
 
     public List<Vector2Int> GetMovablePositions(Vector2Int currentPos, int boardSize)

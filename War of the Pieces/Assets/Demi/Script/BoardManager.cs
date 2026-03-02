@@ -34,9 +34,11 @@ public class BoardManager : MonoBehaviour
 
         // 初期手駒をReserveに追加
         foreach (var piece in initialPieces)
-        {
             ReserveManager.Instance.AddPiece(0, piece);
-        }
+
+        // 🔥 敵初期駒を追加
+        foreach (var piece in availablePieces)
+            ReserveManager.Instance.AddPiece(1, piece);
 
         UpdatePieceCountUI();
     }
@@ -235,11 +237,8 @@ public class BoardManager : MonoBehaviour
 
             Piece winner = result.winner;
             Piece loser = result.loser;
-            Vector2Int loserPos = FindPiecePosition(loser);
 
-            pieceGrid[loserPos.x, loserPos.y] = null;
-            Destroy(loser.gameObject);
-            UpdatePieceCountUI();
+            loser.AddTemporaryPower(-loser.CurrentPower);
 
             if (winner == selectedPiece)
             {
@@ -250,7 +249,6 @@ public class BoardManager : MonoBehaviour
             else pieceGrid[selectedPosition.x, selectedPosition.y] = null;
 
             ClearHighlights();
-
             selectedPiece = null;
             TurnManager.Instance.ConsumeMove();
 
@@ -372,21 +370,35 @@ public class BoardManager : MonoBehaviour
     private IEnumerator EnemyTurnRoutine()
     {
         Debug.Log("敵ターン開始");
-
         yield return new WaitForSeconds(0.5f); // 遅延を少し入れると見やすい
 
-
-        // 1. 手札から駒をランダム配置
-        TryPlaceRandomEnemyPiece();
-
-        yield return new WaitForSeconds(0.5f);
-
-        // ① ドロー
+        // ドロー
         EnemyDeckManager.Instance.DrawCard();
-
         yield return new WaitForSeconds(0.5f);
 
-        // ② カード使用
+        // 駒配置を2回試行（moveとは無関係）
+        for (int i = 0; i < 2; i++)
+        {
+            bool placed = TryPlaceRandomEnemyPiece();
+            if (!placed) break;
+
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        // 移動（remainingMoves分だけ）
+        int moveCount = TurnManager.Instance.GetRemainingMoves();
+
+        for (int i = 0; i < moveCount; i++)
+        {
+            bool moved = TryRandomMoveEnemyPiece();
+            if (!moved) break;
+
+            TurnManager.Instance.ConsumeMove();
+            yield return new WaitForSeconds(0.5f);
+        }
+
+
+        // カード使用
         CardData card = EnemyDeckManager.Instance.GetRandomCardFromHand();
 
         if (card != null)
@@ -394,24 +406,18 @@ public class BoardManager : MonoBehaviour
             Debug.Log("敵カード使用: " + card.cardName);
             CardUseManager.Instance.StartCardUse(card, -1, 1);
             CardUseManager.Instance.ResolveCard(Vector2Int.zero);
+            yield return new WaitForSeconds(0.5f);
         }
-
-        yield return new WaitForSeconds(0.5f);
-
-        // 2. 盤面上の敵駒をランダム移動
-        TryRandomMoveEnemyPiece();
-
-        yield return new WaitForSeconds(0.5f);
 
         // 3. ターン終了
         TurnManager.Instance.EndTurn();
     }
 
     // --- 敵駒ランダム配置 ---
-    private void TryPlaceRandomEnemyPiece()
+    private bool TryPlaceRandomEnemyPiece()
     {
         var reserve = ReserveManager.Instance.GetReserve(1);
-        if (reserve.Count == 0) return;
+        if (reserve.Count == 0) return false;
 
         int y = boardSize - 1;
 
@@ -420,7 +426,7 @@ public class BoardManager : MonoBehaviour
             if (pieceGrid[x, y] == null)
                 emptyX.Add(x);
 
-        if (emptyX.Count == 0) return;
+        if (emptyX.Count == 0) return false;
 
         int pieceIndex = Random.Range(0, reserve.Count);
         PieceData data = reserve[pieceIndex];
@@ -434,31 +440,24 @@ public class BoardManager : MonoBehaviour
         piece.Initialize(data, 1);
 
         pieceGrid[chosenX, y] = piece;
-
         ReserveManager.Instance.RemovePiece(1, pieceIndex);
+
+        Debug.Log("敵駒配置");
+
+        return true;
     }
 
     // --- 盤面上の敵駒ランダム移動 ---
-    private void TryRandomMoveEnemyPiece()
+    private bool TryRandomMoveEnemyPiece()
     {
         var enemyPieces = GetEnemyPiecesOnBoard();
+        if (enemyPieces.Count == 0) return false;
 
-        if (enemyPieces == null || enemyPieces.Count == 0)
-            return;
-
-        int pieceIndex = Random.Range(0, enemyPieces.Count);
-        if (pieceIndex < 0 || pieceIndex >= enemyPieces.Count)
-            return;
-
-        Piece piece = enemyPieces[pieceIndex];
-
+        Piece piece = enemyPieces[Random.Range(0, enemyPieces.Count)];
         Vector2Int pos = FindPiecePosition(piece);
-        if (!IsInsideBoard(pos))
-            return;
 
         var movable = piece.GetMovablePositions(pos, boardSize);
-        if (movable == null || movable.Count == 0)
-            return;
+        if (movable.Count == 0) return false;
 
         List<Vector2Int> validMoves = new List<Vector2Int>();
 
@@ -468,23 +467,19 @@ public class BoardManager : MonoBehaviour
 
             Piece target = pieceGrid[move.x, move.y];
 
-            // 敵同士の重なり禁止
             if (target == null || target.owner != 1)
                 validMoves.Add(move);
         }
 
-        if (validMoves.Count == 0)
-            return;
+        if (validMoves.Count == 0) return false;
 
-        int moveIndex = Random.Range(0, validMoves.Count);
-        if (moveIndex < 0 || moveIndex >= validMoves.Count)
-            return;
-
-        Vector2Int targetPos = validMoves[moveIndex];
+        Vector2Int targetPos = validMoves[Random.Range(0, validMoves.Count)];
 
         MoveEnemyPiece(piece, pos, targetPos);
 
-        Debug.Log($"敵駒移動: {piece.data.pieceName} → ({targetPos.x},{targetPos.y})");
+        Debug.Log("敵駒移動");
+
+        return true;
     }
 
     // --- ヘルパー関数 ---
@@ -586,14 +581,11 @@ public class BoardManager : MonoBehaviour
             Piece winner = result.winner;
             Piece loser = result.loser;
 
-            Vector2Int loserPos = FindPiecePosition(loser);
-            pieceGrid[loserPos.x, loserPos.y] = null;
-            Destroy(loser.gameObject);
+            loser.AddTemporaryPower(-loser.CurrentPower);
 
             if (winner != piece)
             {
-                // 敵駒が負けた場合、移動せず終了
-                return;
+                return;  // 敵駒が負けた場合、移動せず終了
             }
         }
 

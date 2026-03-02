@@ -40,7 +40,7 @@ public class BattleManager : MonoBehaviour
     private int GetAttributeModifier(PieceAttribute attackerAttr, PieceAttribute defenderAttr)
     {
         if (IsStrongAgainst(attackerAttr, defenderAttr)) return 1;
-        if (IsStrongAgainst(attackerAttr, defenderAttr)) return -1;
+        if (IsStrongAgainst(defenderAttr, attackerAttr)) return -1;
         return 0;
     }
 

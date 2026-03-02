@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a6f02fb2a3f6a74da16609afb39f059, type: 3}
-  m_Name: New Transform Selected Own Piece Ability
-  m_EditorClassIdentifier: Assembly-CSharp::TransformSelectedOwnPieceAbility
-  transformTo: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 7c47bd4512ccc614c99a9afbef7e6355, type: 3}
+  m_Name: New Debuff Random Enemy Temporary Ability
+  m_EditorClassIdentifier: Assembly-CSharp::DebuffRandomEnemyTemporaryAbility
+  amount: 3
+  count: 1

@@ -9,9 +9,6 @@ public enum CardType
     LoseOwnBoardPiecesRandom,
     LoseOpponentBoardPiecesRandom,
     LoseAllBoardPiecesRandom,
-    DebuffEnemySinglePermanent,//Žã‘Ì‰»Œn
-    DebuffEnemySingleTemporary,
-    DebuffEnemyRandomTemporary,
     ReturnEnemyBoardPieces,//ƒoƒEƒ“ƒXŒn
     ReturnOwnBoardPieces,
     ReturnRandomBoardPieces,
@@ -131,46 +128,6 @@ public class CardData : ScriptableObject
 
                         allPieces.RemoveAt(randomIndex);
                     }
-                    break;
-                }
-
-            case CardType.DebuffEnemySinglePermanent:
-                {
-                    Piece target = BoardManager.Instance.GetPieceAt(targetPos);
-
-                    if (target != null && target.owner == 1)
-                    {
-                        target.AddPermanentPower(-amount);
-                    }
-
-                    break;
-                }
-
-            case CardType.DebuffEnemySingleTemporary:
-                {
-                    Piece target = BoardManager.Instance.GetPieceAt(targetPos);
-
-                    if (target != null && target.owner == 1)
-                    {
-                        target.AddTemporaryPower(-amount);
-                    }
-
-                    break;
-                }
-
-            case CardType.DebuffEnemyRandomTemporary:
-                {
-                    var pieces = BoardManager.Instance.GetPiecesByOwner(1);
-
-                    int applyCount = Mathf.Min(amount, pieces.Count);
-
-                    for (int i = 0; i < applyCount; i++)
-                    {
-                        int randomIndex = Random.Range(0, pieces.Count);
-                        pieces[randomIndex].AddTemporaryPower(-1);
-                        pieces.RemoveAt(randomIndex);
-                    }
-
                     break;
                 }
 

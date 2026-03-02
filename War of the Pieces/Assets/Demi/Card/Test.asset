@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: 
   abilities:
-  - {fileID: 11400000, guid: fd1e1f52c180c9c439255e6c4f9b114d, type: 2}
+  - {fileID: 11400000, guid: ddf7d02f81107884fbe0de1f0b0e5d3c, type: 2}
   category: 0
   cardType: 0
   targetPieceAttribute: 0
   amount: 1
   targetCount: 1
-  specificPiece: {fileID: 0}
+  specificPiece: {fileID: 11400000, guid: 896a2c9cce017de49a6d7107e09044b8, type: 2}
   candidatePieces: []
