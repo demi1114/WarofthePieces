@@ -3,22 +3,26 @@ using UnityEngine;
 
 public enum PieceRace
 {
-    Attack,
-    Beast,
-    Spirit,
+    Human,
+    Animal,
+    Fairy,
+    Wizard,
     Undead,
-    Angel,
-    Slime
+    Dragon,
+    Machine,
+    Sky,
+    Sea
 }
 public enum PieceAttribute
 {
-    Human,
-    Fairy,
-    Machine,
-    Dragon,
-    Demon,
-    God,
-    Bystander,
+    Normal,
+    Fire,
+    Water,
+    Electric,
+    Ground,
+    Wind,
+    Ice,
+    Dark,
     Hope
 }
 public enum PieceAbilityTrigger
