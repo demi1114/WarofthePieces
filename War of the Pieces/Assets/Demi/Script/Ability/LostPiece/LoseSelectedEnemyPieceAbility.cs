@@ -16,5 +16,6 @@ public class LoseSelectedEnemyPieceAbility : Ability
         BoardManager.Instance.RemovePiece(target);
 
         Debug.Log("‘Šè‚Ì‹î‚ğƒƒXƒg‚µ‚Ü‚µ‚½");
+        VictoryManager.Instance.CheckAfterAction();
     }
 }

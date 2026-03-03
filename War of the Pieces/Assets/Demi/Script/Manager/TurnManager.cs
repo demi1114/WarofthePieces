@@ -49,12 +49,14 @@ public class TurnManager : MonoBehaviour
             EnemyTurnController.Instance.ExecuteTurn();
         }
 
+        TriggerPieceAbilities(PieceAbilityTrigger.OnTurnStart);
         GameUIManager.Instance?.UpdateTurn(isPlayerTurn);
         GameUIManager.Instance?.UpdateMoves(remainingMoves);
     }
 
     public void EndTurn()
     {
+        TriggerPieceAbilities(PieceAbilityTrigger.OnTurnEnd);
         // ここ追加：ターン終了時に一時バフをリセット
         ResetTemporaryBuffs(isPlayerTurn ? 0 : 1);
 
@@ -110,4 +112,16 @@ public class TurnManager : MonoBehaviour
     public float GetRemainingTime() => timer;
 
     public void ForceEndTurn() => EndTurn();
+
+    private void TriggerPieceAbilities(PieceAbilityTrigger timing)
+    {
+        int owner = GetCurrentTurnOwner();
+
+        var pieces = BoardManager.Instance.GetPiecesByOwner(owner);
+
+        foreach (var piece in pieces)
+        {
+            piece.TriggerAbilities(timing);
+        }
+    }
 }

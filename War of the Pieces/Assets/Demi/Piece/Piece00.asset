@@ -17,4 +17,5 @@ MonoBehaviour:
   attribute: 0
   movePattern: {fileID: 11400000, guid: 4b6fca3223b674143a9301081dd6ec5e, type: 2}
   basePower: 1
+  abilities: []
   allPieces: []

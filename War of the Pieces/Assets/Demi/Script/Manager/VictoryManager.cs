@@ -4,6 +4,12 @@ public class VictoryManager : MonoBehaviour
 {
     public static VictoryManager Instance;
 
+    private int GetTotalPieceCount(int owner)
+    {
+        int board = BoardManager.Instance.GetBoardCount(owner);
+        int reserve = ReserveManager.Instance.GetReserve(owner).Count;
+        return board + reserve;
+    }
     private void Awake()
     {
         Instance = this;
@@ -20,15 +26,15 @@ public class VictoryManager : MonoBehaviour
     // ürñ≈èüóò
     private void CheckAnnihilationVictory()
     {
-        int playerCount = BoardManager.Instance.GetBoardCount(0);
-        int enemyCount = BoardManager.Instance.GetBoardCount(1);
+        int playerTotal = GetTotalPieceCount(0);
+        int enemyTotal = GetTotalPieceCount(1);
 
-        if (enemyCount == 0)
+        if (enemyTotal == 0)
         {
             Debug.Log("ürñ≈èüóòÅI");
             EndGame(0);
         }
-        else if (playerCount == 0)
+        else if (playerTotal == 0)
         {
             Debug.Log("ürñ≈îsñk...");
             EndGame(1);

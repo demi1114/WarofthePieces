@@ -39,5 +39,6 @@ public class LoseEnemyByFilterAbility : Ability
             BoardManager.Instance.RemovePiece(piece);
 
         Debug.Log("ğŒˆê’v‚Ì“G‹î‚ğ‘SƒƒXƒg");
+        VictoryManager.Instance.CheckAfterAction();
     }
 }

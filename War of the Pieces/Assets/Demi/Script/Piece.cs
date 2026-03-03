@@ -5,7 +5,6 @@ public class Piece : MonoBehaviour
 {
     public int owner;  // 0=プレイヤー, 1=敵
     public PieceData data;
-    public List<Ability> abilities;
 
     public int BasePower { get; private set; }
     public int CurrentPower { get; private set; }
@@ -26,6 +25,27 @@ public class Piece : MonoBehaviour
         isDead = false;
 
         RecalculatePower();
+    }
+
+    public void TriggerAbilities(PieceAbilityTrigger timing)
+    {
+        if (data == null) return;
+        if (data.abilities == null) return;
+
+        foreach (var entry in data.abilities)
+        {
+            if (entry == null) continue;
+            if (entry.ability == null) continue;
+            if (entry.triggerTiming != timing) continue;
+
+            AbilityContext context = new AbilityContext
+            {
+                owner = owner,
+                sourcePiece = this
+            };
+
+            entry.ability.OnCardUse(context);
+        }
     }
 
     // 🔄 変身処理

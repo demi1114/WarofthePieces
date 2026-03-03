@@ -26,5 +26,6 @@ public class LoseRandomEnemyPieceAbility : Ability
         }
 
         Debug.Log("ƒ‰ƒ“ƒ_ƒ€‘Šè‹î‚ğƒƒXƒg");
+        VictoryManager.Instance.CheckAfterAction();
     }
 }

@@ -33,5 +33,6 @@ public class LoseSelectedOwnByFilterAbility : Ability
         BoardManager.Instance.RemovePiece(target);
 
         Debug.Log("ğŒˆê’v‚Ì©‹î‚ğƒƒXƒg");
+        VictoryManager.Instance.CheckAfterAction();
     }
 }

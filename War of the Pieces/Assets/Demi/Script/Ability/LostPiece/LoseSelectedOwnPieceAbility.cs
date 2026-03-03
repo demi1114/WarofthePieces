@@ -16,5 +16,6 @@ public class LoseSelectedOwnPieceAbility : Ability
         BoardManager.Instance.RemovePiece(target);
 
         Debug.Log("©•ª‚Ì‹î‚ğƒƒXƒg‚µ‚Ü‚µ‚½");
+        VictoryManager.Instance.CheckAfterAction();
     }
 }

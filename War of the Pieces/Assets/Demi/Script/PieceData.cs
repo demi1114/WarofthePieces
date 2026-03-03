@@ -21,6 +21,18 @@ public enum PieceAttribute
     Bystander,
     Hope
 }
+public enum PieceAbilityTrigger
+{
+    OnTurnStart,
+    OnTurnEnd
+}
+
+[System.Serializable]
+public class PieceAbilityEntry
+{
+    public Ability ability;
+    public PieceAbilityTrigger triggerTiming;
+}
 
 [CreateAssetMenu(menuName = "Game/PieceData")]
 public class PieceData : ScriptableObject
@@ -32,6 +44,9 @@ public class PieceData : ScriptableObject
 
     [Header("Battle Stats")]
     public int basePower = 1;
+
+    [Header("Piece Abilities")]
+    public List<PieceAbilityEntry> abilities;
 
     public List<PieceData> allPieces;
 
