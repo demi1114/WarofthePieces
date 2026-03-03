@@ -5,7 +5,8 @@ public enum PieceRace
 {
     Human,
     Animal,
-    Fairy,
+    Spirit,
+    Flower,
     Wizard,
     Undead,
     Dragon,

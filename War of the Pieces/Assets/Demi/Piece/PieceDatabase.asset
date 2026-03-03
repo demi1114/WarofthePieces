@@ -13,5 +13,29 @@ MonoBehaviour:
   m_Name: PieceDatabase
   m_EditorClassIdentifier: Assembly-CSharp::PieceDatabase
   allPieces:
-  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
-  - {fileID: 11400000, guid: 896a2c9cce017de49a6d7107e09044b8, type: 2}
+  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
+  - {fileID: 11400000, guid: f99dee8cf98c32b499060146ed43afaf, type: 2}
+  - {fileID: 11400000, guid: 52afe52039afaf8489a37999696e48af, type: 2}
+  - {fileID: 11400000, guid: 8d774e3f2ae41e24381de3e5c769e6f8, type: 2}
+  - {fileID: 11400000, guid: ea0cfe424a485c24f80b3f72e126951c, type: 2}
+  - {fileID: 11400000, guid: 8d51ac05fb907804fbd328bc6b54562b, type: 2}
+  - {fileID: 11400000, guid: b1992b21250462245afe872e11bd8667, type: 2}
+  - {fileID: 11400000, guid: 1580c61ab4e05724c933c0a17929e2fe, type: 2}
+  - {fileID: 11400000, guid: e6788164004ee854cb7b8d8c57833cea, type: 2}
+  - {fileID: 11400000, guid: ae57a440edaebba4983abbf639c2c565, type: 2}
+  - {fileID: 11400000, guid: 84fbb75cc0d72d8488c71f17e4051969, type: 2}
+  - {fileID: 11400000, guid: 10633c0b873fa744fbd56558d2450e22, type: 2}
+  - {fileID: 11400000, guid: 8e8f2cc3276e42b4eb93d6374d694308, type: 2}
+  - {fileID: 11400000, guid: e5556e229f41a1149bbb280d5f034a15, type: 2}
+  - {fileID: 11400000, guid: 6b059ee2d9c65844e8273410d288ff86, type: 2}
+  - {fileID: 11400000, guid: 4e0b0af3d84c9e14db6e7f4122d74fc6, type: 2}
+  - {fileID: 11400000, guid: c22741705e40f75439baa84dc4f6044b, type: 2}
+  - {fileID: 11400000, guid: 6cb369ed954a7fa4aaa29c0b048349f3, type: 2}
+  - {fileID: 11400000, guid: 739ed9cab8e44424b95ac267e515f114, type: 2}
+  - {fileID: 11400000, guid: 4fa4dfc11ab994946958a35a192eb9ff, type: 2}
+  - {fileID: 11400000, guid: 24c093f2bee1fa84bb1f5609d6f5e86a, type: 2}
+  - {fileID: 11400000, guid: a4ddb823dc6984b4389f67c9df38f625, type: 2}
+  - {fileID: 11400000, guid: e6b5e847670a5844e88f12e7efe1ecdb, type: 2}
+  - {fileID: 11400000, guid: 136c5dcd57652b6458fa53e69f6f1a51, type: 2}
+  - {fileID: 11400000, guid: a3d2a961cc324984d8761fe2aee6393b, type: 2}
+  - {fileID: 11400000, guid: 832e7ac5693676e4fa03cec9656fc4a1, type: 2}

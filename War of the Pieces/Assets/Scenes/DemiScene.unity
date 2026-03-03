@@ -508,17 +508,12 @@ MonoBehaviour:
   cellPrefab: {fileID: 2158478232019387551, guid: 03678e73913c83e4dabb5d177dd0e0bf, type: 3}
   piecePrefab: {fileID: 4077091637235834342, guid: d1fa243eaae17734cbc160956ddd3ab2, type: 3}
   initialPieces:
-  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
-  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
-  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
-  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
-  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
-  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
-  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
-  - {fileID: 11400000, guid: 896a2c9cce017de49a6d7107e09044b8, type: 2}
-  availablePieces:
-  - {fileID: 11400000, guid: ddf396369a87a234aa7acff3fff1920c, type: 2}
-  - {fileID: 11400000, guid: 896a2c9cce017de49a6d7107e09044b8, type: 2}
+  - {fileID: 11400000, guid: a4ddb823dc6984b4389f67c9df38f625, type: 2}
+  - {fileID: 11400000, guid: e6b5e847670a5844e88f12e7efe1ecdb, type: 2}
+  - {fileID: 11400000, guid: 136c5dcd57652b6458fa53e69f6f1a51, type: 2}
+  - {fileID: 11400000, guid: a3d2a961cc324984d8761fe2aee6393b, type: 2}
+  - {fileID: 11400000, guid: 832e7ac5693676e4fa03cec9656fc4a1, type: 2}
+  availablePieces: []
 --- !u!4 &420573078
 Transform:
   m_ObjectHideFlags: 0
@@ -709,7 +704,7 @@ Transform:
   m_GameObject: {fileID: 616213443}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 4, y: 10, z: 4}
+  m_LocalPosition: {x: 4, y: 10, z: 3.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
