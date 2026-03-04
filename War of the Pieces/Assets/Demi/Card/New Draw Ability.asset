@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c7a369e8a5b72c40b649f24cc45c79f, type: 3}
-  m_Name: New Lose Random Enemy Piece Ability
-  m_EditorClassIdentifier: Assembly-CSharp::LoseRandomEnemyPieceAbility
-  amount: 1
+  m_Script: {fileID: 11500000, guid: 44749284be7dff84081eff2b22e9bcad, type: 3}
+  m_Name: New Draw Ability
+  m_EditorClassIdentifier: Assembly-CSharp::DrawAbility
+  amount: 3

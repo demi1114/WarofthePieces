@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 176edfbd84ce7024cad81daf4c208f92, type: 3}
-  m_Name: Wizard_04
+  m_Name: Wi_001
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
-  pieceName: "\u9B54\u6CD5\u6559\u5E2B"
+  pieceName: "\u30D5\u30EC\u30A4\u30E0\u30E1\u30A4\u30B8"
   race: 4
   attribute: 1
   movePattern: {fileID: 11400000, guid: 4b6fca3223b674143a9301081dd6ec5e, type: 2}
-  basePower: 3
+  basePower: 2
   abilities: []
   allPieces: []

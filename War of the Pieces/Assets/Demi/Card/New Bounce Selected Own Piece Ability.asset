@@ -9,7 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c7a369e8a5b72c40b649f24cc45c79f, type: 3}
-  m_Name: New Lose Random Enemy Piece Ability
-  m_EditorClassIdentifier: Assembly-CSharp::LoseRandomEnemyPieceAbility
-  amount: 1
+  m_Script: {fileID: 11500000, guid: d736709f119515b4c971e0198600c53e, type: 3}
+  m_Name: New Bounce Selected Own Piece Ability
+  m_EditorClassIdentifier: Assembly-CSharp::BounceSelectedOwnPieceAbility

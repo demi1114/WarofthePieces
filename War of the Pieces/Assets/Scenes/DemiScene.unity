@@ -508,12 +508,17 @@ MonoBehaviour:
   cellPrefab: {fileID: 2158478232019387551, guid: 03678e73913c83e4dabb5d177dd0e0bf, type: 3}
   piecePrefab: {fileID: 4077091637235834342, guid: d1fa243eaae17734cbc160956ddd3ab2, type: 3}
   initialPieces:
-  - {fileID: 11400000, guid: a4ddb823dc6984b4389f67c9df38f625, type: 2}
-  - {fileID: 11400000, guid: e6b5e847670a5844e88f12e7efe1ecdb, type: 2}
-  - {fileID: 11400000, guid: 136c5dcd57652b6458fa53e69f6f1a51, type: 2}
-  - {fileID: 11400000, guid: a3d2a961cc324984d8761fe2aee6393b, type: 2}
-  - {fileID: 11400000, guid: 832e7ac5693676e4fa03cec9656fc4a1, type: 2}
-  availablePieces: []
+  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
+  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
+  - {fileID: 11400000, guid: f99dee8cf98c32b499060146ed43afaf, type: 2}
+  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
+  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
+  availablePieces:
+  - {fileID: 11400000, guid: 84fbb75cc0d72d8488c71f17e4051969, type: 2}
+  - {fileID: 11400000, guid: 84fbb75cc0d72d8488c71f17e4051969, type: 2}
+  - {fileID: 11400000, guid: 10633c0b873fa744fbd56558d2450e22, type: 2}
+  - {fileID: 11400000, guid: 8e8f2cc3276e42b4eb93d6374d694308, type: 2}
+  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
 --- !u!4 &420573078
 Transform:
   m_ObjectHideFlags: 0

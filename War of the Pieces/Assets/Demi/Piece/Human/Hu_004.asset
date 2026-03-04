@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 176edfbd84ce7024cad81daf4c208f92, type: 3}
-  m_Name: Undead_01
+  m_Name: Hu_004
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
-  pieceName: "\u96EA\u5973"
-  race: 5
+  pieceName: "\u51AC\u5C06\u8ECD"
+  race: 0
   attribute: 6
   movePattern: {fileID: 11400000, guid: 4b6fca3223b674143a9301081dd6ec5e, type: 2}
-  basePower: 1
+  basePower: 5
   abilities: []
   allPieces: []
