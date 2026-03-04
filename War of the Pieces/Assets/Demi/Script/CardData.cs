@@ -3,10 +3,15 @@ using UnityEngine;
 
 public enum CardCategory
 {
-    Attack,
-    Defense,
-    Spell,
-    Support
+    AddMove,
+    AddReserve,
+    Bounce,
+    BuffPiece,
+    Draw,
+    LostDeck,
+    LostPiece,
+    LostReserve,
+    Transform
 }
 
 [CreateAssetMenu(menuName = "Card/Create Card")]
