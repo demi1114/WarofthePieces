@@ -8,6 +8,7 @@ public enum CardCategory
     Bounce,
     BuffPiece,
     Draw,
+    DebuffPiece,
     LostDeck,
     LostPiece,
     LostReserve,

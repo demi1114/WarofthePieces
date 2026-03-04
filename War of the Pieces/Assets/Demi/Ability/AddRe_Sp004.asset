@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c7a369e8a5b72c40b649f24cc45c79f, type: 3}
-  m_Name: New Lose Random Enemy Piece Ability
-  m_EditorClassIdentifier: Assembly-CSharp::LoseRandomEnemyPieceAbility
+  m_Script: {fileID: 11500000, guid: 9919560b4b9837c48a2bd96dbb4808e6, type: 3}
+  m_Name: AddRe_Sp004
+  m_EditorClassIdentifier: Assembly-CSharp::AddReserveAbility
+  piece: {fileID: 11400000, guid: 6b059ee2d9c65844e8273410d288ff86, type: 2}
   amount: 1

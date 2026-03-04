@@ -9,6 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d736709f119515b4c971e0198600c53e, type: 3}
-  m_Name: New Bounce Selected Own Piece Ability
-  m_EditorClassIdentifier: Assembly-CSharp::BounceSelectedOwnPieceAbility
+  m_Script: {fileID: 11500000, guid: 9919560b4b9837c48a2bd96dbb4808e6, type: 3}
+  m_Name: AddRe_Hu003
+  m_EditorClassIdentifier: Assembly-CSharp::AddReserveAbility
+  piece: {fileID: 11400000, guid: 8d774e3f2ae41e24381de3e5c769e6f8, type: 2}
+  amount: 1
