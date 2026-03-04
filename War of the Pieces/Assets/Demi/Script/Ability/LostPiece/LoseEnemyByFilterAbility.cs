@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using static UnityEngine.GraphicsBuffer;
 
 //指定種族または属性の相手ロスト
 public enum FilterType
@@ -34,9 +35,11 @@ public class LoseEnemyByFilterAbility : Ability
                 piece.data.attribute == targetAttribute)
                 targets.Add(piece);
         }
-
         foreach (var piece in targets)
-            BoardManager.Instance.RemovePiece(piece);
+        {
+            piece.Die();
+        }
+
 
         Debug.Log("条件一致の敵駒を全ロスト");
         VictoryManager.Instance.CheckAfterAction();

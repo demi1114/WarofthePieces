@@ -184,7 +184,7 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
-        Vector3 pos = cell.transform.position + Vector3.up * 0.5f;
+        Vector3 pos = cell.transform.position;
         if (selectedPlacePieceData.piecePrefab == null)
         {
             Debug.LogError("Prefab未設定");
@@ -281,7 +281,7 @@ public class BoardManager : MonoBehaviour
         pieceGrid[from.x, from.y] = null;
 
         piece.transform.position =
-            cells[to.x, to.y].transform.position + Vector3.up * 0.5f;
+            cells[to.x, to.y].transform.position;
 
         TurnManager.Instance.ConsumeMove();
         VictoryManager.Instance.CheckAfterAction();
@@ -382,9 +382,16 @@ public class BoardManager : MonoBehaviour
     {
         if (pieceGrid[pos.x, pos.y] != null) return;
 
-        Vector3 spawnPos = cells[pos.x, pos.y].transform.position + Vector3.up * 0.5f;
+        Vector3 spawnPos = cells[pos.x, pos.y].transform.position;
 
-        GameObject obj = Instantiate(data.piecePrefab, spawnPos, Quaternion.identity);
+        Quaternion rotation = Quaternion.identity;
+
+        if (owner == 1)
+        {
+            rotation = Quaternion.Euler(0f, 180f, 0f);
+        }
+
+        GameObject obj = Instantiate(data.piecePrefab, spawnPos, rotation);
         Piece piece = obj.GetComponent<Piece>();
 
         piece.Initialize(data, owner);
