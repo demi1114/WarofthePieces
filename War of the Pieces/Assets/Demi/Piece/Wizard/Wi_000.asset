@@ -17,5 +17,8 @@ MonoBehaviour:
   attribute: 1
   movePattern: {fileID: 11400000, guid: 4b6fca3223b674143a9301081dd6ec5e, type: 2}
   basePower: 1
-  abilities: []
+  piecePrefab: {fileID: 4431020046267326745, guid: 9003be27e8deb5e4babf5477ec097ee4, type: 3}
+  abilities:
+  - ability: {fileID: 11400000, guid: 9d5bb8f6d03786145b0d9ce7a83f3440, type: 2}
+    triggerTiming: 1
   allPieces: []
