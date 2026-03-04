@@ -10,7 +10,6 @@ public class BoardManager : MonoBehaviour
     public int boardSize = 9;
     public float cellSize = 1.0f;
     public GameObject cellPrefab;
-    public GameObject piecePrefab;
 
     private BoardCell[,] cells;
     private Piece[,] pieceGrid;
@@ -186,7 +185,16 @@ public class BoardManager : MonoBehaviour
         }
 
         Vector3 pos = cell.transform.position + Vector3.up * 0.5f;
-        GameObject obj = Instantiate(piecePrefab, pos, Quaternion.identity);
+        if (selectedPlacePieceData.piecePrefab == null)
+        {
+            Debug.LogError("Prefab未設定");
+            return;
+        }
+
+        GameObject obj = Instantiate(
+            selectedPlacePieceData.piecePrefab,
+            pos,
+            Quaternion.identity);
         Piece piece = obj.GetComponent<Piece>();
         piece.Initialize(selectedPlacePieceData, 0);
 
@@ -376,7 +384,7 @@ public class BoardManager : MonoBehaviour
 
         Vector3 spawnPos = cells[pos.x, pos.y].transform.position + Vector3.up * 0.5f;
 
-        GameObject obj = Instantiate(piecePrefab, spawnPos, Quaternion.identity);
+        GameObject obj = Instantiate(data.piecePrefab, spawnPos, Quaternion.identity);
         Piece piece = obj.GetComponent<Piece>();
 
         piece.Initialize(data, owner);

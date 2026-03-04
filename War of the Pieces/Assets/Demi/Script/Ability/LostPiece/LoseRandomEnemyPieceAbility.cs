@@ -21,7 +21,7 @@ public class LoseRandomEnemyPieceAbility : Ability
             int rand = Random.Range(0, pieces.Count);
             Piece target = pieces[rand];
 
-            BoardManager.Instance.RemovePiece(target);
+            target.AddTemporaryPower(-target.CurrentPower);
             pieces.RemoveAt(rand);
         }
 

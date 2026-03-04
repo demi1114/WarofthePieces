@@ -29,7 +29,8 @@ public enum PieceAttribute
 public enum PieceAbilityTrigger
 {
     OnTurnStart,
-    OnTurnEnd
+    OnTurnEnd,
+    OnDeath
 }
 
 [System.Serializable]
@@ -49,6 +50,9 @@ public class PieceData : ScriptableObject
 
     [Header("Battle Stats")]
     public int basePower = 1;
+
+    [Header("Visual")]
+    public GameObject piecePrefab;
 
     [Header("Piece Abilities")]
     public List<PieceAbilityEntry> abilities;

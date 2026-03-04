@@ -13,7 +13,7 @@ public class LoseSelectedEnemyPieceAbility : Ability
 
         if (target.owner == context.owner) return;
 
-        BoardManager.Instance.RemovePiece(target);
+        target.AddTemporaryPower(-target.CurrentPower);
 
         Debug.Log("‘Šè‚Ì‹î‚ğƒƒXƒg‚µ‚Ü‚µ‚½");
         VictoryManager.Instance.CheckAfterAction();

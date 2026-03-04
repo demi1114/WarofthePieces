@@ -113,7 +113,7 @@ public class TurnManager : MonoBehaviour
 
     public void ForceEndTurn() => EndTurn();
 
-    private void TriggerPieceAbilities(PieceAbilityTrigger timing)
+    public void TriggerPieceAbilities(PieceAbilityTrigger timing)
     {
         int owner = GetCurrentTurnOwner();
 

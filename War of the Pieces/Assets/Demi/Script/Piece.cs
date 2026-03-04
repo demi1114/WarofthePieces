@@ -98,14 +98,17 @@ public class Piece : MonoBehaviour
         }
     }
 
-    private void Die()
+    public void Die()
     {
         if (isDead) return;
         isDead = true;
 
         Debug.Log($"{data.pieceName} がパワー0で死亡");
 
+        TriggerAbilities(PieceAbilityTrigger.OnDeath);
         BoardManager.Instance.RemovePiece(this);
+
+        VictoryManager.Instance.CheckAfterAction();
     }
 
     public List<Vector2Int> GetMovablePositions(Vector2Int currentPos, int boardSize)

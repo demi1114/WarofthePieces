@@ -30,7 +30,7 @@ public class LoseSelectedOwnByFilterAbility : Ability
 
         if (!match) return;
 
-        BoardManager.Instance.RemovePiece(target);
+        target.AddTemporaryPower(-target.CurrentPower);
 
         Debug.Log("ğŒˆê’v‚Ì©‹î‚ğƒƒXƒg");
         VictoryManager.Instance.CheckAfterAction();
