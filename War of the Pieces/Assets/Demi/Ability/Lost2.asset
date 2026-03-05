@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f30b77249801960438ce266057d87737, type: 3}
-  m_Name: Debuff_1_3
-  m_EditorClassIdentifier: Assembly-CSharp::DebuffRandomEnemyPermanentAbility
-  amount: 1
-  count: 3
+  m_Script: {fileID: 11500000, guid: 4c7a369e8a5b72c40b649f24cc45c79f, type: 3}
+  m_Name: Lost2
+  m_EditorClassIdentifier: Assembly-CSharp::LoseRandomEnemyPieceAbility
+  amount: 2

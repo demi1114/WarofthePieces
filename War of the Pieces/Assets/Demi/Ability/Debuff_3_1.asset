@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f30b77249801960438ce266057d87737, type: 3}
-  m_Name: Debuff_1_3
+  m_Name: Debuff_3_1
   m_EditorClassIdentifier: Assembly-CSharp::DebuffRandomEnemyPermanentAbility
-  amount: 1
-  count: 3
+  amount: 3
+  count: 1

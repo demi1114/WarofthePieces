@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: "\u4EBA\u985E\u306E\u52DD\u5229\u3060!!"
   abilities:
   - {fileID: 11400000, guid: fc70dd39eaf545c4fb9c9615d63dc8bb, type: 2}
-  category: 4
+  category: 3
   targetPieceAttribute: 0
   amount: 1
   targetCount: 1

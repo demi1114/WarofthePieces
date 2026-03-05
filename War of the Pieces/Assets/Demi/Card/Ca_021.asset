@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 712f4fb1451c182459d5bce3d1a6307d, type: 3}
-  m_Name: Ca_003
+  m_Name: Ca_021
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardName: "\u90E8\u968A\u7DE8\u6210"
+  cardName: "\u30A8\u30F3\u30B8\u30CB\u30A2\u30EA\u30F3\u30B0"
   abilities:
-  - {fileID: 11400000, guid: 278c431e3904de14d80562597014d1b1, type: 2}
-  - {fileID: 11400000, guid: 8e547194fa9295f43b70418312e6f8ee, type: 2}
+  - {fileID: 11400000, guid: 6ee2f856855d991429b064364617a687, type: 2}
+  - {fileID: 11400000, guid: 4bb003a747625a142bbea66862a60441, type: 2}
   category: 1
-  targetPieceAttribute: 0
+  targetPieceAttribute: 3
   amount: 1
   targetCount: 1
   specificPiece: {fileID: 11400000, guid: 896a2c9cce017de49a6d7107e09044b8, type: 2}
