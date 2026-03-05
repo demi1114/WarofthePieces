@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 176edfbd84ce7024cad81daf4c208f92, type: 3}
   m_Name: Hu_002
   m_EditorClassIdentifier: Assembly-CSharp::PieceData
-  pieceName: "\u5075\u5BDF\u90E8\u968A"
+  pieceName: "\u7279\u653B\u5175"
   race: 0
   attribute: 0
-  movePattern: {fileID: 11400000, guid: 4b6fca3223b674143a9301081dd6ec5e, type: 2}
+  movePatterns:
+  - {fileID: 11400000, guid: 1d7ef6b048d084046bed0c687a4d7d9a, type: 2}
   basePower: 1
   piecePrefab: {fileID: 3370697987197910459, guid: abd651716b843c04c9a2fa70b227ff10, type: 3}
   abilities:

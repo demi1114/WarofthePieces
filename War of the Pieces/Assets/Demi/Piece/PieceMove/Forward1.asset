@@ -10,5 +10,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7659e270d83311b4cad20a07b8076c75, type: 3}
-  m_Name: Forward
+  m_Name: Forward1
   m_EditorClassIdentifier: Assembly-CSharp::ForwardMovePattern

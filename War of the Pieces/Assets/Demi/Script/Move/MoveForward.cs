@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Game/MovePattern/Forward")]
-public class ForwardMovePattern : MovePattern
+[CreateAssetMenu(menuName = "MovePattern/Forward")]
+public class MoveForward : MovePattern
 {
     public override List<Vector2Int> GetMoves(Vector2Int currentPos, int owner, int boardSize)
     {

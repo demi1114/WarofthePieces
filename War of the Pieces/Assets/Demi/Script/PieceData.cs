@@ -46,7 +46,7 @@ public class PieceData : ScriptableObject
     public string pieceName;
     public PieceRace race;
     public PieceAttribute attribute;
-    public MovePattern movePattern;
+    public List<MovePattern> movePatterns;
 
     [Header("Battle Stats")]
     public int basePower = 1;

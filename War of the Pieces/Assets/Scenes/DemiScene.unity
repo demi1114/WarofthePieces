@@ -509,7 +509,7 @@ MonoBehaviour:
   initialPieces:
   - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
   - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
-  - {fileID: 11400000, guid: f99dee8cf98c32b499060146ed43afaf, type: 2}
+  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
   - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
   - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
   availablePieces:

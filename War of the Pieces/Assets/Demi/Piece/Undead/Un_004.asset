@@ -15,7 +15,11 @@ MonoBehaviour:
   pieceName: "\u6CB3\u7AE5"
   race: 5
   attribute: 2
-  movePattern: {fileID: 11400000, guid: 4b6fca3223b674143a9301081dd6ec5e, type: 2}
+  movePatterns:
+  - {fileID: 11400000, guid: 5b0a517652f5afc449c484a32efd5d6b, type: 2}
+  - {fileID: 11400000, guid: 4b6fca3223b674143a9301081dd6ec5e, type: 2}
+  - {fileID: 11400000, guid: a799010752c290342859be57b91ab354, type: 2}
+  - {fileID: 11400000, guid: d07be88c3521a364c8d91d34dca1fbbc, type: 2}
   basePower: 1
   piecePrefab: {fileID: 6886934482123175501, guid: b9fb3c55299eea84e8c881dc12b8597b, type: 3}
   abilities: []

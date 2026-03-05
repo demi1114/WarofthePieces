@@ -113,8 +113,24 @@ public class Piece : MonoBehaviour
 
     public List<Vector2Int> GetMovablePositions(Vector2Int currentPos, int boardSize)
     {
-        if (data.movePattern == null) return new List<Vector2Int>();
-        return data.movePattern.GetMoves(currentPos, owner, boardSize);
+        List<Vector2Int> result = new List<Vector2Int>();
+
+        if (data.movePatterns == null) return result;
+
+        foreach (var pattern in data.movePatterns)
+        {
+            if (pattern == null) continue;
+
+            var moves = pattern.GetMoves(currentPos, owner, boardSize);
+
+            foreach (var m in moves)
+            {
+                if (!result.Contains(m))
+                    result.Add(m);
+            }
+        }
+
+        return result;
     }
 
     public PieceAttribute GetAttribute() => data.attribute;
