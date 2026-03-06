@@ -50,8 +50,6 @@ public class TurnManager : MonoBehaviour
         }
 
         TriggerPieceAbilities(PieceAbilityTrigger.OnTurnStart);
-        GameUIManager.Instance?.UpdateTurn(isPlayerTurn);
-        GameUIManager.Instance?.UpdateMoves(remainingMoves);
     }
 
     public void EndTurn()
@@ -83,7 +81,6 @@ public class TurnManager : MonoBehaviour
         if (remainingMoves <= 0) return;
 
         remainingMoves--;
-        GameUIManager.Instance?.UpdateMoves(remainingMoves);
     }
 
     public int GetCurrentTurnOwner()
@@ -96,7 +93,6 @@ public class TurnManager : MonoBehaviour
         if (amount <= 0) return;
 
         remainingMoves += amount;
-        GameUIManager.Instance?.UpdateMoves(remainingMoves);
     }
     private void ResetTemporaryBuffs(int owner)
     {

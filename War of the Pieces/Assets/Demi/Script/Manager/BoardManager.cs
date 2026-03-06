@@ -37,8 +37,6 @@ public class BoardManager : MonoBehaviour
         // 🔥 敵初期駒を追加
         foreach (var piece in availablePieces)
             ReserveManager.Instance.AddPiece(1, piece);
-
-        UpdatePieceCountUI();
     }
 
     private void Update() => HandleClick();
@@ -205,8 +203,6 @@ public class BoardManager : MonoBehaviour
 
         selectedPlacePieceData = null;
 
-        UpdatePieceCountUI();
-
         Debug.Log("配置完了");
     }
 
@@ -285,7 +281,6 @@ public class BoardManager : MonoBehaviour
 
         TurnManager.Instance.ConsumeMove();
         VictoryManager.Instance.CheckAfterAction();
-        UpdatePieceCountUI();
 
         return true;
     }
@@ -319,12 +314,6 @@ public class BoardManager : MonoBehaviour
     {
         bool willWin = BattleManager.Instance.PredictWinner(attacker, defender,
             GetBoardCount(attacker.owner), GetBoardCount(defender.owner));
-        GameUIManager.Instance?.ShowPrediction(willWin, false);
-    }
-
-    private void UpdatePieceCountUI()
-    {
-        GameUIManager.Instance?.UpdatePieceCounts(CountPieces(0), CountPieces(1));
     }
 
     private int CountPieces(int owner)
@@ -361,8 +350,6 @@ public class BoardManager : MonoBehaviour
 
         pieceGrid[pos.x, pos.y] = null;
         Destroy(piece.gameObject);
-
-        UpdatePieceCountUI();
     }
     public void ReturnPieceToReserve(Piece piece)
     {
@@ -376,7 +363,6 @@ public class BoardManager : MonoBehaviour
 
         Destroy(piece.gameObject);
 
-        UpdatePieceCountUI();
     }
     public void SpawnPieceOnBoard(PieceData data, int owner, Vector2Int pos)
     {
@@ -397,8 +383,6 @@ public class BoardManager : MonoBehaviour
         piece.Initialize(data, owner);
 
         pieceGrid[pos.x, pos.y] = piece;
-
-        UpdatePieceCountUI();
     }
     public void ReplacePiece(Piece oldPiece, PieceData newData)
     {
