@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6348c977d3664874d88a0f316b143127, type: 3}
-  m_Name: New Lose Random By Filter Ability
+  m_Name: LostOwn_Sp3
   m_EditorClassIdentifier: Assembly-CSharp::LoseRandomByFilterAbility
   filterType: 0
   targetRace: 2
   targetAttribute: 0
-  targetEnemy: 1
-  amount: 4
+  targetEnemy: 0
+  amount: 3
