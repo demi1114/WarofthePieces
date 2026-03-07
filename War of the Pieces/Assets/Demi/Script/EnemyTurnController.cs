@@ -27,7 +27,7 @@ public class EnemyTurnController : MonoBehaviour
         yield return new WaitForSeconds(actionDelay);
 
         // ① ドロー
-        EnemyDeckManager.Instance.DrawCard();
+        DeckManager.Instance.DrawCard(1);
         yield return new WaitForSeconds(actionDelay);
 
         // ② 駒配置（2回試行）
@@ -51,20 +51,25 @@ public class EnemyTurnController : MonoBehaviour
         }
 
         // ④ カード使用
-        CardData card = EnemyDeckManager.Instance.GetRandomCardFromHand();
+        CardData card = DeckManager.Instance.GetRandomCardFromHand(1);
 
         if (card != null)
         {
             Debug.Log("敵カード使用: " + card.cardName);
 
             CardUseManager.Instance.StartCardUse(card, -1, 1);
-            CardUseManager.Instance.ResolveCard(Vector2Int.zero);
+            Vector2Int randomPos = new Vector2Int
+                (Random.Range(0, BoardManager.Instance.boardSize),
+                 Random.Range(0, BoardManager.Instance.boardSize));
+
+            CardUseManager.Instance.ResolveCard(randomPos);
 
             yield return new WaitForSeconds(actionDelay);
         }
 
         // ⑤ ターン終了
         TurnManager.Instance.EndTurn();
+        Debug.Log("敵ターン終了");
     }
 
     // 駒配置

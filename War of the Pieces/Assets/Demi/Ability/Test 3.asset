@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98315e0782cda2d4caf8c2ce4f2d1df0, type: 3}
-  m_Name: Draw1
+  m_Name: Test 3
   m_EditorClassIdentifier: Assembly-CSharp::UnifiedAbility
-  effect: 0
-  zone: 0
+  effect: 6
+  zone: 3
   target: 0
   filter: 0
   race: 0
   attribute: 0
   specificPieces: []
-  range: 0
-  targetCount: 1
+  range: 2
+  targetCount: 3
   effectValue: 1
-  transformTarget: {fileID: 0}
+  transformTarget: {fileID: 11400000, guid: ea0cfe424a485c24f80b3f72e126951c, type: 2}

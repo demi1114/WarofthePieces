@@ -262,7 +262,7 @@ public class BoardManager : MonoBehaviour
             Piece winner = result.winner;
             Piece loser = result.loser;
 
-            loser.AddTemporaryPower(-loser.CurrentPower);
+            loser.Die();
 
             if (winner != piece)
             {
@@ -316,14 +316,6 @@ public class BoardManager : MonoBehaviour
             GetBoardCount(attacker.owner), GetBoardCount(defender.owner));
     }
 
-    private int CountPieces(int owner)
-    {
-        int count = 0;
-        for (int y = 0; y < boardSize; y++)
-            for (int x = 0; x < boardSize; x++)
-                if (pieceGrid[x, y] != null && pieceGrid[x, y].owner == owner) count++;
-        return count;
-    }
 
     // --- ヘルパー関数 ---
     public List<Piece> GetPiecesByOwner(int owner)
@@ -403,8 +395,9 @@ public class BoardManager : MonoBehaviour
 
         // 新駒生成
         SpawnPieceOnBoard(newData, owner, pos);
-    }
 
+        Piece newPiece = pieceGrid[pos.x, pos.y];
+    }
     // クリック処理
     private void HandleClick()
     {

@@ -91,4 +91,18 @@ public class ReserveManager : MonoBehaviour
         int index = UnityEngine.Random.Range(0, reserve.Count);
         RemovePiece(owner, index);
     }
+
+    //•Ïg
+    public void TransformRandomPiece(int owner, PieceData newData)
+    {
+        var reserve = GetReserve(owner);
+
+        if (reserve.Count == 0) return;
+
+        int index = UnityEngine.Random.Range(0, reserve.Count);
+
+        reserve[index] = newData;
+
+        OnReserveChanged?.Invoke();
+    }
 }

@@ -62,10 +62,6 @@ public class TurnManager : MonoBehaviour
         StartTurn();
     }
 
-    public void OnClickEndTurnButton()
-    {
-        if (isPlayerTurn) EndTurn();
-    }
 
     // 移動関連
     public bool CanMove(int owner)
@@ -105,9 +101,6 @@ public class TurnManager : MonoBehaviour
     {
         return remainingMoves;
     }
-    public float GetRemainingTime() => timer;
-
-    public void ForceEndTurn() => EndTurn();
 
     public void TriggerPieceAbilities(PieceAbilityTrigger timing)
     {
