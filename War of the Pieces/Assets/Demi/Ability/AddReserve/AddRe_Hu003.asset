@@ -9,8 +9,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9919560b4b9837c48a2bd96dbb4808e6, type: 3}
+  m_Script: {fileID: 11500000, guid: 98315e0782cda2d4caf8c2ce4f2d1df0, type: 3}
   m_Name: AddRe_Hu003
-  m_EditorClassIdentifier: Assembly-CSharp::AddReserveAbility
-  piece: {fileID: 11400000, guid: 8d774e3f2ae41e24381de3e5c769e6f8, type: 2}
-  amount: 1
+  m_EditorClassIdentifier: Assembly-CSharp::UnifiedAbility
+  pieceDatabase: {fileID: 0}
+  effect: 1
+  zone: 2
+  target: 0
+  filter: 0
+  race: 0
+  attribute: 0
+  specificPieces: []
+  range: 0
+  shape: 0
+  fixedColumn: -1
+  fixedRow: -1
+  areaRadius: 1
+  targetCount: 1
+  effectValue: 1
+  transformTarget: {fileID: 11400000, guid: 8d774e3f2ae41e24381de3e5c769e6f8, type: 2}
+  addFromRaceRandom: 0

@@ -60,6 +60,8 @@ public enum AbilityShape
 [CreateAssetMenu(menuName = "Ability/Unified Ability")]
 public class UnifiedAbility : Ability
 {
+    [SerializeField] PieceDatabase pieceDatabase;
+
     [Header("Effect")]
     public AbilityEffect effect;
 
@@ -100,6 +102,9 @@ public class UnifiedAbility : Ability
     [Header("Transform Target")]
     public PieceData transformTarget;
 
+    [Header("AddReserve Options")]
+    public bool addFromRaceRandom = false;
+
     public override void OnCardUse(AbilityContext context)
     {
         // PieceëŒè€Ç∂Ç·Ç»Ç¢å¯â 
@@ -115,39 +120,56 @@ public class UnifiedAbility : Ability
         {
             for (int i = 0; i < effectValue; i++)
             {
-                ReserveManager.Instance.AddPiece(context.owner, transformTarget);
+                PieceData piece = transformTarget;
+
+                if (addFromRaceRandom)
+                {
+                    var list = pieceDatabase.GetByRace(race);
+
+                    if (list.Count > 0)
+                        piece = list[Random.Range(0, list.Count)];
+                }
+
+                ReserveManager.Instance.AddPiece(context.owner, piece);
             }
+
             return;
         }
 
         if (effect == AbilityEffect.DestroyReserve)
         {
-            List<PieceData> targets = GetReserveTargets(context.owner);
+            foreach (var owner in GetTargetOwners(context.owner))
+            {
+                var reserveTargets = GetReserveTargets(owner);
 
-            targets = targets
-                .OrderBy(x => Random.value)
-                .Take(effectValue)
-                .ToList();
+                reserveTargets = reserveTargets
+                    .OrderBy(x => Random.value)
+                    .Take(effectValue)
+                    .ToList();
 
-            foreach (var piece in targets)
-                ReserveManager.Instance.RemovePiece(context.owner, piece);
+                foreach (var piece in reserveTargets)
+                    ReserveManager.Instance.RemovePiece(owner, piece);
+            }
 
             return;
         }
 
         if (effect == AbilityEffect.TransformReserve)
         {
-            List<PieceData> targets = GetReserveTargets(context.owner);
-
-            targets = targets
-                .OrderBy(x => Random.value)
-                .Take(effectValue)
-                .ToList();
-
-            foreach (var piece in targets)
+            foreach (var owner in GetTargetOwners(context.owner))
             {
-                ReserveManager.Instance.RemovePiece(context.owner, piece);
-                ReserveManager.Instance.AddPiece(context.owner, transformTarget);
+                var reserveTargets = GetReserveTargets(owner);
+
+                reserveTargets = reserveTargets
+                    .OrderBy(x => Random.value)
+                    .Take(effectValue)
+                    .ToList();
+
+                foreach (var piece in reserveTargets)
+                {
+                    ReserveManager.Instance.RemovePiece(owner, piece);
+                    ReserveManager.Instance.AddPiece(owner, transformTarget);
+                }
             }
 
             return;
@@ -205,7 +227,7 @@ public class UnifiedAbility : Ability
         switch (filter)
         {
             case AbilityFilter.None:
-                return list;
+                return list.ToList();
 
             case AbilityFilter.Race:
                 return list.Where(p => p.race == race).ToList();
@@ -214,10 +236,14 @@ public class UnifiedAbility : Ability
                 return list.Where(p => p.attribute == attribute).ToList();
 
             case AbilityFilter.SpecificPiece:
+
+                if (specificPieces == null)
+                    return new List<PieceData>();
+
                 return list.Where(p => specificPieces.Contains(p)).ToList();
         }
 
-        return list;
+        return list.ToList();
     }
 
     List<int> GetTargetOwners(int owner)

@@ -56,16 +56,4 @@ public class PieceData : ScriptableObject
 
     [Header("Piece Abilities")]
     public List<PieceAbilityEntry> abilities;
-
-    public List<PieceData> allPieces;
-
-    public List<PieceData> GetByRace(PieceRace race)
-    {
-        return allPieces.FindAll(p => p.race == race);
-    }
-
-    public List<PieceData> GetByAttribute(PieceAttribute attribute)
-    {
-        return allPieces.FindAll(p => p.attribute == attribute);
-    }
 }
