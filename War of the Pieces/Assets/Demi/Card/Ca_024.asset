@@ -12,13 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 712f4fb1451c182459d5bce3d1a6307d, type: 3}
   m_Name: Ca_024
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardName: "\u30B4\u30FC\u30EC\u30E0\u306E\u88FD\u9020"
+  cardName: "\u30DE\u30FC\u30B8\u30C7\u30B9\u30C8\u30A4\u30E4\u30FC"
   abilities:
-  - {fileID: 11400000, guid: 3b036266bed9af8458472dd5c043d5b1, type: 2}
-  - {fileID: 11400000, guid: 17367dd8c8e2c1242bbde02b6024c790, type: 2}
+  - {fileID: 11400000, guid: 48d2417576aed2f4ebc9d17807425ed4, type: 2}
+  - {fileID: 11400000, guid: 48d2417576aed2f4ebc9d17807425ed4, type: 2}
+  - {fileID: 11400000, guid: 9c9b0c033ea4bd34d88a81c41506f073, type: 2}
   category: 1
-  targetPieceAttribute: 3
-  amount: 1
-  targetCount: 1
-  specificPiece: {fileID: 11400000, guid: 896a2c9cce017de49a6d7107e09044b8, type: 2}
-  candidatePieces: []

@@ -22,6 +22,5 @@ MonoBehaviour:
   basePower: 1
   piecePrefab: {fileID: 3370697987197910459, guid: abd651716b843c04c9a2fa70b227ff10, type: 3}
   abilities:
-  - ability: {fileID: 11400000, guid: 47ac6935be5645f4bbd755eccd41b57a, type: 2}
+  - ability: {fileID: 11400000, guid: 81ee9ecaab225544eaa739478833de7d, type: 2}
     triggerTiming: 2
-  allPieces: []

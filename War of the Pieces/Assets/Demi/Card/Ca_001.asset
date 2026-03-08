@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: "\u9032\u8ECD"
   abilities:
-  - {fileID: 11400000, guid: 217dfbeb0c73def4fb3714b1cfad3ea8, type: 2}
+  - {fileID: 11400000, guid: 1bd613000b1cd3045a19efc9aa266e78, type: 2}
   category: 0
   targetPieceAttribute: 0
   amount: 1

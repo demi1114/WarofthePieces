@@ -373,9 +373,9 @@ MonoBehaviour:
   initialPieces:
   - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
   - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
-  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
-  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
-  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
+  - {fileID: 11400000, guid: 52afe52039afaf8489a37999696e48af, type: 2}
+  - {fileID: 11400000, guid: 52afe52039afaf8489a37999696e48af, type: 2}
+  - {fileID: 11400000, guid: 52afe52039afaf8489a37999696e48af, type: 2}
   availablePieces:
   - {fileID: 11400000, guid: 84fbb75cc0d72d8488c71f17e4051969, type: 2}
   - {fileID: 11400000, guid: 84fbb75cc0d72d8488c71f17e4051969, type: 2}

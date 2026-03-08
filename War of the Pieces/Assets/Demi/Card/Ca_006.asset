@@ -14,11 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: "\u98A8\u306E\u5996\u7CBE\u305F\u3061"
   abilities:
-  - {fileID: 11400000, guid: bb99d37b8f6d6b64f91a2fe7bb8dbfd1, type: 2}
-  - {fileID: 11400000, guid: 58191055173fca943a4fc197a74bf6f2, type: 2}
+  - {fileID: 11400000, guid: 0972a29989cbac24d86fa82e8e387dd6, type: 2}
+  - {fileID: 11400000, guid: d3e0e48fc7afa75498fa4ad927ce5664, type: 2}
   category: 1
-  targetPieceAttribute: 5
-  amount: 1
-  targetCount: 1
-  specificPiece: {fileID: 11400000, guid: 896a2c9cce017de49a6d7107e09044b8, type: 2}
-  candidatePieces: []
