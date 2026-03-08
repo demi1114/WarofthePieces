@@ -10,16 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98315e0782cda2d4caf8c2ce4f2d1df0, type: 3}
-  m_Name: Test 2
+  m_Name: AddRe_Hu000 2
   m_EditorClassIdentifier: Assembly-CSharp::UnifiedAbility
-  effect: 10
-  zone: 3
+  effect: 3
+  zone: 2
   target: 0
   filter: 0
   race: 0
   attribute: 0
   specificPieces: []
-  range: 2
+  range: 0
+  shape: 0
+  fixedColumn: -1
+  fixedRow: -1
+  areaRadius: 1
   targetCount: 1
   effectValue: 3
-  transformTarget: {fileID: 0}
+  transformTarget: {fileID: 11400000, guid: ea0cfe424a485c24f80b3f72e126951c, type: 2}

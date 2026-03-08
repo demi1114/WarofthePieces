@@ -10,16 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98315e0782cda2d4caf8c2ce4f2d1df0, type: 3}
-  m_Name: Test 4
+  m_Name: Debuff1_2
   m_EditorClassIdentifier: Assembly-CSharp::UnifiedAbility
-  effect: 7
-  zone: 0
-  target: 0
+  effect: 9
+  zone: 3
+  target: 1
   filter: 0
   race: 0
   attribute: 0
   specificPieces: []
-  range: 0
+  range: 2
+  shape: 0
+  fixedColumn: -1
+  fixedRow: -1
+  areaRadius: 1
   targetCount: 1
   effectValue: 2
   transformTarget: {fileID: 0}

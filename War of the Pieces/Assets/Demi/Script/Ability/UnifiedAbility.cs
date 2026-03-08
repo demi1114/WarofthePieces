@@ -48,6 +48,15 @@ public enum AbilityRange
     Count
 }
 
+public enum AbilityShape
+{
+    Single,
+    Row,
+    Column,
+    Cross,
+    Area
+}
+
 [CreateAssetMenu(menuName = "Ability/Unified Ability")]
 public class UnifiedAbility : Ability
 {
@@ -70,6 +79,18 @@ public class UnifiedAbility : Ability
     [Header("Range")]
     public AbilityRange range;
 
+    [Header("Shape")]
+    public AbilityShape shape = AbilityShape.Single;
+
+    [Header("Fixed Column")]
+    public int fixedColumn = -1;
+
+    [Header("Fixed Row")]
+    public int fixedRow = -1;
+
+    [Header("Area Size")]
+    public int areaRadius = 1;
+
     [Header("Target Count")]
     public int targetCount = 1;
 
@@ -90,6 +111,48 @@ public class UnifiedAbility : Ability
             return;
         }
 
+        if (effect == AbilityEffect.AddReserve)
+        {
+            for (int i = 0; i < effectValue; i++)
+            {
+                ReserveManager.Instance.AddPiece(context.owner, transformTarget);
+            }
+            return;
+        }
+
+        if (effect == AbilityEffect.DestroyReserve)
+        {
+            List<PieceData> targets = GetReserveTargets(context.owner);
+
+            targets = targets
+                .OrderBy(x => Random.value)
+                .Take(effectValue)
+                .ToList();
+
+            foreach (var piece in targets)
+                ReserveManager.Instance.RemovePiece(context.owner, piece);
+
+            return;
+        }
+
+        if (effect == AbilityEffect.TransformReserve)
+        {
+            List<PieceData> targets = GetReserveTargets(context.owner);
+
+            targets = targets
+                .OrderBy(x => Random.value)
+                .Take(effectValue)
+                .ToList();
+
+            foreach (var piece in targets)
+            {
+                ReserveManager.Instance.RemovePiece(context.owner, piece);
+                ReserveManager.Instance.AddPiece(context.owner, transformTarget);
+            }
+
+            return;
+        }
+
         if (effect == AbilityEffect.DestroyDeck)
         {
             DeckManager.Instance.RemoveTopCards(context.owner, effectValue);
@@ -105,6 +168,8 @@ public class UnifiedAbility : Ability
         // ===== PieceëŒè€å¯â  =====
 
         List<Piece> targets = GetTargets(context);
+
+        targets = ApplyShapeFilter(targets, context);
 
         if (range == AbilityRange.Random)
             targets = targets.OrderBy(x => Random.value).Take(targetCount).ToList();
@@ -133,6 +198,28 @@ public class UnifiedAbility : Ability
         return pieces;
     }
 
+    List<PieceData> GetReserveTargets(int owner)
+    {
+        List<PieceData> list = ReserveManager.Instance.GetReserve(owner);
+
+        switch (filter)
+        {
+            case AbilityFilter.None:
+                return list;
+
+            case AbilityFilter.Race:
+                return list.Where(p => p.race == race).ToList();
+
+            case AbilityFilter.Attribute:
+                return list.Where(p => p.attribute == attribute).ToList();
+
+            case AbilityFilter.SpecificPiece:
+                return list.Where(p => specificPieces.Contains(p)).ToList();
+        }
+
+        return list;
+    }
+
     List<int> GetTargetOwners(int owner)
     {
         List<int> list = new List<int>();
@@ -152,6 +239,81 @@ public class UnifiedAbility : Ability
         return list;
     }
 
+    List<Piece> ApplyShapeFilter(List<Piece> pieces, AbilityContext context)
+    {
+        List<Piece> result = new List<Piece>();
+
+        Vector2Int origin = new Vector2Int(-1, -1);
+
+        if (context.sourcePiece != null)
+            origin = BoardManager.Instance.FindPiecePosition(context.sourcePiece);
+
+        foreach (var piece in pieces)
+        {
+            Vector2Int pos =
+                BoardManager.Instance.FindPiecePosition(piece);
+
+            switch (shape)
+            {
+                case AbilityShape.Single:
+                    result.Add(piece);
+                    break;
+
+                case AbilityShape.Row:
+
+                    if (fixedRow >= 0)
+                    {
+                        if (pos.y == fixedRow)
+                            result.Add(piece);
+                    }
+                    else if (origin.y != -1)
+                    {
+                        if (pos.y == origin.y)
+                            result.Add(piece);
+                    }
+
+                    break;
+
+                case AbilityShape.Column:
+
+                    if (fixedColumn >= 0)
+                    {
+                        if (pos.x == fixedColumn)
+                            result.Add(piece);
+                    }
+                    else if (origin.x != -1)
+                    {
+                        if (pos.x == origin.x)
+                            result.Add(piece);
+                    }
+
+                    break;
+
+                case AbilityShape.Cross:
+
+                    if (origin.x != -1)
+                    {
+                        if (pos.x == origin.x || pos.y == origin.y)
+                            result.Add(piece);
+                    }
+
+                    break;
+
+                case AbilityShape.Area:
+
+                    if (origin.x != -1)
+                    {
+                        if (Mathf.Abs(pos.x - origin.x) <= areaRadius &&
+                            Mathf.Abs(pos.y - origin.y) <= areaRadius)
+                            result.Add(piece);
+                    }
+
+                    break;
+            }
+        }
+
+        return result;
+    }
     bool FilterPiece(Piece piece)
     {
         switch (filter)

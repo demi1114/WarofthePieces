@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98315e0782cda2d4caf8c2ce4f2d1df0, type: 3}
-  m_Name: Test 5
+  m_Name: DestroyDeck_1
   m_EditorClassIdentifier: Assembly-CSharp::UnifiedAbility
-  effect: 7
+  effect: 4
   zone: 0
   target: 0
   filter: 0
@@ -20,6 +20,10 @@ MonoBehaviour:
   attribute: 0
   specificPieces: []
   range: 0
+  shape: 0
+  fixedColumn: -1
+  fixedRow: -1
+  areaRadius: 1
   targetCount: 1
-  effectValue: 2
+  effectValue: 1
   transformTarget: {fileID: 0}
