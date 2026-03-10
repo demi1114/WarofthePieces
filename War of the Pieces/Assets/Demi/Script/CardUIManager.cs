@@ -23,10 +23,15 @@ public class CardUIManager : MonoBehaviour
 
             GameObject btn = Instantiate(cardButtonPrefab, cardHandArea);
             btn.GetComponentInChildren<TMP_Text>().text = card.cardName;
-            btn.GetComponent<Button>().onClick.AddListener(() =>
+            Button button = btn.GetComponent<Button>();
+            button.onClick.AddListener(() =>
             {
                 DetailPanelUI.Instance.ShowCard(card);
-                CardUseManager.Instance.StartCardUse(card, index, 0);
+
+                if (TurnManager.Instance.isPlayerTurn)
+                {
+                    CardUseManager.Instance.StartCardUse(card, index, 0);
+                }
             });
         }
     }

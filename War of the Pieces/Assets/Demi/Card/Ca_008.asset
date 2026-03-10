@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Ca_008
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: "\u98A8\u306E\u305F\u3088\u308A"
+  description: "\u81EA\u5206\u306E\u5996\u7CBE\u3092\u30E9\u30F3\u30C0\u30E0\u306B\uFF11\u3064\u624B\u99D2\u306B\u623B\u3059\u3002\n\uFF12\u679A\u30C9\u30ED\u30FC\u3059\u308B\u3002"
   abilities:
   - {fileID: 11400000, guid: e1612f62965fc77408848d6825fbcacc, type: 2}
   - {fileID: 11400000, guid: 9519ab4aa39b96e4baf486f2e4944505, type: 2}

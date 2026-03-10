@@ -79,37 +79,66 @@ public class BoardManager : MonoBehaviour
 
     public void OnCellClicked(BoardCell cell)
     {
-        if (!TurnManager.Instance.isPlayerTurn) return;
-
-        // カード使用待機中なら優先処理
-        if (CardUseManager.Instance != null && CardUseManager.Instance.IsWaitingForTarget())
-        {
-            CardUseManager.Instance.ResolveCard(new Vector2Int(cell.x, cell.y));
-            return;
-        }
-
+        Vector2Int pos = new Vector2Int(cell.x, cell.y);
         Piece clickedPiece = pieceGrid[cell.x, cell.y];
 
-        // ① 自陣駒をクリック → 選択
-        if (clickedPiece != null && clickedPiece.owner == 0)
+        // --- カード使用 ---
+        if (CardUseManager.Instance != null && CardUseManager.Instance.IsWaitingForTarget())
         {
-            SelectPiece(clickedPiece, cell.x, cell.y);
+            CardUseManager.Instance.ResolveCard(pos);
             return;
         }
 
-        // ② 移動可能駒が選択中
-        if (selectedPiece != null)
+        // --- 手駒配置 ---
+        if (selectedPlacePieceData != null && TurnManager.Instance.isPlayerTurn)
         {
-            Vector2Int from = selectedPosition;
-            Vector2Int to = new Vector2Int(cell.x, cell.y);
+            TryPlacePiece(cell);
+            DetailPanelUI.Instance.Hide();
+            return;
+        }
 
-            Piece targetPiece = pieceGrid[cell.x, cell.y];
-            if (targetPiece != null && targetPiece.owner != 0)
-                ShowBattlePrediction(selectedPiece, targetPiece);
+        // --- 駒クリック ---
+        if (clickedPiece != null)
+        {
+            // 情報表示（ターン関係なく可能）
+            DetailPanelUI.Instance.ShowPiece(clickedPiece);
 
-            bool moved = TryMovePiece(selectedPiece, from, to);
+            // 同じ駒クリック → 選択解除
+            if (selectedPiece == clickedPiece)
+            {
+                CancelSelection();
+                return;
+            }
 
-            if (moved || !TurnManager.Instance.CanMove(0))
+            // 駒選択中 → 移動・戦闘
+            if (selectedPiece != null && TurnManager.Instance.isPlayerTurn)
+            {
+                bool moved = TryMovePiece(selectedPiece, selectedPosition, pos);
+
+                if (moved)
+                {
+                    ClearHighlights();
+                    selectedPiece = null;
+                }
+
+                return;
+            }
+
+            // 自分の駒なら選択
+            if (TurnManager.Instance.isPlayerTurn && clickedPiece.owner == 0)
+            {
+                SelectPiece(clickedPiece, cell.x, cell.y);
+            }
+
+            return;
+        }
+
+        // --- 空マスクリック ---
+        if (selectedPiece != null && TurnManager.Instance.isPlayerTurn)
+        {
+            bool moved = TryMovePiece(selectedPiece, selectedPosition, pos);
+
+            if (moved)
             {
                 ClearHighlights();
                 selectedPiece = null;
@@ -118,16 +147,8 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
-        // ③ 空マスクリックでキャンセル
-        if (selectedPiece != null)
-        {
-            CancelSelection();
-            return;
-        }
-
-        // ④ 駒を配置
-        if (clickedPiece == null)
-            TryPlacePiece(cell);
+        // 空マスクリック → 選択解除
+        CancelSelection();
     }
 
     private void SelectPiece(Piece piece, int x, int y)

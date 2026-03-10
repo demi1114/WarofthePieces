@@ -32,3 +32,4 @@ MonoBehaviour:
     triggerTiming: 0
   - ability: {fileID: 11400000, guid: 63e2f4e1d6cc4394fa3930a73b9d2f4c, type: 2}
     triggerTiming: 0
+  description: "\u3010\u59CB\u3011\u30B7\u30EB\u30D5\u30A3\u30FC\u30C9\u3092\uFF11\u3064\u3068\u30A6\u30A3\u30F3\u30C9\u30D5\u30A7\u30A2\u30EA\u30FC\u3092\uFF11\u3064\u52A0\u3048\u308B\u3002"

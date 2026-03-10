@@ -728,8 +728,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
   - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
   availablePieces:
-  - {fileID: 11400000, guid: 84fbb75cc0d72d8488c71f17e4051969, type: 2}
-  - {fileID: 11400000, guid: 84fbb75cc0d72d8488c71f17e4051969, type: 2}
+  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
+  - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
   - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
   - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
   - {fileID: 11400000, guid: 401bcbadda626634695bbec20c43b567, type: 2}
@@ -4264,6 +4264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83aa5d402ead6604384096046bc4998c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ReserveManager
+  maxReserveSize: 8
 --- !u!1 &2075389743
 GameObject:
   m_ObjectHideFlags: 0

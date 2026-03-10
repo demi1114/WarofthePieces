@@ -30,3 +30,4 @@ MonoBehaviour:
   abilities:
   - ability: {fileID: 11400000, guid: 292d75b87af09d34e889576bc333827c, type: 2}
     triggerTiming: 0
+  description: "\u3010\u59CB\u3011\u5996\u602A\u3092\u3059\u3079\u3066\uFF0B\uFF11\u3059\u308B\u3002"

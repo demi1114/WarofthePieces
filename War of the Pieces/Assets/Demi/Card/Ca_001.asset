@@ -13,11 +13,7 @@ MonoBehaviour:
   m_Name: Ca_001
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   cardName: "\u9032\u8ECD"
+  description: "\u3053\u306E\u30BF\u30FC\u30F3\u306E\u79FB\u52D5\u56DE\u6570\u3092\uFF11\u52A0\u3048\u308B\u3002"
   abilities:
   - {fileID: 11400000, guid: 1bd613000b1cd3045a19efc9aa266e78, type: 2}
   category: 0
-  targetPieceAttribute: 0
-  amount: 1
-  targetCount: 1
-  specificPiece: {fileID: 11400000, guid: 896a2c9cce017de49a6d7107e09044b8, type: 2}
-  candidatePieces: []
