@@ -77,6 +77,16 @@ public class DeckManager : MonoBehaviour
         return owner == 0 ? playerMaxHandSize : enemyMaxHandSize;
     }
 
+    public int GetDeckCount(int owner)
+    {
+        return GetDeck(owner).Count;
+    }
+
+    public int GetHandCount(int owner)
+    {
+        return GetHand(owner).Count;
+    }
+
     // =============================
     // ドロー
     // =============================
@@ -96,6 +106,8 @@ public class DeckManager : MonoBehaviour
         if (owner == 0)
             CardUIManager.Instance?.RefreshHand(hand);
 
+        GameUIManager.Instance?.RefreshUI();
+
         Debug.Log($"{owner} ドロー: {drawn.cardName}");
     }
 
@@ -114,6 +126,8 @@ public class DeckManager : MonoBehaviour
 
                 if (owner == 0)
                     CardUIManager.Instance?.RefreshHand(hand);
+
+                GameUIManager.Instance?.RefreshUI();
 
                 Debug.Log($"{owner} 特定タイプドロー: {card.cardName}");
                 return;
@@ -164,6 +178,8 @@ public class DeckManager : MonoBehaviour
 
         if (owner == 0)
             CardUIManager.Instance?.RefreshHand(hand);
+
+        GameUIManager.Instance?.RefreshUI();
     }
 
     public CardData GetRandomCardFromHand(int owner)

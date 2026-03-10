@@ -88,7 +88,10 @@ public class VictoryManager : MonoBehaviour
         // ターン停止
         TurnManager.Instance.enabled = false;
 
-        // 必要ならUI表示
-        // GameUIManager.Instance.ShowResult(winnerOwner);
+        // UI表示
+        if (winnerOwner == 0)
+            GameResultUI.Instance.ShowVictory();
+        else
+            GameResultUI.Instance.ShowDefeat();
     }
 }

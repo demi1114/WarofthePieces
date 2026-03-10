@@ -11,6 +11,9 @@ public class ReserveManager : MonoBehaviour
 
     public event Action OnReserveChanged;
 
+    [Header("Reserve Limit")]
+    public int maxReserveSize = 8;
+
     private void Awake()
     {
         Instance = this;
@@ -31,8 +34,22 @@ public class ReserveManager : MonoBehaviour
     {
         if (piece == null) return;
 
-        GetReserve(owner).Add(piece);
+        var reserve = GetReserve(owner);
+
+        if (reserve.Count >= maxReserveSize)
+        {
+            Debug.Log("手駒が上限です");
+            return;
+        }
+
+        reserve.Add(piece);
         OnReserveChanged?.Invoke();
+    }
+
+    //上限チェック用関数
+    public bool IsReserveFull(int owner)
+    {
+        return GetReserve(owner).Count >= maxReserveSize;
     }
 
     //指定削除

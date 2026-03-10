@@ -20,6 +20,10 @@ public class CardData : ScriptableObject
 {
     public string cardName;
 
+    [Header("Description")]
+    [TextArea(3, 6)]
+    public string description;
+
     [Header("Abilities")]
     public List<Ability> abilities = new List<Ability>();
 

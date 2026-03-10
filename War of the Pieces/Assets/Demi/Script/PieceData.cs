@@ -16,7 +16,7 @@ public enum PieceRace
 }
 public enum PieceAttribute
 {
-    Normal,
+    None,
     Fire,
     Water,
     Electric,
@@ -56,4 +56,8 @@ public class PieceData : ScriptableObject
 
     [Header("Piece Abilities")]
     public List<PieceAbilityEntry> abilities;
+
+    [Header("Description")]
+    [TextArea(3, 6)]
+    public string description;
 }

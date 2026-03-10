@@ -60,7 +60,7 @@ public class BattleManager : MonoBehaviour
         (a == PieceAttribute.Wind && b == PieceAttribute.Ground) ||
         (a == PieceAttribute.Ground && b == PieceAttribute.Electric) ||
         (a == PieceAttribute.Electric && b == PieceAttribute.Water) ||
-        (a == PieceAttribute.Dark && b == PieceAttribute.Normal);
+        (a == PieceAttribute.Dark && b == PieceAttribute.None);
 
     public bool PredictWinner(Piece attacker, Piece defender, int attackerBoardCount, int defenderBoardCount)
     {

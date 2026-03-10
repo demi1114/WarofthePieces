@@ -44,6 +44,7 @@ public class ReserveUIManager : MonoBehaviour
                 btn.GetComponent<Button>().onClick.AddListener(() =>
                 {
                     BoardManager.Instance.SelectPlacePiece(piece);
+                    DetailPanelUI.Instance.ShowReservePiece(piece);
                 });
             }
         }

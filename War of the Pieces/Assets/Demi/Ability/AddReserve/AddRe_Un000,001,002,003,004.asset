@@ -16,11 +16,11 @@ MonoBehaviour:
   effect: 1
   zone: 2
   target: 0
-  filter: 0
-  race: 0
+  filter: 1
+  race: 5
   attribute: 0
   specificPieces: []
-  range: 0
+  range: 2
   shape: 0
   fixedColumn: -1
   fixedRow: -1
@@ -28,4 +28,4 @@ MonoBehaviour:
   targetCount: 1
   effectValue: 1
   transformTarget: {fileID: 0}
-  addFromRaceRandom: 0
+  addFromRaceRandom: 1

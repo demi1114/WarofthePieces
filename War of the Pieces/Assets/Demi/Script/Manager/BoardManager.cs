@@ -142,9 +142,10 @@ public class BoardManager : MonoBehaviour
 
         selectedPiece = piece;
         selectedPosition = new Vector2Int(x, y);
+
         HighlightMovableCells();
 
-        Debug.Log($"駒選択: {x},{y}");
+        DetailPanelUI.Instance.ShowPiece(piece);
     }
 
     public Vector2Int FindPiecePosition(Piece piece)
@@ -163,9 +164,10 @@ public class BoardManager : MonoBehaviour
 
     private void CancelSelection()
     {
-        Debug.Log("選択キャンセル");
         ClearHighlights();
         selectedPiece = null;
+
+        DetailPanelUI.Instance.Hide();
     }
 
     private void TryPlacePiece(BoardCell cell)
@@ -415,7 +417,6 @@ public class BoardManager : MonoBehaviour
 
                 if (!IsInsideBoard(pos))
                 {
-                    Debug.LogWarning("盤面外の駒参照を検出しました");
                     return;
                 }
 
@@ -427,8 +428,10 @@ public class BoardManager : MonoBehaviour
             if (cell != null) { OnCellClicked(cell); return; }
 
             CardUseManager.Instance?.CancelCardUse();
+            DetailPanelUI.Instance.Hide();
         }
         else CardUseManager.Instance?.CancelCardUse();
+        DetailPanelUI.Instance.Hide();
     }
 
 }
