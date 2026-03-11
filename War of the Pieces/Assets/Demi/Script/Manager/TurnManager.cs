@@ -55,6 +55,7 @@ public class TurnManager : MonoBehaviour
     public void EndTurn()
     {
         TriggerPieceAbilities(PieceAbilityTrigger.OnTurnEnd);
+        BoardManager.Instance.CancelSelection();
         // ここ追加：ターン終了時に一時バフをリセット
         ResetTemporaryBuffs(isPlayerTurn ? 0 : 1);
 

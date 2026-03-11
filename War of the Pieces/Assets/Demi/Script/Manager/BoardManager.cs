@@ -183,7 +183,7 @@ public class BoardManager : MonoBehaviour
         return new Vector2Int(-1, -1);
     }
 
-    private void CancelSelection()
+    public void CancelSelection()
     {
         ClearHighlights();
         selectedPiece = null;
