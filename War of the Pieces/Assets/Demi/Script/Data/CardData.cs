@@ -18,6 +18,7 @@ public enum CardCategory
 [CreateAssetMenu(menuName = "Card/Create Card")]
 public class CardData : ScriptableObject
 {
+    public string cardID;
     public string cardName;
 
     [Header("Description")]

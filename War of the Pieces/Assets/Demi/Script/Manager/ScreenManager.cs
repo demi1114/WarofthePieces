@@ -99,6 +99,7 @@ public class ScreenManager : MonoBehaviour
 
     public void StartBattle()
     {
+        DeckBuilderManager.Instance.SaveCurrentDeck();
         SceneManager.LoadScene("DemiScene");
     }
 
