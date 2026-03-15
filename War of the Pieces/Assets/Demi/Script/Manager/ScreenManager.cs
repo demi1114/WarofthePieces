@@ -9,6 +9,7 @@ public class ScreenManager : MonoBehaviour
     public ScreenBase homeScreen;
     public ScreenBase SoroBattleScreen;
     public ScreenBase MultiBattleScreen;
+    public ScreenBase DeckSelectScreen;
     public ScreenBase CardScreen;
     public ScreenBase deckBuilderScreen;
     public ScreenBase cardListScreen;
@@ -48,6 +49,12 @@ public class ScreenManager : MonoBehaviour
     public void ShowMultiBattle()
     {
         ShowScreen(MultiBattleScreen);
+    }
+
+    public void ShowDeckSelect()
+    {
+        DeckBuilderManager.Instance.ReloadAllDecks();
+        ShowScreen(DeckSelectScreen);
     }
 
     public void ShowCardScreen()

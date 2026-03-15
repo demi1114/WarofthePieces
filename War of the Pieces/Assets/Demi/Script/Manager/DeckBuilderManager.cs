@@ -152,4 +152,12 @@ public class DeckBuilderManager : MonoBehaviour
                 deck.Add(card);
         }
     }
+
+    public void ReloadAllDecks()
+    {
+        for (int i = 0; i < maxDecks; i++)
+        {
+            LoadDeck(i);
+        }
+    }
 }

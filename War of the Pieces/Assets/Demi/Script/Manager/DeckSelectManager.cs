@@ -31,6 +31,6 @@ public class DeckSelectManager : MonoBehaviour
 
     void StartBattle()
     {
-        SceneManager.LoadScene("BattleScene");
+        SceneManager.LoadScene("DemiScene");
     }
 }

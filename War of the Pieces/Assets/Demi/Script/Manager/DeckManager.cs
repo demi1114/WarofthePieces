@@ -36,22 +36,23 @@ public class DeckManager : MonoBehaviour
 
         if (owner == 0)
         {
-            // デッキビルダーのデッキを使用
-            source = DeckBuilderManager.Instance.GetCurrentDeck();
+            int deckIndex = DeckSelectManager.Instance.selectedDeckIndex;
+
+            source = DeckBuilderManager.Instance.decks[deckIndex].cards;
         }
         else
         {
-            // 敵は従来通り
             source = enemyDeckData.cards;
         }
 
         if (source == null || source.Count != 20)
         {
-            Debug.LogError($"{owner} のデッキが20枚ではありません");
+            Debug.LogError("デッキが20枚ではありません");
             return;
         }
 
         var runtime = new List<CardData>(source);
+
         Shuffle(runtime);
 
         if (owner == 0)
