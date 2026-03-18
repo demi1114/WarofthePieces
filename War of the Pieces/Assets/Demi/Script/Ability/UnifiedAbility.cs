@@ -189,18 +189,39 @@ public class UnifiedAbility : Ability
 
         // ===== Piece対象効果 =====
 
-        List<Piece> targets = GetTargets(context);
+        List<Piece> targets = new List<Piece>();
 
-        targets = ApplyShapeFilter(targets, context);
+        // ===== Select対応（ここが最重要）=====
+        if (targetType == AbilityTargetType.Select)
+        {
+            // クリック対象がないなら何もしない
+            if (context.targetPiece == null)
+                return;
 
-        if (range == AbilityRange.Random)
-            targets = targets.OrderBy(x => Random.value).Take(targetCount).ToList();
+            // ターゲット条件チェック（敵・味方）
+            if (!IsValidTarget(context.targetPiece, context.owner))
+                return;
 
-        if (range == AbilityRange.Count)
-            targets = targets.Take(targetCount).ToList();
+            targets.Add(context.targetPiece);
+        }
+        else
+        {
+            // 従来のAuto処理
+            targets = GetTargets(context);
+
+            targets = ApplyShapeFilter(targets, context);
+
+            if (range == AbilityRange.Random)
+                targets = targets.OrderBy(x => Random.value).Take(targetCount).ToList();
+
+            if (range == AbilityRange.Count)
+                targets = targets.Take(targetCount).ToList();
+        }
 
         foreach (var piece in targets)
+        {
             ExecuteEffect(piece, context);
+        }
     }
 
     List<Piece> GetTargets(AbilityContext context)
@@ -384,5 +405,22 @@ public class UnifiedAbility : Ability
                 BoardManager.Instance.ReturnPieceToReserve(piece);
                 break;
         }
+    }
+
+    public override bool IsValidTarget(Piece piece, int owner)
+    {
+        switch (target)
+        {
+            case AbilityTarget.Self:
+                return piece.owner == owner;
+
+            case AbilityTarget.Enemy:
+                return piece.owner != owner;
+
+            case AbilityTarget.Both:
+                return true;
+        }
+
+        return false;
     }
 }

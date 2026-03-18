@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 712f4fb1451c182459d5bce3d1a6307d, type: 3}
   m_Name: Test
   m_EditorClassIdentifier: Assembly-CSharp::CardData
+  cardID: 
   cardName: "\u30C6\u30B9\u30C8\u30AB\u30FC\u30C9"
+  description: 
   abilities:
-  - {fileID: 11400000, guid: 9c9b0c033ea4bd34d88a81c41506f073, type: 2}
+  - {fileID: 11400000, guid: 45a9d8f2981a4aa4a925f988ac0fcddc, type: 2}
   category: 1
