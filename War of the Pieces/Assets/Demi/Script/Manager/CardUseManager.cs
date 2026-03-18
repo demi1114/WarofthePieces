@@ -30,7 +30,8 @@ public class CardUseManager : MonoBehaviour
 
         waitingForTarget = true;
 
-        Debug.Log("盤面クリック待ち");
+        Debug.Log("カード使用待機中（盤面クリック待ち）");
+
     }
 
     public void ResolveCard(Vector2Int targetPosition)
@@ -93,21 +94,41 @@ public class CardUseManager : MonoBehaviour
             targetPiece = targetPiece
         };
 
+        bool success = true;
+
         foreach (var ab in pendingCard.abilities)
         {
+            // Selectチェック
             if (ab.targetType == AbilityTargetType.Select)
             {
-                // 無効ならスキップ
-                if (!ab.IsValidTarget(targetPiece, pendingOwner))
-                    continue;
+                if (targetPiece == null ||
+                    !ab.IsValidTarget(targetPiece, pendingOwner))
+                {
+                    success = false;
+                    break;
+                }
             }
 
-            ab.OnCardUse(context);
+            // 実行
+            bool result = ab.OnCardUse(context);
+
+            if (!result)
+            {
+                success = false;
+                break;
+            }
         }
 
-        DeckManager.Instance.RemoveCardFromHand(
-            pendingOwner,
-            pendingHandIndex);
+        if (success)
+        {
+            DeckManager.Instance.RemoveCardFromHand(
+                pendingOwner,
+                pendingHandIndex);
+        }
+        else
+        {
+            Debug.Log("カード発動失敗 → 消費しない");
+        }
 
         pendingCard = null;
         waitingForTarget = false;

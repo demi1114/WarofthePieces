@@ -105,7 +105,7 @@ public class UnifiedAbility : Ability
     [Header("AddReserve Options")]
     public bool addFromRaceRandom = false;
 
-    public override void OnCardUse(AbilityContext context)
+    public override bool OnCardUse(AbilityContext context)
     {
         // Piece対象じゃない効果
         if (effect == AbilityEffect.Draw)
@@ -113,7 +113,7 @@ public class UnifiedAbility : Ability
             for (int i = 0; i < effectValue; i++)
                 DeckManager.Instance.DrawCard(context.owner);
 
-            return;
+            return true;
         }
 
         if (effect == AbilityEffect.AddReserve)
@@ -133,7 +133,7 @@ public class UnifiedAbility : Ability
                 ReserveManager.Instance.AddPiece(context.owner, piece);
             }
 
-            return;
+            return true;
         }
 
         if (effect == AbilityEffect.DestroyReserve)
@@ -151,7 +151,7 @@ public class UnifiedAbility : Ability
                     ReserveManager.Instance.RemovePiece(owner, piece);
             }
 
-            return;
+            return true;
         }
 
         if (effect == AbilityEffect.TransformReserve)
@@ -172,19 +172,19 @@ public class UnifiedAbility : Ability
                 }
             }
 
-            return;
+            return true;
         }
 
         if (effect == AbilityEffect.DestroyDeck)
         {
             DeckManager.Instance.RemoveTopCards(context.owner, effectValue);
-            return;
+            return true;
         }
 
         if (effect == AbilityEffect.AddMove)
         {
             TurnManager.Instance.AddExtraMove(context.owner, effectValue);
-            return;
+            return true;
         }
 
         // ===== Piece対象効果 =====
@@ -196,11 +196,11 @@ public class UnifiedAbility : Ability
         {
             // クリック対象がないなら何もしない
             if (context.targetPiece == null)
-                return;
+                return false;
 
             // ターゲット条件チェック（敵・味方）
             if (!IsValidTarget(context.targetPiece, context.owner))
-                return;
+                return false;
 
             targets.Add(context.targetPiece);
         }
@@ -222,6 +222,8 @@ public class UnifiedAbility : Ability
         {
             ExecuteEffect(piece, context);
         }
+
+        return true;
     }
 
     List<Piece> GetTargets(AbilityContext context)

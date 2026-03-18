@@ -12,7 +12,10 @@ public abstract class Ability : ScriptableObject
 
     public virtual void OnTurnStart(AbilityContext context) { }
     public virtual void OnTurnEnd(AbilityContext context) { }
-    public virtual void OnCardUse(AbilityContext context) { }
+    public virtual bool OnCardUse(AbilityContext context)
+    {
+        return true;
+    }
     public virtual void OnDeath(AbilityContext context) { }
     public virtual bool IsValidTarget(Piece piece, int owner)
     {
