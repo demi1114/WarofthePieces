@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 712f4fb1451c182459d5bce3d1a6307d, type: 3}
-  m_Name: Ca_009
+  m_Name: Ca_026
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardID: Ca_009
-  cardName: "\u7A81\u98A8"
-  description: "\u76E4\u9762\u306E\u30E9\u30F3\u30C0\u30E0\u306A\u99D2\uFF13\u3064\u3092\u624B\u99D2\u306B\u623B\u3059\u3002"
+  cardID: Ca_026
+  cardName: "\u57FA\u790E\u306E\u5FDC\u7528"
+  description: "\u9078\u629E\u3057\u305F\u81EA\u5206\u306E\u99D2\u3092\uFF0B\uFF12\u3059\u308B\u3002\n\uFF11\u679A\u30C9\u30ED\u30FC\u3059\u308B\u3002"
   abilities:
-  - {fileID: 11400000, guid: e2ddb0d2d1cbf9f4e89a17d9873a0e43, type: 2}
-  - {fileID: 11400000, guid: e2ddb0d2d1cbf9f4e89a17d9873a0e43, type: 2}
-  - {fileID: 11400000, guid: e2ddb0d2d1cbf9f4e89a17d9873a0e43, type: 2}
+  - {fileID: 11400000, guid: d36805724f6191f43a653a74e2c7b22c, type: 2}
+  - {fileID: 11400000, guid: 9519ab4aa39b96e4baf486f2e4944505, type: 2}
   category: 1

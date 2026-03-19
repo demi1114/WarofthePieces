@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 712f4fb1451c182459d5bce3d1a6307d, type: 3}
+  m_Name: Ca_034
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  cardID: Ca_034
+  cardName: "\u30EA\u30D7\u30ED\u30C0\u30AF\u30B7\u30E7\u30F3"
+  description: "\u9078\u629E\u3057\u305F\u81EA\u5206\u3010\u6A5F\u68B0\u3011\u306E\u99D2\uFF11\u3064\u3092\uFF0B\uFF11\u3059\u308B\u3002\n\u81EA\u5206\u306E\u3010\u6A5F\u68B0\u3011\u306E\u99D2\u3059\u3079\u3066\u3092\uFF0B\uFF11\u3059\u308B\u3002"
+  abilities:
+  - {fileID: 11400000, guid: 66dcf14b1f50c62488c2d85e5f247e0d, type: 2}
+  - {fileID: 11400000, guid: d2f3f77629fa0174bac48885918d12c3, type: 2}
+  category: 1
