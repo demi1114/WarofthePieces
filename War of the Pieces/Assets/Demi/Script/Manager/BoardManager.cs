@@ -89,10 +89,21 @@ public class BoardManager : MonoBehaviour
             return;
         }
 
-        // --- 手駒配置 ---
-        if (selectedPlacePieceData != null && TurnManager.Instance.isPlayerTurn)
+        // --- 手駒選択中 ---
+        if (selectedPlacePieceData != null)
         {
-            TryPlacePiece(cell);
+            // 自陣クリックなら配置
+            if (cell.y == 0 && pieceGrid[cell.x, cell.y] == null)
+            {
+                TryPlacePiece(cell);
+            }
+            else
+            {
+                // 🔥 配置できない場所 → キャンセル
+                Debug.Log("配置キャンセル");
+                selectedPlacePieceData = null;
+            }
+
             DetailPanelUI.Instance.Hide();
             return;
         }
@@ -103,16 +114,24 @@ public class BoardManager : MonoBehaviour
             // 情報表示（ターン関係なく可能）
             DetailPanelUI.Instance.ShowPiece(clickedPiece);
 
-            // 同じ駒クリック → 選択解除
-            if (selectedPiece == clickedPiece)
-            {
-                CancelSelection();
-                return;
-            }
-
-            // 駒選択中 → 移動・戦闘
+            // ★すでに駒を選択している場合
             if (selectedPiece != null && TurnManager.Instance.isPlayerTurn)
             {
+                // 自分の駒なら「選択し直し」
+                if (clickedPiece.owner == selectedPiece.owner)
+                {
+                    SelectPiece(clickedPiece, cell.x, cell.y);
+                    return;
+                }
+
+                // 同じ駒クリック → 選択解除
+                if (selectedPiece == clickedPiece)
+                {
+                    CancelSelection();
+                    return;
+                }
+
+                // 敵なら戦闘（移動処理）
                 bool moved = TryMovePiece(selectedPiece, selectedPosition, pos);
 
                 if (moved)
@@ -270,6 +289,13 @@ public class BoardManager : MonoBehaviour
             return false;
 
         Piece target = GetPieceAt(to);
+
+        // 味方がいるなら移動不可
+        if (target != null && target.owner == piece.owner)
+        {
+            Debug.Log("味方の上には移動できません");
+            return false;
+        }
 
         // --- 戦闘 ---
         if (target != null && target.owner != piece.owner)
